@@ -1,0 +1,215 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
+}
+
+/* Encabezado */
+header div {
+    display: flex;
+    justify-content: center;
+}
+
+div img {
+    padding: 15px;
+    width: 200px;
+}
+
+nav {
+    margin: 0px 0 20px 0;
+
+}
+
+.logo img {
+    width: 200px;
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+    background-color: #EDEDED;
+    height: 59px;
+    background-color: #014579;
+}
+
+nav li a {
+    text-decoration: none;
+    color: #fff;
+    background-color: #014579;
+    text-transform: uppercase;
+    padding: 18px 28px;
+}
+
+a:hover {
+    background-color: #174f72;
+}
+
+a:active {
+    background-color: #60a1d2;
+    color: #000;
+}
+
+
+.active {
+    background-color: orange;
+    color: #000;
+}
+
+/* SEGUNDA SECCION - NOTIFICACIONES */
+
+#plus {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#plus i {
+    font-size: 3rem;
+    color: #014579;
+    text-decoration: none;
+}
+
+
+/* FORMULARIO */
+#registro {
+    padding: 10px;
+    text-align: center;
+    box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
+    width: 60%;
+    margin: 0 auto;
+    margin-bottom: 30px;
+    display: visible;
+}
+
+#registro h3 {
+    padding: 15px;
+}
+
+#registro input,
+#registro button,
+#registro select {
+    border: 1px solid #000;
+    height: 50px;
+}
+
+#registro form label,
+#registro input,
+#registro button,
+#registro select {
+    display: block;
+    width: 60%;
+    text-align: start;
+}
+
+#registro input,
+#registro label {
+    margin: 0 auto;
+}
+
+#registro form select {
+    margin: 0 auto;
+}
+
+#registro form button {
+    display: inline;
+    text-align: center;
+    margin: 15px 0 15px 0;
+    text-transform: uppercase;
+    height: 50px;
+}
+
+/* TABLA */
+section {
+    width: 95%;
+    margin: 0 auto;
+}
+
+section h2 {
+    text-align: center;
+    padding: 15px 0 15px 0;
+    background-color: #014579;
+    color: #FFF;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.seccion {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding: 15px 10px;
+    width: 80%;
+    margin: 0 auto;
+
+}
+
+.seccion div {
+    box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
+    width: 250px;
+    margin: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #000;
+
+}
+
+.seccion i {
+    display: flex;
+    justify-content: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #FFF;
+}
+
+
+
+.seccion h5 {
+    display: flex;
+    justify-content: center;
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #FFF;
+    background-color: #014579;
+    margin: 10px 0 0 0;
+}
+
+
+.seccion h3 {
+    display: flex;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #014579;
+    color: #FFF;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+#total{
+    font-size: 4em;
+    background-color: #000;
+    color: #F5A600;
+    margin-top: 0;
+}
+
+
+/* PIE DE PAGINA */
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 150px;
+    background-color: #014579;
+    color: #FFF;
+    margin-top: 20px;
+}
