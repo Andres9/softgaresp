@@ -9,6 +9,7 @@ include('conexion.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoftGaresp</title>
+    <link rel="icon" href="logotipo.png">
 
     <script src="jquery.js"></script>
     <script src="index.js"></script>
@@ -23,7 +24,6 @@ include('conexion.php');
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
 </head>
 
 <body>
@@ -36,9 +36,9 @@ include('conexion.php');
                 <!--  <li class="logo"> <img src="logotipo2.png" alt="logotipo"></li> -->
                 <li><a href="index.php" class="active"> <i class="fa-solid fa-list"></i> Ventas</a></li>
                 <li><a href="clientes.php"> <i class="fa-solid fa-list"></i> Clientes</a></li>
-                <li><a href="patricia.html">Patricia</a></li>
-                <li><a href="desarrollo.html">Desarrollos</a></li>
-                <li><a href="acerca.html">Acerca de</a></li>
+                <li><a href="notaCliente.php"> <i class="fa-solid fa-list"></i> Nota</a></li>
+                <li><a href="contabilidad.php"> <i class="fa-solid fa-list"></i> Contabilidad</a></li>
+     
             </ul>
         </nav>
     </header>
@@ -46,7 +46,6 @@ include('conexion.php');
         <div class="seccion">
             <div>
                 <h3>Ventas</h3>
-              
                 <h5 id="total">
                     <?php
                         $ventasTotales = "SELECT COUNT(id_venta) FROM ventas";  
@@ -60,7 +59,7 @@ include('conexion.php');
             </div>
             <div>
                 <h3>Papeleria</h3>
-                <i class="fa-solid fa-cash-register"></i>
+                <i class="fa-solid fa-file-circle-check"></i>
                 <h5>
                 <?php
                     $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='papeleria'";  
@@ -74,7 +73,7 @@ include('conexion.php');
             </div>
             <div>
                 <h3>Celular</h3>
-                <i class="fa-solid fa-cash-register"></i>
+                <i class="fa-solid fa-mobile-screen-button"></i>
                 <h5>
                 <?php
                     $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='celular'";  
@@ -102,7 +101,7 @@ include('conexion.php');
             </div>
             <div>
                 <h3>Patricia</h3>
-                <i class="fa-solid fa-cash-register"></i>
+                <i class="fa-solid fa-user"></i>
                 <h5>
                 <?php
                     $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='patricia'";  
@@ -116,7 +115,7 @@ include('conexion.php');
             </div>
             <div>
                 <h3>Guadencio</h3>
-                <i class="fa-solid fa-cash-register"></i>
+                <i class="fa-regular fa-user"></i>
                 <h5>
                 <?php
                     $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='guadencio'";  
@@ -128,8 +127,22 @@ include('conexion.php');
                     ?>
                 </h5>
             </div>
+            <div>
+                <h3>Total</h3>
+                <i class="fa-solid fa-cash-register"></i>
+                <h5>
+                <?php
+                    $ventasTotales = "SELECT SUM(costo) FROM ventas";  
+                        $resultado = mysqli_query($conn,$ventasTotales);
+                        while($mostrar = mysqli_fetch_array($resultado)){
+                            echo ("$" . $mostrar[0] . "");
+                        }
+                      
+                    ?>
+                </h5>
+            </div>
         </div>
-        <h2>Registro</h2>
+        <h2>Registro Ventas</h2>
         <div id="registro">
             <form action="functions.php" method="post">
                 <label for="">Cantidad</label>
@@ -160,6 +173,8 @@ include('conexion.php');
                     <th>Precio</th>
                     <th>Categoria</th>
                     <th>Fecha</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
           
@@ -176,6 +191,8 @@ include('conexion.php');
                     <td><?php echo $mostrar['costo']?></td>
                     <td><?php echo $mostrar['seccion']?></td>
                     <td><?php echo $mostrar['fecha']?></td>
+                    <td><a href="#"><i class="fa-solid fa-pen "></i></a></td>
+                    <td><a href="#"><i class="fa-solid fa-trash"></i></a></td>
                 </tr>
                 <?php
                       }

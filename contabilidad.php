@@ -33,21 +33,22 @@ include('conexion.php');
         </div>
         <nav>
             <ul>
-                <li><a href="index.php"> <i class="fa-solid fa-list"></i> Ventas</a></li>
-                <li><a href="clientes.php" class="active"> <i class="fa-solid fa-list"></i> Clientes</a></li>
+                <!--  <li class="logo"> <img src="logotipo2.png" alt="logotipo"></li> -->
+                <li><a href="index.php" > <i class="fa-solid fa-list"></i> Ventas</a></li>
+                <li><a href="clientes.php"> <i class="fa-solid fa-list"></i> Clientes</a></li>
                 <li><a href="notaCliente.php"> <i class="fa-solid fa-list"></i> Nota</a></li>
-                <li><a href="contabilidad.php"> <i class="fa-solid fa-list"></i> Contabilidad</a></li>
-    
+                <li><a href="contabilidad.php" class="active"> <i class="fa-solid fa-list"></i> Contabilidad</a></li>
+       
             </ul>
         </nav>
     </header>
     <section>
         <div class="seccion">
             <div>
-                <h3>Clientes</h3>
+                <h3>Ventas</h3>
                 <h5 id="total">
                     <?php
-                        $ventasTotales = "SELECT COUNT(id_cliente) FROM clientes";  
+                        $ventasTotales = "SELECT COUNT(id_venta) FROM ventas";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             echo ($mostrar[0]);
@@ -141,32 +142,24 @@ include('conexion.php');
                 </h5>
             </div>
         </div>
-        <h2>Registro Cliente</h2>
+        <h2>Registro Ventas</h2>
         <div id="registro">
-            <form action="registroClientes.php" method="post">
-                <label for="">Nombre</label>
-                <input type="text" name="nombre">
-                <label for="">Apellidos</label>
-                <input type="text" name="apellidos">
-         
-                <label for="">Profesion</label>
-                <select name="profesionocupacion" id="">
-                    <option value="">Selecciona una profesion o ocupacion</option>
-                    <option value="profesor(a)">Profesor(a)</option>
-                    <option value="ingcivil">Ing. civil</option>
-                    <option value="ingsistemas">Ing. sistemas</option>
-                    <option value="estudiante">Estudiante</option>
-                    <option value="arquitecto">Arquitecto</option>
-                    <option value="cliente">Cliente</option>
+            <form action="functions.php" method="post">
+                <label for="">Cantidad</label>
+                <input type="number" value="1" name="cantidad">
+                <label for="">Descripcion</label>
+                <input type="text" name="descripcion">
+                <label for="">Costo</label>
+                <input type="number" name="costo">
+                <label for="">Seccion</label>
+                <select name="opcionnegocio" id="">
+                    <option value="">Selecciona una opcion</option>
+                    <option value="negocio">Negocio</option>
+                    <option value="patricia">Patricia</option>
+                    <option value="gaudencio">Guadencio</option>
+                    <option value="celular">Celular</option>
+                    <option value="papeleria">Papeleria</option>
                 </select>
-                <label for="">Calle</label>
-                <input type="text" name="calle">
-                
-                <label for="">Colonia - Localidad</label>
-                <input type="text" name="domicilio">
-                <label for="">Telefono</label>
-                <input type="text" name="telefono">
-              
                 <button type="submit" class="btn btn-primary">Agregar</button>
             </form>
         </div>
@@ -175,12 +168,11 @@ include('conexion.php');
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
+                    <th>Cantidad</th>
                     <th>Descripcion</th>
-                    <th>Calle</th>
-                    <th>Domicilio</th>
-                    <th>Telefono</th>
+                    <th>Precio</th>
+                    <th>Categoria</th>
+                    <th>Fecha</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -188,18 +180,17 @@ include('conexion.php');
           
             <tbody>
             <?php
-                $consulta = "SELECT * FROM clientes";
+                $consulta = "SELECT * FROM ventas ORDER BY id_venta DESC";
                 $resultado = mysqli_query($conn,$consulta);
                   while($mostrar = mysqli_fetch_array($resultado)){
                 ?>
                 <tr>
-                    <td><?php echo $mostrar['id_cliente']?></td>
-                    <td><?php echo $mostrar['nombre']?></td>
-                    <td><?php echo $mostrar['apellidos']?></td>
-                    <td><?php echo $mostrar['profesion']?></td>
-                    <td><?php echo $mostrar['calle']?></td>
-                    <td><?php echo $mostrar['domicilio']?></td>
-                    <td><?php echo $mostrar['telefono']?></td>
+                    <td><?php echo $mostrar['id_venta']?></td>
+                    <td><?php echo $mostrar['cantidad']?></td>
+                    <td><?php echo $mostrar['descripcion']?></td>
+                    <td><?php echo $mostrar['costo']?></td>
+                    <td><?php echo $mostrar['seccion']?></td>
+                    <td><?php echo $mostrar['fecha']?></td>
                     <td><a href="#"><i class="fa-solid fa-pen "></i></a></td>
                     <td><a href="#"><i class="fa-solid fa-trash"></i></a></td>
                 </tr>

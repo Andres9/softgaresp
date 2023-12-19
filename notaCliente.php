@@ -34,17 +34,17 @@ include('conexion.php');
         <nav>
             <ul>
                 <li><a href="index.php"> <i class="fa-solid fa-list"></i> Ventas</a></li>
-                <li><a href="clientes.php" class="active"> <i class="fa-solid fa-list"></i> Clientes</a></li>
-                <li><a href="notaCliente.php"> <i class="fa-solid fa-list"></i> Nota</a></li>
+                <li><a href="clientes.php"> <i class="fa-solid fa-list"></i> Clientes</a></li>
+                <li><a href="notaCliente.php" class="active"> <i class="fa-solid fa-list"></i> Nota</a></li>
                 <li><a href="contabilidad.php"> <i class="fa-solid fa-list"></i> Contabilidad</a></li>
-    
+              
             </ul>
         </nav>
     </header>
     <section>
         <div class="seccion">
             <div>
-                <h3>Clientes</h3>
+                <h3>Nota</h3>
                 <h5 id="total">
                     <?php
                         $ventasTotales = "SELECT COUNT(id_cliente) FROM clientes";  
@@ -57,7 +57,7 @@ include('conexion.php');
                 </h5>
             </div>
             <div>
-                <h3>Papeleria</h3>
+                <h3>Entregado</h3>
                 <i class="fa-solid fa-file-circle-check"></i>
                 <h5>
                 <?php
@@ -70,8 +70,9 @@ include('conexion.php');
                     ?>
                 </h5>
             </div>
+
             <div>
-                <h3>Celular</h3>
+                <h3>Pendiente</h3>
                 <i class="fa-solid fa-mobile-screen-button"></i>
                 <h5>
                 <?php
@@ -84,36 +85,9 @@ include('conexion.php');
                     ?>
                 </h5>
             </div>
+       
             <div>
-                <h3>Negocio</h3>
-                <i class="fa-solid fa-cash-register"></i>
-                <h5>
-                <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='negocio'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-                </h5>
-            </div>
-            <div>
-                <h3>Patricia</h3>
-                <i class="fa-solid fa-user"></i>
-                <h5>
-                <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='patricia'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-                </h5>
-            </div>
-            <div>
-                <h3>Guadencio</h3>
+                <h3>Cobrado</h3>
                 <i class="fa-regular fa-user"></i>
                 <h5>
                 <?php
@@ -141,29 +115,42 @@ include('conexion.php');
                 </h5>
             </div>
         </div>
-        <h2>Registro Cliente</h2>
+        <h2>Registro Notas</h2>
         <div id="registro">
             <form action="registroClientes.php" method="post">
-                <label for="">Nombre</label>
-                <input type="text" name="nombre">
-                <label for="">Apellidos</label>
-                <input type="text" name="apellidos">
-         
-                <label for="">Profesion</label>
-                <select name="profesionocupacion" id="">
-                    <option value="">Selecciona una profesion o ocupacion</option>
-                    <option value="profesor(a)">Profesor(a)</option>
-                    <option value="ingcivil">Ing. civil</option>
-                    <option value="ingsistemas">Ing. sistemas</option>
-                    <option value="estudiante">Estudiante</option>
-                    <option value="arquitecto">Arquitecto</option>
-                    <option value="cliente">Cliente</option>
+                <label for="">Nombre cliente</label>
+                <select name="cliente" id="">
+                    <option value="">Selecciona a un cliente</option>
+                    <?php
+                    $ventasTotales = "SELECT * FROM clientes ORDER BY nombre ASC";  
+                        $resultado = mysqli_query($conn,$ventasTotales);
+                        while($mostrar = mysqli_fetch_array($resultado)){
+                            $id = $mostrar["id_cliente"];
+                            $nombre = $mostrar["nombre"];
+                            $apellidos = $mostrar["apellidos"];
+
+                            echo "<option='$id'>$nombre $apellidos</option>";
+                        }
+                    ?>
+        
+                   
                 </select>
-                <label for="">Calle</label>
-                <input type="text" name="calle">
-                
-                <label for="">Colonia - Localidad</label>
-                <input type="text" name="domicilio">
+
+                <label for="">Equipo</label>
+            <select name="equipo" id="">
+                <option value="laptop">Laptop</option>
+                <option value="pc">PC</option>
+                <option value="impresora">Impresora</option>
+                <option value="celular">celular</option>
+                <option value="tablet">tablet</option>
+            </select>
+                <label for="">Servicio</label>
+          <select name="servicio" id="">
+            <option value="">Seleccione una opcion</option>
+            <option value="formateo">Formateo</option>
+            <option value="optimizacion">Optimizacion</option>
+            <option value="drenadoTinta">Drenado de tinta</option>
+          </select>
                 <label for="">Telefono</label>
                 <input type="text" name="telefono">
               
@@ -176,11 +163,6 @@ include('conexion.php');
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Descripcion</th>
-                    <th>Calle</th>
-                    <th>Domicilio</th>
-                    <th>Telefono</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -188,18 +170,13 @@ include('conexion.php');
           
             <tbody>
             <?php
-                $consulta = "SELECT * FROM clientes";
+                $consulta = "SELECT * FROM nota";
                 $resultado = mysqli_query($conn,$consulta);
                   while($mostrar = mysqli_fetch_array($resultado)){
                 ?>
                 <tr>
                     <td><?php echo $mostrar['id_cliente']?></td>
-                    <td><?php echo $mostrar['nombre']?></td>
-                    <td><?php echo $mostrar['apellidos']?></td>
-                    <td><?php echo $mostrar['profesion']?></td>
-                    <td><?php echo $mostrar['calle']?></td>
-                    <td><?php echo $mostrar['domicilio']?></td>
-                    <td><?php echo $mostrar['telefono']?></td>
+
                     <td><a href="#"><i class="fa-solid fa-pen "></i></a></td>
                     <td><a href="#"><i class="fa-solid fa-trash"></i></a></td>
                 </tr>
