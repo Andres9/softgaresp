@@ -1,5 +1,9 @@
 <?php 
 include('conexion.php');
+
+date_default_timezone_set('America/Mexico_City');
+$fecha_actual=date("Y-m-d H:i:s");
+
 ?>
 
 <!DOCTYPE html>
@@ -11,19 +15,22 @@ include('conexion.php');
     <title>SoftGaresp</title>
     <link rel="icon" href="logotipo.png">
 
+    <!-- ARCHIVOS PERSONALIZADOS -->
     <script src="jquery.js"></script>
     <script src="index.js"></script>
     <link rel="stylesheet" href="style.css">
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
-    
-    <script src="dataTables.responsive.min.js"></script>
-
-    <link rel="stylesheet" href="fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.min.css">
-
+    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- DATATABLES -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="responsive.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    <script src="dataTables.responsive.min.js"></script> 
+
+    <!-- FUENTES -->
+    <link rel="stylesheet" href="fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.min.css">
 </head>
 
 <body>
@@ -118,7 +125,7 @@ include('conexion.php');
                 <i class="fa-regular fa-user"></i>
                 <h5>
                 <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='guadencio'";  
+                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='gaudencio'";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             echo ("$" . $mostrar[0] . "");
@@ -145,6 +152,8 @@ include('conexion.php');
         <h2>Registro Ventas</h2>
         <div id="registro">
             <form action="functions.php" method="post">
+                <label for="">Fecha de venta</label>
+                <input type="datetime" name="fechaVenta" value="<?php echo $fecha_actual?>">
                 <label for="">Cantidad</label>
                 <input type="number" value="1" name="cantidad">
                 <label for="">Descripcion</label>
@@ -164,7 +173,7 @@ include('conexion.php');
             </form>
         </div>
         <h2>Movimientos</h2>
-        <table id="myTable" class="display nowrap" style="width:100%">
+        <table id="myTable" class="display responsive nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>ID</th>

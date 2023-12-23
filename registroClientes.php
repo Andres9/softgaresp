@@ -9,12 +9,13 @@ include "conexion.php";
     $calle = $_POST["calle"];
     $domicilio = $_POST["domicilio"];
     $telefono = $_POST["telefono"];
+    $fechaRegistro = $_POST["fechaRegistro"];
     $tabla = "clientes";
     
 
 
-    $campos = 'nombre,apellidos,profesion,calle,domicilio,telefono';
-    $variables = "'$nombre','$apellidos','$profesionOcupacion','$calle','$domicilio','$telefono'";
+    $campos = 'nombre,apellidos,profesion,calle,domicilio,telefono,fecha_registro';
+    $variables = "'$nombre','$apellidos','$profesionOcupacion','$calle','$domicilio','$telefono','$fechaRegistro'";
 
     var_dump($variables);
 

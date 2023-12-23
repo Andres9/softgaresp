@@ -93,7 +93,8 @@ a:active {
 
 #registro input,
 #registro button,
-#registro select {
+#registro select,
+#registro textarea {
     border: 1px solid #000;
     height: 50px;
 }
