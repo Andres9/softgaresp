@@ -12,7 +12,7 @@ include "conexion.php";
 
 
     $campos = 'cantidad,descripcion,costo,seccion,fecha_venta';
-    $variables = "$cantidad, '$descripcion',$costo,'$opcionNegocio',$fechaVenta";
+    $variables = "$cantidad, '$descripcion',$costo,'$opcionNegocio','$fechaVenta'";
     $_GUARDAR_SQL = "INSERT INTO $tabla ($campos) VALUES ($variables)";  
     mysqli_query($conn,$_GUARDAR_SQL);
 

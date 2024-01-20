@@ -29,6 +29,10 @@ $fecha_actual=date("Y-m-d H:i:s");
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
     <script src="dataTables.responsive.min.js"></script> 
 
+     <!-- SELECT2 -->
+     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <!-- FUENTES -->
     <link rel="stylesheet" href="fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.min.css">
 </head>
@@ -65,17 +69,25 @@ $fecha_actual=date("Y-m-d H:i:s");
         </div>
         
         <h2>Registro Cliente</h2>
-        <div id="registro">
+        <div id="registro" class="container">
             <form action="registroClientes.php" method="post">
                 <label for="">Fecha Registro</label>
                 <input type="datetime" name="fechaRegistro" value="<?php echo $fecha_actual?>">
-                <label for="">Nombre</label>
+                <div class="row">
+                    <div class="col-6">
+                    <label for="">Nombre</label>
                 <input type="text" name="nombre">
-                <label for="">Apellidos</label>
+                    </div>
+                    <div class="col-6">
+                    <label for="">Apellidos</label>
                 <input type="text" name="apellidos">
+                    </div>
+                </div>
+               
+             
          
                 <label for="">Profesion</label>
-                <select name="profesionocupacion" id="">
+                <select name="profesionocupacion" class="select">
                     <option value="">Selecciona una profesion o ocupacion</option>
                     <option value="profesor(a)">Profesor(a)</option>
                     <option value="ingcivil">Ing. civil</option>
@@ -106,6 +118,7 @@ $fecha_actual=date("Y-m-d H:i:s");
                     <th>Calle</th>
                     <th>Domicilio</th>
                     <th>Telefono</th>
+                    <th>NumServicio</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -125,6 +138,7 @@ $fecha_actual=date("Y-m-d H:i:s");
                     <td><?php echo $mostrar['calle']?></td>
                     <td><?php echo $mostrar['domicilio']?></td>
                     <td><?php echo $mostrar['telefono']?></td>
+                    <td><?php echo $mostrar['numServicio']?></td>
                     <td><a href="#"><i class="fa-solid fa-pen "></i></a></td>
                     <td><a href="#"><i class="fa-solid fa-trash"></i></a></td>
                 </tr>

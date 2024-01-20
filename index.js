@@ -5,4 +5,10 @@ $(document).ready(function () {
             responsive: true
         }
     });
+
+    $('.select').select2();
+
+    $('.fecha').hide();
+
 });
+
