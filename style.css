@@ -103,7 +103,7 @@ legend{
 #registro button,
 #registro select,
 #registro textarea {
-    border: 1px solid #000;
+    border: 1px solid #174f72;
     width: 100%;
     height: 50%;
 }
@@ -111,7 +111,8 @@ legend{
 #registro form label,
 #registro input,
 #registro button,
-#registro select {
+#registro select,
+#registro datetime {
     display: block;
     text-align: start;
     width: 100%;

@@ -71,16 +71,19 @@ $fecha_actual=date("Y-m-d H:i:s");
         <h2>Registro Cliente</h2>
         <div id="registro" class="container">
             <form action="registroClientes.php" method="post">
+                <div class="row" style="display:none">
                 <label for="">Fecha Registro</label>
-                <input type="datetime" name="fechaRegistro" value="<?php echo $fecha_actual?>">
+                <input type="datetime" name="fechaRegistro" value="<?php echo $fecha_actual?>" class="form-control">
+                </div>
+
                 <div class="row">
                     <div class="col-6">
                     <label for="">Nombre</label>
-                <input type="text" name="nombre">
+                <input type="text" name="nombre" class="form-control">
                     </div>
                     <div class="col-6">
                     <label for="">Apellidos</label>
-                <input type="text" name="apellidos">
+                <input type="text" name="apellidos" class="form-control">
                     </div>
                 </div>
                
@@ -89,20 +92,27 @@ $fecha_actual=date("Y-m-d H:i:s");
                 <label for="">Profesion</label>
                 <select name="profesionocupacion" class="select">
                     <option value="">Selecciona una profesion o ocupacion</option>
-                    <option value="profesor(a)">Profesor(a)</option>
-                    <option value="ingcivil">Ing. civil</option>
-                    <option value="ingsistemas">Ing. sistemas</option>
-                    <option value="estudiante">Estudiante</option>
-                    <option value="arquitecto">Arquitecto</option>
-                    <option value="cliente">Cliente</option>
+                    <?php
+              $ventasTotales = "SELECT * FROM profesion";  
+                  $resultado = mysqli_query($conn,$ventasTotales);
+                  while($mostrar = mysqli_fetch_array($resultado)){
+                    $id=$mostrar["id_profesion"];
+                      $descripcion = $mostrar["descripcionProfesion"];
+            ?>
+            <option value="<?php echo $id; ?>">
+              <?php echo $descripcion?>
+            </option>
+            <?php
+                  }
+              ?>
                 </select>
                 <label for="">Calle</label>
-                <input type="text" name="calle">
+                <input type="text" name="calle" class="form-control">
                 
                 <label for="">Colonia - Localidad</label>
-                <input type="text" name="domicilio">
+                <input type="text" name="domicilio" class="form-control">
                 <label for="">Telefono</label>
-                <input type="text" name="telefono">
+                <input type="text" name="telefono" class="form-control">
               
                 <button type="submit" class="btn btn-primary">Agregar</button>
             </form>
@@ -117,8 +127,8 @@ $fecha_actual=date("Y-m-d H:i:s");
                     <th>Descripcion</th>
                     <th>Calle</th>
                     <th>Domicilio</th>
+                    <th>Servicios</th>
                     <th>Telefono</th>
-                    <th>NumServicio</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -126,7 +136,8 @@ $fecha_actual=date("Y-m-d H:i:s");
           
             <tbody>
             <?php
-                $consulta = "SELECT * FROM clientes";
+                $consulta = "SELECT * FROM clientes c 
+                JOIN profesion p ON c.profesion  = p.id_profesion ";
                 $resultado = mysqli_query($conn,$consulta);
                   while($mostrar = mysqli_fetch_array($resultado)){
                 ?>
@@ -134,12 +145,15 @@ $fecha_actual=date("Y-m-d H:i:s");
                     <td><?php echo $mostrar['id_cliente']?></td>
                     <td><?php echo $mostrar['nombre']?></td>
                     <td><?php echo $mostrar['apellidos']?></td>
-                    <td><?php echo $mostrar['profesion']?></td>
+                    <td><?php echo $mostrar['descripcionProfesion']?></td>
                     <td><?php echo $mostrar['calle']?></td>
                     <td><?php echo $mostrar['domicilio']?></td>
-                    <td><?php echo $mostrar['telefono']?></td>
                     <td><?php echo $mostrar['numServicio']?></td>
-                    <td><a href="#"><i class="fa-solid fa-pen "></i></a></td>
+                    <td><?php echo $mostrar['telefono']?></td>
+                
+                    <td>
+              <a href="editarClientes.php?updCliente=<?=$mostrar['id_cliente']?>"><i class="fa-solid fa-pen"></i></a>
+            </td>
                     <td><a href="#"><i class="fa-solid fa-trash"></i></a></td>
                 </tr>
                 <?php

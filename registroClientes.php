@@ -11,8 +11,6 @@ include "conexion.php";
     $telefono = $_POST["telefono"];
     $fechaRegistro = $_POST["fechaRegistro"];
     $tabla = "clientes";
-    
-
 
     $campos = 'nombre,apellidos,profesion,calle,domicilio,telefono,fecha_registro';
     $variables = "'$nombre','$apellidos','$profesionOcupacion','$calle','$domicilio','$telefono','$fechaRegistro'";

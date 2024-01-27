@@ -97,7 +97,7 @@ $fecha_actual=date("Y-m-d H:i:s");
           <i class="fa-solid fa-file-circle-check"></i>
           <h5>
             <?php
-                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='entrada'";  
+                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='1'";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             echo ( $mostrar[0] );
@@ -111,7 +111,7 @@ $fecha_actual=date("Y-m-d H:i:s");
           <i class="fa-solid fa-file-circle-check"></i>
           <h5>
             <?php
-                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='revision'";  
+                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='2'";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             echo ( $mostrar[0] );
@@ -125,7 +125,7 @@ $fecha_actual=date("Y-m-d H:i:s");
           <i class="fa-solid fa-file-circle-check"></i>
           <h5>
             <?php
-                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='entregado'";  
+                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='3'";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             echo ( $mostrar[0] );
@@ -139,7 +139,7 @@ $fecha_actual=date("Y-m-d H:i:s");
           <i class="fa-solid fa-file-circle-check"></i>
           <h5>
             <?php
-                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='sin reparacion'";  
+                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='4'";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             echo ( $mostrar[0] );
@@ -154,7 +154,7 @@ $fecha_actual=date("Y-m-d H:i:s");
           <i class="fa-regular fa-user"></i>
           <h5>
             <?php
-                    $ventasTotales = "SELECT SUM(costoServicio) FROM notas";  
+                    $ventasTotales = "SELECT SUM(ganancia) FROM notas";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             echo ("$" . $mostrar[0] . "");
@@ -175,6 +175,7 @@ $fecha_actual=date("Y-m-d H:i:s");
                 <legend>Fecha</legend>
                 <label for="">Fecha de entrada</label>
                 <input
+                class="form-control"
                   type="datetime"
                   name="fechaEntrada"
                   value="<?php echo $fecha_actual?>"
@@ -191,7 +192,7 @@ $fecha_actual=date("Y-m-d H:i:s");
                 <select name="cliente" class="select">
                   <option value="">Selecciona a un cliente</option>
                   <?php
-                    $ventasTotales = "SELECT * FROM clientes ORDER BY nombre ASC";  
+                    $ventasTotales = "SELECT * FROM clientes";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             $id = $mostrar["id_cliente"];
@@ -199,7 +200,7 @@ $fecha_actual=date("Y-m-d H:i:s");
                             $apellidos = $mostrar["apellidos"];
                             ?>
                   <option value="<?php echo $id; ?>">
-                    <?php echo $nombre." ".$apellidos; ?>
+                    <?php echo $id ." ". $nombre." ".$apellidos; ?>
                   </option>
                   <?php
                         }
@@ -211,25 +212,32 @@ $fecha_actual=date("Y-m-d H:i:s");
 
           <fieldset>
             <legend>Datos del equipo</legend>
-           <div class="col-12">
-           <label for="">Equipo</label>
-            <select name="equipo" class="select">
-              <option value="">Selecciona un equipo</option>
-              <option value="laptop">Laptop</option>
-              <option value="pc">PC</option>
-              <option value="impresora">Impresora</option>
-              <option value="celular">celular</option>
-              <option value="tablet">tablet</option>
-            </select>
-           </div>
+            <div class="col-12">
+     <label for="">Equipo</label>
+      <select name="equipo" class="select">
+        <option value="">Selecciona un equipo</option>
+        <?php
+              $ventasTotales = "SELECT * FROM equipo";  
+                  $resultado = mysqli_query($conn,$ventasTotales);
+                  while($mostrar = mysqli_fetch_array($resultado)){
+                      $descripcion = $mostrar["descripcion"];
+            ?>
+            <option value="<?php echo $id; ?>">
+              <?php echo $descripcion?>
+            </option>
+            <?php
+                  }
+              ?>
+      </select>
+     </div>
            <div class="row">
            <div class="col-6">
             <label for="marca">Marca</label>
-            <input type="text" name="marca" />
+            <input type="text" name="marca" class="form-control"/>
             </div>
             <div class="col-6">
             <label for="modelo">Modelo</label>
-            <input type="text" name="modelo" />
+            <input type="text" name="modelo" class="form-control"/>
             </div>
            </div>
           
@@ -242,21 +250,39 @@ $fecha_actual=date("Y-m-d H:i:s");
             <label for="">Servicio</label>
             <select name="servicio" class="select">
               <option value="">Seleccione una opcion</option>
-              <option value="Hardware">Hardware</option>
-              <option value="Software">Software</option>
+              <?php
+              $ventasTotales = "SELECT * FROM servicio";  
+                  $resultado = mysqli_query($conn,$ventasTotales);
+                  while($mostrar = mysqli_fetch_array($resultado)){
+                      $descripcion = $mostrar["descripcion"];
+            ?>
+            <option value="<?php echo $id; ?>">
+              <?php echo $descripcion?>
+            </option>
+            <?php
+                  }
+              ?>
             </select>
             <label for="">Descripcion</label>
-            <textarea id="" cols="45" rows="3" name="descripcion"></textarea>
+            <textarea id="" cols="45" rows="3" name="descripcion" class="form-control"></textarea>
           </fieldset>
 
           <fieldset>
             <legend>Estado del equipo</legend>
             <select name="estado" class="select">
               <option value="">Seleccione una opcion</option>
-              <option value="entrada">Entrada</option>
-              <option value="revision">En revision</option>
-              <option value="entregado">Entregado</option>
-              <option value="sin reparacion">Sin reparacion</option>
+              <?php
+              $ventasTotales = "SELECT * FROM estadoservicio";  
+                  $resultado = mysqli_query($conn,$ventasTotales);
+                  while($mostrar = mysqli_fetch_array($resultado)){
+                      $descripcion = $mostrar["descripcion"];
+            ?>
+            <option value="<?php echo $id; ?>">
+              <?php echo $descripcion?>
+            </option>
+            <?php
+                  }
+              ?>
             </select>
           </fieldset>
           <fieldset>
@@ -264,23 +290,23 @@ $fecha_actual=date("Y-m-d H:i:s");
             <div class="row">
               <div class="col-4">
                 <label for="">Costo del servicio</label>
-                <input type="number" name="costoServicio" value="0" />
+                <input type="number" name="costoServicio" value="0" class="form-control"/>
               </div>
               <div class="col-4">
                 <label for="">Ganancia</label>
-                <input type="number" name="ganancia" value="0" />
+                <input type="number" name="ganancia" value="0" class="form-control"/>
               </div>
               <div class="col-4">
                 <label for="">Anticipo</label>
-                <input type="number" name="anticipo" value="0" />
+                <input type="number" name="anticipo" value="0" class="form-control"/>
               </div>
               <div class="col-4">
                 <label for="">Restante</label>
-                <input type="number" name="restante" value="0" />
+                <input type="number" name="restante" value="0" class="form-control"/>
               </div>
               <div class="col-4">
                 <label for="">Pagado</label>
-                <input type="number" name="pagado" value="0" />
+                <input type="number" name="pagado" value="0" class="form-control"/>
               </div>
             </div>
           </fieldset>
@@ -288,7 +314,7 @@ $fecha_actual=date("Y-m-d H:i:s");
           <fieldset>
             <legend>Notas</legend>
             <label for="">Ingrese las notas adicionales</label>
-            <textarea name="nota" id="" cols="45" rows="3"></textarea>
+            <textarea name="nota" id="" cols="45" rows="3" class="form-control"></textarea>
           </fieldset>
 
           <button type="submit" class="btn btn-primary">Agregar</button>
@@ -304,13 +330,14 @@ $fecha_actual=date("Y-m-d H:i:s");
             <th>Marca</th>
             <th>Modelo</th>
             <th>Servicio</th>
-            <th>Descripcion</th>
-            <th>Estado</th>
             <th>Costo</th>
+            <th>Descripcion</th>
+            <th>Notas</th>
+            <th>Estado</th>
             <th>Anticipo</th>
+            <th>Ganancia</th>
             <th>Restante</th>
             <th>Pagado</th>
-            <th>Notas</th>
             <th>Editar</th>
             <th>Eliminar</th>
           </tr>
@@ -318,27 +345,32 @@ $fecha_actual=date("Y-m-d H:i:s");
 
         <tbody>
           <?php
-                $consulta = "select * from notas n JOIN clientes c ON n.id_cliente  = c.id_CLIENTE";
+                $consulta = "select * from notas n 
+                            JOIN clientes c ON n.id_cliente  = c.id_CLIENTE 
+                            JOIN equipo e ON n.equipo =  e.id_equipo 
+                            JOIN servicio s ON n.servicio =  s.id_servicio
+                            JOIN estadoservicio es ON n.estado =  es.id_estado " ;
                 $resultado = mysqli_query($conn,$consulta);
                   while($mostrar = mysqli_fetch_array($resultado)){
                 ?>
           <tr>
             <td><?php echo $mostrar['id_nota']?></td>
             <td><?php echo $mostrar['nombre']." ".$mostrar["apellidos"]?></td>
-            <td><?php echo $mostrar['equipo']?></td>
+            <td><?php echo $mostrar['descripcionEquipo']?></td>
             <td><?php echo $mostrar['marca']?></td>
             <td><?php echo $mostrar['modelo']?></td>
-            <td><?php echo $mostrar['servicio']?></td>
-            <td><?php echo $mostrar['descripcionServicio']?></td>
-            <td><?php echo $mostrar['estado']?></td>
+            <td><?php echo $mostrar['tipoServicio']?></td>
             <td><?php echo $mostrar['costoServicio']?></td>
+            <td><?php echo $mostrar['descripcionServicio']?></td>
+            <td><?php echo $mostrar['notas']?></td>
+            <td><?php echo $mostrar['estadoServicio']?></td>
             <td><?php echo $mostrar['anticipo']?></td>
+            <td><?php echo $mostrar['ganancia']?></td>
             <td><?php echo $mostrar['restante']?></td>
             <td><?php echo $mostrar['pagado']?></td>
-            <td><?php echo $mostrar['notas']?></td>
 
             <td>
-              <a href="#"><i class="fa-solid fa-pen"></i></a>
+              <a href="editarNotas.php?updNotas=<?=$mostrar['id_nota']?>"><i class="fa-solid fa-pen"></i></a>
             </td>
             <td>
               <a href="#"><i class="fa-solid fa-trash"></i></a>

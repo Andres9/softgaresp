@@ -37,7 +37,7 @@ include "conexion.php";
     $tabla = "notas";
 
     $campos = 'id_cliente,equipo,marca,modelo,servicio,descripcionServicio,estado,costoServicio,ganancia,anticipo,restante,pagado,notas,fecha_alta';
-    $variables = "$cliente,'$equipo','$marca','$modelo','$servicio','$descripcion','$estado',$costoServicio,$ganancia,$anticipo,$restante,
+    $variables = "$cliente,$equipo,'$marca','$modelo',$servicio,'$descripcion',$estado,$costoServicio,$ganancia,$anticipo,$restante,
     $pagado,'$nota','$fecha'";
 
     $_GUARDAR_SQL = "INSERT INTO $tabla ($campos) VALUES ($variables)";  
