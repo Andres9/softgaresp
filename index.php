@@ -7,9 +7,8 @@ $fecha_actual=date("Y-m-d H:i:s");
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html lang="es">
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SoftGaresp</title>
@@ -49,219 +48,163 @@ $fecha_actual=date("Y-m-d H:i:s");
     />
   </head>
 
-<body>
+  <body>
     <header>
-        <div>
-            <img src="logotipo2.png" alt="logotipo">
-        </div>
-        <nav>
-            <ul>
-                <!--  <li class="logo"> <img src="logotipo2.png" alt="logotipo"></li> -->
-                <li><a href="index.php" class="active"> <i class="fa-solid fa-list"></i> Ventas</a></li>
-                <li><a href="clientes.php"> <i class="fa-solid fa-list"></i> Clientes</a></li>
-                <li><a href="notaCliente.php"> <i class="fa-solid fa-list"></i> Nota</a></li>
-                <li><a href="contabilidad.php"> <i class="fa-solid fa-list"></i> Contabilidad</a></li>
-     
-            </ul>
-        </nav>
+      <div>
+        <img src="logotipo2.png" alt="logotipo" />
+      </div>
+      <nav>
+        <ul>
+          <!--  <li class="logo"> <img src="logotipo2.png" alt="logotipo"></li> -->
+          <li>
+            <a href="index.php" class="active">
+              <i class="fa-solid fa-list"></i> Ventas</a
+            >
+          </li>
+          <li>
+            <a href="clientes.php">
+            <i class="fa-solid fa-users"></i> Clientes</a
+            >
+          </li>
+          <li>
+            <a href="notaCliente.php"> <i class="fa-solid fa-clipboard-user"></i> Nota</a>
+          </li>
+          <li>
+            <a href="contabilidad.php">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Contabilidad</a
+            >
+          </li>
+        </ul>
+      </nav>
     </header>
     <section>
-        <div class="seccion">
-            <div>
-                <h3>Ventas</h3>
-                <h5 id="total">
-                    <?php
-                        $ventasTotales = "SELECT COUNT(id_venta) FROM ventas";  
+      <div class="seccion">
+        <div>
+          <h3>Venta</h3>
+          <h5 id="total">
+            <?php
+                        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE fecha_venta >= DATE(NOW()) ";  
                         $resultado = mysqli_query($conn,$ventasTotales);
                         while($mostrar = mysqli_fetch_array($resultado)){
                             echo ($mostrar[0]);
                         }
                       
                     ?>
-                </h5>
-            </div>
-            <div>
-                <h3>Papeleria</h3>
-                <i class="fa-solid fa-file-circle-check"></i>
-                <h5>
-                <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='papeleria'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-                </h5>
-            </div>
-            <div>
-                <h3>Celular</h3>
-                <i class="fa-solid fa-mobile-screen-button"></i>
-                <h5>
-                <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='celular'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-                </h5>
-            </div>
-            <div>
-                <h3>Negocio</h3>
-                <i class="fa-solid fa-cash-register"></i>
-                <h5>
-                <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='negocio'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-                </h5>
-            </div>
-            <div>
-                <h3>Patricia</h3>
-                <i class="fa-solid fa-user"></i>
-                <h5>
-                <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='patricia'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-                </h5>
-            </div>
-            <div>
-                <h3>Guadencio</h3>
-                <i class="fa-regular fa-user"></i>
-                <h5>
-                <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion='gaudencio'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-                </h5>
-            </div>
-            <div>
-                <h3>Total</h3>
-                <i class="fa-solid fa-cash-register"></i>
-                <h5>
-                <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-                </h5>
-            </div>
+          </h5>
         </div>
-        <h2>Registro Ventas</h2>
-        <div id="registro" class="container">
-            <form action="functions.php" method="post">
-                <div class="row" >
-                    <div class="col-12" style="display:none">
-                        <div class="row">
-                            <label for="">Fecha de venta</label>
-                            <input type="datetime" name="fechaVenta" value="<?php echo $fecha_actual?>" class="form-control datepicker">
-                        </div>
-                    </div>
-                    <div class="col-2">
+      </div> 
 
-                        <label for="">Cantidad</label>
-                        <input type="number" value="1" name="cantidad" class="form-control">
-                    </div>
-                    <div class="col-10">
-
-                        <label for="">Descripcion</label>
-                        <input type="text" name="descripcion" class="form-control">
-                    </div>
-                    <div class="col-6">
-
-                        <label for="">Costo</label>
-                        <input type="number" name="costo" class="form-control" step="0.01">
-                    </div>
-                    <div class="col-6">
-
-                        <label for="">Seccion</label>
-                        <select name="opcionnegocio" class="select">
-                            <option value="">Selecciona una opcion</option>
-                            <?php
+      <h2>Registro Ventas</h2>
+      <div id="registro" class="container">
+        <form action="functions.php" method="post">
+          <div class="row">
+            <div class="col-md-12" style="display: none">
+              <div class="row">
+                <label for="">Fecha de venta</label>
+                <input
+                  type="datetime"
+                  name="fechaVenta"
+                  value="<?php echo $fecha_actual?>"
+                  class="form-control datepicker"
+                />
+              </div>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <label for="">Cantidad</label>
+              <input
+                type="number"
+                value="1"
+                name="cantidad"
+                class="form-control"
+              />
+            </div>
+            <div class="col-md-10 col-xs-12">
+              <label for="">Descripción</label>
+              <input type="text" name="descripcion" class="form-control" />
+            </div>
+            <div class="col-md-6 col-xs-12">
+              <label for="">Costo</label>
+              <input
+                type="number"
+                name="costo"
+                class="form-control"
+                step="0.01"
+              />
+            </div>
+            <div class="col-md-6 col-xs-12">
+              <label for="">Sección</label>
+              <select name="opcionnegocio" class="select">
+                <option value="">Selecciona una opcion</option>
+                <?php
               $ventasTotales = "SELECT * FROM seccion";  
                   $resultado = mysqli_query($conn,$ventasTotales);
                   while($mostrar = mysqli_fetch_array($resultado)){
                       $id = $mostrar["id_seccion"];
                       $descripcion = $mostrar["descripcionSeccion"];
             ?>
-            <option value="<?php echo $id; ?>">
-              <?php echo $descripcion?>
-            </option>
-            <?php
+                <option value="<?php echo $id; ?>">
+                  <?php echo $descripcion?>
+                </option>
+                <?php
                   }
               ?>
-                        </select>
-                    </div>
-              
-                <button type="submit" class="btn btn-primary">Agregar</button>
-                </div>
-                
-            </form>
-        </div>
-        <h2>Movimientos</h2>
-        <table id="myTable" class="display responsive nowrap" style="width:100%">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Cantidad</th>
-                    <th>Descripcion</th>
-                    <th>Precio</th>
-                    <th>Categoria</th>
-                    <th>Fecha</th>
-                    <th>Editar</th>
-                    <th>Eliminar</th>
-                </tr>
-            </thead>
-          
-            <tbody>
-            <?php
-                $consulta = "SELECT * FROM ventas ORDER BY id_venta DESC";
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Agregar
+          </button>
+        </form>
+      </div>
+
+      <h2>Movimientos</h2>
+      <table id="myTable" class="display responsive nowrap" style="width: 100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cantidad</th>
+            <th>Descripcion</th>
+            <th>Precio</th>
+            <th>Categoria</th>
+            <th>Fecha</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <?php
+                $consulta = "SELECT * FROM ventas WHERE fecha_venta >= DATE(NOW())";
                 $resultado = mysqli_query($conn,$consulta);
                   while($mostrar = mysqli_fetch_array($resultado)){
                 ?>
-                <tr>
-                    <td><?php echo $mostrar['id_venta']?></td>
-                    <td><?php echo $mostrar['cantidad']?></td>
-                    <td><?php echo $mostrar['descripcion']?></td>
-                    <td><?php echo $mostrar['costo']?></td>
-                    <td><?php echo $mostrar['seccion']?></td>
-                    <td><?php echo $mostrar['fecha']?></td>
-                    <td>
-              <a href="editarVentas.php?updVenta=<?=$mostrar['id_venta']?>"><i class="fa-solid fa-pen"></i></a>
+          <tr>
+            <td><?php echo $mostrar['id_venta']?></td>
+            <td><?php echo $mostrar['cantidad']?></td>
+            <td><?php echo $mostrar['descripcion']?></td>
+            <td><?php echo $mostrar['costo']?></td>
+            <td><?php echo $mostrar['seccion']?></td>
+            <td><?php echo $mostrar['fecha']?></td>
+            <td>
+              <a href="editarVentas.php?updVenta=<?=$mostrar['id_venta']?>"
+                ><i class="fa-solid fa-pen"></i
+              ></a>
             </td>
-                    <td><a href="#"><i class="fa-solid fa-trash"></i></a></td>
-                </tr>
-                <?php
+            <td>
+              <a href="#"><i class="fa-solid fa-trash"></i></a>
+            </td>
+          </tr>
+          <?php
                       }
                  ?>
-            </tbody>
-                
-        </table>
+        </tbody>
+      </table>
     </section>
     <footer>
-        <div>
-            <img src="logotipo-blanco.png" alt="logo">
-        </div>
-        <p>Todos los derechos reservados - garespservicioinformatico</p>
+      <div>
+        <img src="logotipo-blanco.png" alt="logo" />
+      </div>
+      <p>Todos los derechos reservados - garespservicioinformatico</p>
     </footer>
-</body>
-
+  </body>
 </html>

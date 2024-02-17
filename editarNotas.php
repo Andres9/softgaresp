@@ -44,7 +44,7 @@ $dataNota     = mysqli_fetch_array($queryNotas);
 <div id="registro" class="container">
   <form action="actualizarNotas.php" method="post">
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 col-sm-12">
         <fieldset>
           <legend>ID Cliente</legend>
           <label for="">ID Cliente</label>
@@ -58,7 +58,7 @@ $dataNota     = mysqli_fetch_array($queryNotas);
       </div>
     </div>
     <div class="row">
-      <div class="col-12">
+      <div class="col-12  col-sm-12">
         <fieldset>
           <legend>Fecha</legend>
           <label for="">Fecha de entrada</label>
@@ -73,7 +73,7 @@ $dataNota     = mysqli_fetch_array($queryNotas);
     </div>
 
     <div class="row">
-      <div class="col-12">
+      <div class="col-12  col-sm-12">
         <fieldset>
           <legend>Datos del cliente</legend>
           <label for="">Nombre cliente</label>
@@ -107,7 +107,7 @@ $dataNota     = mysqli_fetch_array($queryNotas);
 
     <fieldset>
       <legend>Datos del equipo</legend>
-     <div class="col-12">
+     <div class="col-12  col-sm-12">
      <label for="">Equipo</label>
       <select name="equipo" class="select">
         <option value="">Selecciona un equipo</option>
@@ -134,11 +134,11 @@ $dataNota     = mysqli_fetch_array($queryNotas);
       </select>
      </div>
      <div class="row">
-     <div class="col-6">
+     <div class="col-6  col-sm-12">
       <label for="marca">Marca</label>
       <input type="text" name="marca" class="form-control" value="<?php echo $dataNota['marca']?>"/>
       </div>
-      <div class="col-6">
+      <div class="col-6  col-sm-12">
       <label for="modelo">Modelo</label>
       <input type="text" name="modelo" class="form-control" value="<?php echo $dataNota['modelo']?>"/>
       </div>
@@ -187,7 +187,7 @@ $dataNota     = mysqli_fetch_array($queryNotas);
       <select name="estado" class="select">
         <option value="">Seleccione un estado</option>
         <?php
-              $ventasTotales = "SELECT * FROM estadoServicio";  
+              $ventasTotales = "SELECT * FROM estadoservicio";  
                   $resultado = mysqli_query($conn,$ventasTotales);
                   while($mostrar = mysqli_fetch_array($resultado)){
                     $id=$mostrar["id_estado"];
@@ -211,23 +211,23 @@ $dataNota     = mysqli_fetch_array($queryNotas);
     <fieldset>
       <legend>Costo</legend>
       <div class="row">
-        <div class="col-4">
+        <div class="col-md-4  col-sm-12">
           <label for="">Costo del servicio</label>
           <input type="number" name="costoServicio" value="<?php echo $dataNota['costoServicio']?>" class="form-control"/>
         </div>
-        <div class="col-4">
+        <div class="col-md-4  col-sm-12">
           <label for="">Ganancia</label>
           <input type="number" name="ganancia" value="<?php echo $dataNota['ganancia']?>" class="form-control"/>
         </div>
-        <div class="col-4">
+        <div class="col-md-4  col-sm-12">
           <label for="">Anticipo</label>
           <input type="number" name="anticipo" value="<?php echo $dataNota['anticipo']?>" class="form-control"/>
         </div>
-        <div class="col-4">
+        <div class="col-md-4  col-sm-12">
           <label for="">Restante</label>
           <input type="number" name="restante" value="<?php echo $dataNota['restante']?>" class="form-control"/>
         </div>
-        <div class="col-4">
+        <div class="col-md-4  col-sm-12">
           <label for="">Pagado</label>
           <input type="number" name="pagado" value="<?php echo $dataNota['pagado']?>" class="form-control"/>
         </div>
@@ -235,11 +235,19 @@ $dataNota     = mysqli_fetch_array($queryNotas);
     </fieldset>
 
     <fieldset>
+   
       <legend>Notas</legend>
       <label for="">Ingrese las notas adicionales</label>
-      <textarea name="nota" id="" cols="45" rows="3" class="form-control">
-      <?php echo $dataNota['notas'];?>
-    </textarea>
+      <div class="row">
+        <div class="col-12 col-sm-12">
+
+           <textarea name="nota" id="" cols="45" rows="3" class="form-control">
+             <?php echo $dataNota['notas'];?>
+           </textarea>
+        </div>
+        </div>
+  
+ 
     </fieldset>
 
     <button type="submit" class="btn btn-primary">Actualizar</button>

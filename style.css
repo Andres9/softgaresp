@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     border: 0;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 18px;
 }
 
@@ -19,7 +18,6 @@ div img {
 
 nav {
     margin: 0px 0 20px 0;
-
 }
 
 .logo img {
@@ -33,8 +31,8 @@ nav ul {
     align-items: center;
     list-style: none;
     background-color: #EDEDED;
-    height: 59px;
-    background-color: #014579;
+    padding: 17px 27px;
+    background-color: #24355B;
 }
 
 nav li a {
@@ -46,14 +44,14 @@ nav li a {
 }
 
 a:hover {
-    background-color: #174f72;
+    text-decoration: none;
+    background-color: orange;
 }
 
 a:active {
     background-color: #60a1d2;
     color: #000;
 }
-
 
 .active {
     background-color: orange;
@@ -62,7 +60,7 @@ a:active {
 
 /* SEGUNDA SECCION - NOTIFICACIONES */
 
-#plus {
+/* #plus {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,7 +72,68 @@ a:active {
     color: #014579;
     text-decoration: none;
 }
+ */
 
+ /* NOTIFICACIONES */
+.seccion {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding: 15px 10px;
+    width: 80%;
+    margin: 0 auto;
+
+}
+
+
+.seccion div {
+    box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
+    width: 250px;
+    margin: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    border-radius: 50%;
+
+}
+
+.seccion i {
+    display: flex;
+    justify-content: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #FFF;
+    color: #24355B;
+}
+
+
+
+.seccion h5 {
+    display: flex;
+    justify-content: center;
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #000;
+    margin: 10px 0 0 0;
+}
+
+
+.seccion h3 {
+    display: flex;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #000;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+
+#total{
+    font-size: 4em;
+    color: #24355B;
+    margin-top: 0;
+}
 
 /* FORMULARIO */
 legend{
@@ -152,65 +211,6 @@ section h2 {
     font-size: 2rem;
 }
 
-.seccion {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    padding: 15px 10px;
-    width: 80%;
-    margin: 0 auto;
-
-}
-
-.seccion div {
-    box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
-    width: 250px;
-    margin: 10px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-color: #000;
-
-}
-
-.seccion i {
-    display: flex;
-    justify-content: center;
-    font-size: 2.5em;
-    font-weight: bold;
-    color: #FFF;
-}
-
-
-
-.seccion h5 {
-    display: flex;
-    justify-content: center;
-    font-size: 1.6em;
-    font-weight: bold;
-    color: #FFF;
-    background-color: #014579;
-    margin: 10px 0 0 0;
-}
-
-
-.seccion h3 {
-    display: flex;
-    justify-content: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    background-color: #014579;
-    color: #FFF;
-    padding: 10px 0;
-    text-transform: uppercase;
-}
-
-#total{
-    font-size: 4em;
-    background-color: #000;
-    color: #F5A600;
-    margin-top: 0;
-}
 
 /* PIE DE PAGINA */
 footer {
@@ -223,4 +223,3 @@ footer {
     color: #FFF;
     margin-top: 20px;
 }
-

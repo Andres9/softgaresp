@@ -72,23 +72,20 @@ $fecha_actual=date("Y-m-d H:i:s");
         <div id="registro" class="container">
             <form action="registroClientes.php" method="post">
                 <div class="row" style="display:none">
-                <label for="">Fecha Registro</label>
-                <input type="datetime" name="fechaRegistro" value="<?php echo $fecha_actual?>" class="form-control">
+                    <label for="">Fecha Registro</label>
+                    <input type="datetime" name="fechaRegistro" value="<?php echo $fecha_actual?>" class="form-control">
                 </div>
-
                 <div class="row">
-                    <div class="col-6">
-                    <label for="">Nombre</label>
-                <input type="text" name="nombre" class="form-control">
+                    <div class="col-md-6 col-xs-12">
+                        <label for="">Nombre</label>
+                        <input type="text" name="nombre" class="form-control">  
                     </div>
-                    <div class="col-6">
-                    <label for="">Apellidos</label>
-                <input type="text" name="apellidos" class="form-control">
+                    <div class="col-md-6 col-xs-12">
+                        <label for="">Apellidos</label>
+                        <input type="text" name="apellidos" class="form-control">
                     </div>
                 </div>
                
-             
-         
                 <label for="">Profesion</label>
                 <select name="profesionocupacion" class="select">
                     <option value="">Selecciona una profesion o ocupacion</option>
