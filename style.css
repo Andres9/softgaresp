@@ -49,6 +49,7 @@ a:hover {
 }
 
 a:active {
+    text-decoration: none;
     background-color: #60a1d2;
     color: #000;
 }
@@ -58,22 +59,6 @@ a:active {
     color: #000;
 }
 
-/* SEGUNDA SECCION - NOTIFICACIONES */
-
-/* #plus {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-#plus i {
-    font-size: 3rem;
-    color: #014579;
-    text-decoration: none;
-}
- */
-
  /* NOTIFICACIONES */
 .seccion {
     display: flex;
@@ -81,10 +66,9 @@ a:active {
     justify-content: space-around;
     margin-bottom: 20px;
     margin-top: 20px;
-    padding: 15px 10px;
-    width: 80%;
+    padding: 30px 30px;
+    width: 90%;
     margin: 0 auto;
-
 }
 
 
@@ -104,9 +88,8 @@ a:active {
     font-weight: bold;
     color: #FFF;
     color: #24355B;
+    padding: 10px;
 }
-
-
 
 .seccion h5 {
     display: flex;
@@ -129,8 +112,8 @@ a:active {
 }
 
 
-#total{
-    font-size: 4em;
+.seccion .numerototal{
+    font-size: 3em;
     color: #24355B;
     margin-top: 0;
 }
@@ -210,6 +193,22 @@ section h2 {
     font-weight: bold;
     font-size: 2rem;
 }
+/* CONTABILIDAD */
+#seccionuno i{
+  color: orange;
+}
+
+#secciontotal{
+    background-color: #0078E0;
+}
+
+#secciontotal h5,h3{
+    color: orange;
+}
+
+#secciontotal i{
+    color: #FFF;
+}
 
 
 /* PIE DE PAGINA */
@@ -223,3 +222,4 @@ footer {
     color: #FFF;
     margin-top: 20px;
 }
+

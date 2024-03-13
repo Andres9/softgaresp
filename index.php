@@ -55,7 +55,6 @@ $fecha_actual=date("Y-m-d H:i:s");
       </div>
       <nav>
         <ul>
-          <!--  <li class="logo"> <img src="logotipo2.png" alt="logotipo"></li> -->
           <li>
             <a href="index.php" class="active">
               <i class="fa-solid fa-list"></i> Ventas</a
@@ -74,14 +73,21 @@ $fecha_actual=date("Y-m-d H:i:s");
             <i class="fa-solid fa-file-invoice-dollar"></i> Contabilidad</a
             >
           </li>
+          <li>
+            <a href="consultas.php">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a
+            >
+          </li>
         </ul>
       </nav>
     </header>
+
+
     <section>
       <div class="seccion">
         <div>
-          <h3>Venta</h3>
-          <h5 id="total">
+          <span>
+          <h5 class="numerototal">
             <?php
                         $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE fecha_venta >= DATE(NOW()) ";  
                         $resultado = mysqli_query($conn,$ventasTotales);
@@ -91,6 +97,10 @@ $fecha_actual=date("Y-m-d H:i:s");
                       
                     ?>
           </h5>
+          </span>
+          <span>
+          <h3>Venta</h3>
+          </span>
         </div>
       </div> 
 
@@ -136,7 +146,7 @@ $fecha_actual=date("Y-m-d H:i:s");
               <select name="opcionnegocio" class="select">
                 <option value="">Selecciona una opcion</option>
                 <?php
-              $ventasTotales = "SELECT * FROM seccion";  
+              $ventasTotales = "SELECT * FROM seccion ORDER BY descripcionSeccion";  
                   $resultado = mysqli_query($conn,$ventasTotales);
                   while($mostrar = mysqli_fetch_array($resultado)){
                       $id = $mostrar["id_seccion"];
@@ -174,7 +184,9 @@ $fecha_actual=date("Y-m-d H:i:s");
 
         <tbody>
           <?php
-                $consulta = "SELECT * FROM ventas WHERE fecha_venta >= DATE(NOW())";
+                $consulta = "SELECT * FROM ventas 
+                WHERE fecha_venta >= DATE(NOW()) 
+                ";
                 $resultado = mysqli_query($conn,$consulta);
                   while($mostrar = mysqli_fetch_array($resultado)){
                 ?>
@@ -200,11 +212,13 @@ $fecha_actual=date("Y-m-d H:i:s");
         </tbody>
       </table>
     </section>
+    
     <footer>
       <div>
         <img src="logotipo-blanco.png" alt="logo" />
       </div>
       <p>Todos los derechos reservados - garespservicioinformatico</p>
     </footer>
+    
   </body>
 </html>

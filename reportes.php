@@ -67,11 +67,7 @@ $dataNota     = mysqli_fetch_array($queryNotas);
 
         <section id="bodyReport">
 
-            <!--    <p class="titlehead">Fecha de entrada: -->
-
-            <!-- <p><?php /*echo $dataNota['fecha_alta']*/?></p>-->
-            <h5 class="titulo">Datos de contacto</h5>
-
+            <h5 class="titulo">Dato de contacto</h5>
             </p>
             <p class="titlehead">Nombre del cliente:
 
@@ -112,7 +108,7 @@ $dataNota     = mysqli_fetch_array($queryNotas);
                 <div>
                     <h5 class="titulo">Detalles del servicio</h5>
                     <table table border=1>
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th>Descripción</th>
                             </tr>
@@ -181,7 +177,7 @@ $dataNota     = mysqli_fetch_array($queryNotas);
 </html>
 
 <?php
- $html = ob_get_clean(); 
+  $html = ob_get_clean(); 
  
  require_once 'dompdf/autoload.inc.php';
  
@@ -199,5 +195,5 @@ $dataNota     = mysqli_fetch_array($queryNotas);
  $dompdf->render();
 
  $dompdf->stream("archivo_.pdf",array("Attachment" => false)); 
-
+ 
 ?>

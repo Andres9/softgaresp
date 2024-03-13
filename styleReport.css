@@ -1,10 +1,10 @@
-html{
+html {
     margin: 0;
     padding: 0;
 }
 
 /* CONTENEDOR */
-.container{
+.container {
     width: 100%;
     padding: 5px;
     border: 2.5px solid #000;
@@ -12,131 +12,133 @@ html{
 }
 
 /* NOTA DE ENTRADA */
-#title{
+#title {
     font-size: 2em;
     font-weight: bold;
     text-align: center;
     background-color: #014579;
     color: #FFF;
     text-transform: uppercase;
+    padding: 10px 0;
 }
 
 /* LOGO,SERVICIOS Y NOTA */
 
-.headReport{
+.headReport {
     font-size: 10px;
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
     line-height: 0.2em;
-    margin-bottom: 20px
 }
 
-.headReport > div{
+.headReport>div {
     position: relative;
     bottom: -18px;
     display: inline-block;
-    display: relative;
 }
 
-.headReport img{
+.headReport img {
     width: 100px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
-    #idlogo{
-        width: 20%;
-        line-height: 0.5em;
-    }
 
-    #servicios{
-        width: 63%;
-        font-size: 1.5em;
-    }
+#idlogo {
+    width: 20%;
+    line-height: 0.3em;
+}
 
-    #notaid{
-        width: 15%;
-        border: 2px solid #014579;
-    }
+#servicios {
+    width: 63%;
+    font-size: 1.5em;
+}
 
-    .titulo{
-        background-color: #014579;
-        color: #FFF;
-        padding: 12px 0;
-        text-align: center;
-    }
+#notaid {
+    width: 15%;
+}
 
-    #idnota{
-        color: red;
-        font-size: 4em;
-    }    
+.titulo {
+    background-color: #014579;
+    color: #FFF;
+    padding: 12px 0;
+    text-align: center;
+}
+
+#idnota {
+    margin-top: 30px;
+    color: red;
+    font-size: 4em;
+}
 
 
 
 /* CUERPO DE LA NOTA DE ENTRADA */
-#bodyReport{
+#bodyReport {
     font-size: 10px;
 }
 
-#bodyReport > p{
+#bodyReport>p {
     display: inline-block;
-}
-
-.titlehead{
-    width: 23%;
-    font-weight: bold;
-    font-size: 1.5em;
-}
-
-table{
-    width: 90%;
-}
-
-table thead{
-    background-color: #6a6e73;
-    color: orange;
     font-size: 1.6em;
 }
 
-table td{
+.titlehead {
+    width: 23%;
+    font-weight: bold;
+    font-size: 1.8em;
+}
+
+table {
+    width: 100%;
+}
+
+table thead {
+    font-size: 1.6em;
+    background-color: #E9ECEF;
+    text-align: center;
+}
+
+table td {
     font-size: 1.2em;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  text-align: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    text-align: center;
 }
 
-.info{
-
-}
-
-.info > div{
+.info>div {
     display: inline-block;
     width: 49%;
 }
 
 /* PAGOS */
-#cantidades{
-font-size: 1em;
-text-align: right;
-line-height: 0.5em;
-margin-top: 15px;
+#cantidades {
+    font-size: 1em;
+    text-align: right;
+    line-height: 0.5em;
+    margin-top: 15px;
 }
 
-#cantidades p{
+#cantidades p {
     font-weight: bold;
     font-size: 1.5em;
 }
 
-#cantidades span{
+#cantidades span {
     font-weight: normal;
     font-size: 1.5em;
 }
 
 /* PIE DE LA NOTA DE ENTRADA */
 
-#footerReport{
+#footerReport {
     background-color: #014579;
     font-size: 0.8em;
     text-align: center;
     color: #FFF;
     font-weight: bold;
+    padding: 10px 0;
+    text-transform: uppercase;
 }
 
+#footerReport p{
+    margin: 0;
+}

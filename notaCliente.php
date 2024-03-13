@@ -54,22 +54,28 @@ $fecha_actual=date("Y-m-d H:i:s");
       </div>
       <nav>
         <ul>
+          <!--  <li class="logo"> <img src="logotipo2.png" alt="logotipo"></li> -->
           <li>
-            <a href="index.php"> <i class="fa-solid fa-list"></i> Ventas</a>
+            <a href="index.php" >
+              <i class="fa-solid fa-list"></i> Ventas</a
+            >
           </li>
           <li>
             <a href="clientes.php">
-              <i class="fa-solid fa-list"></i> Clientes</a
+            <i class="fa-solid fa-users"></i> Clientes</a
             >
           </li>
           <li>
-            <a href="notaCliente.php" class="active">
-              <i class="fa-solid fa-list"></i> Nota</a
+            <a href="notaCliente.php" class="active"> <i class="fa-solid fa-clipboard-user"></i> Nota</a>
+          </li>
+          <li>
+            <a href="contabilidad.php" >
+            <i class="fa-solid fa-file-invoice-dollar"></i> Contabilidad</a
             >
           </li>
           <li>
-            <a href="contabilidad.php">
-              <i class="fa-solid fa-list"></i> Contabilidad</a
+            <a href="consultas.php">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a
             >
           </li>
         </ul>
@@ -79,8 +85,8 @@ $fecha_actual=date("Y-m-d H:i:s");
     <section>
       <div class="seccion">
         <div>
-          <h3>Nota</h3>
-          <h5 id="total">
+         
+          <h5 class="numerototal">
             <?php
                         $ventasTotales = "SELECT COUNT(id_nota) FROM notas";  
                         $resultado = mysqli_query($conn,$ventasTotales);
@@ -90,39 +96,53 @@ $fecha_actual=date("Y-m-d H:i:s");
                     
                     ?>
           </h5>
+          <span>
+          <h3>Notas</h3>
+          </span>
         </div>
         <div>
-          <h3>Entrada</h3>
-          <i class="fa-solid fa-file-circle-check"></i>
-          <h5>
-            <?php
-                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='1'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ( $mostrar[0] );
-                        }
-                      
-                    ?>
-          </h5>
+          <span>
+
+  
+            <h5 class="numerototal">
+              <?php
+                      $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='1'";  
+                          $resultado = mysqli_query($conn,$ventasTotales);
+                          while($mostrar = mysqli_fetch_array($resultado)){
+                              echo ( $mostrar[0] );
+                          }
+                        
+                      ?>
+            </h5>
+          </span>
+          <span>
+
+            <h3>Entrada</h3>
+          </span>
         </div>
         <div>
-          <h3>Revision</h3>
-          <i class="fa-solid fa-file-circle-check"></i>
-          <h5>
-            <?php
-                    $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='2'";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ( $mostrar[0] );
-                        }
-                      
-                    ?>
-          </h5>
+      
+
+            <h5 class="numerototal">
+              <?php
+                      $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='2'";  
+                          $resultado = mysqli_query($conn,$ventasTotales);
+                          while($mostrar = mysqli_fetch_array($resultado)){
+                              echo ( $mostrar[0] );
+                          }
+                        
+                      ?>
+            </h5>
+         
+          <span>
+
+            <h3>Revision</h3>
+          </span>
         </div>
         <div>
-          <h3>Entregado</h3>
-          <i class="fa-solid fa-file-circle-check"></i>
-          <h5>
+          <span>
+   
+          <h5 class="numerototal">
             <?php
                     $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='3'";  
                         $resultado = mysqli_query($conn,$ventasTotales);
@@ -132,11 +152,17 @@ $fecha_actual=date("Y-m-d H:i:s");
                       
                     ?>
           </h5>
+          </span>
+          <span>
+
+            <h3>Entregado</h3>
+          </span>
+     
+       
         </div>
         <div>
-          <h3>Ssolucion</h3>
-          <i class="fa-solid fa-file-circle-check"></i>
-          <h5>
+        
+          <h5 class="numerototal">
             <?php
                     $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='4'";  
                         $resultado = mysqli_query($conn,$ventasTotales);
@@ -146,6 +172,11 @@ $fecha_actual=date("Y-m-d H:i:s");
                       
                     ?>
           </h5>
+          
+          <span>
+            <h3>Ssolucion</h3>
+          </span>
+        
         </div>
       </div>
 
@@ -262,6 +293,7 @@ $fecha_actual=date("Y-m-d H:i:s");
               $ventasTotales = "SELECT * FROM estadoservicio";  
                   $resultado = mysqli_query($conn,$ventasTotales);
                   while($mostrar = mysqli_fetch_array($resultado)){
+                      $id=$mostrar['id_estado'];
                       $descripcion = $mostrar["estadoServicio"];
             ?>
             <option value="<?php echo $id; ?>">

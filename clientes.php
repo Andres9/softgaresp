@@ -38,33 +38,59 @@ $fecha_actual=date("Y-m-d H:i:s");
 </head>
 
 <body>
-    <header>
-        <div>
-            <img src="logotipo2.png" alt="logotipo">
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.php"> <i class="fa-solid fa-list"></i> Ventas</a></li>
-                <li><a href="clientes.php" class="active"> <i class="fa-solid fa-list"></i> Clientes</a></li>
-                <li><a href="notaCliente.php"> <i class="fa-solid fa-list"></i> Nota</a></li>
-                <li><a href="contabilidad.php"> <i class="fa-solid fa-list"></i> Contabilidad</a></li>
-            </ul>
-        </nav>
+<header>
+      <div>
+        <img src="logotipo2.png" alt="logotipo" />
+      </div>
+      <nav>
+        <ul>
+          <li>
+            <a href="index.php" >
+              <i class="fa-solid fa-list"></i> Ventas</a
+            >
+          </li>
+          <li>
+            <a href="clientes.php" class="active">
+            <i class="fa-solid fa-users"></i> Clientes</a
+            >
+          </li>
+          <li>
+            <a href="notaCliente.php"> <i class="fa-solid fa-clipboard-user"></i> Nota</a>
+          </li>
+          <li>
+            <a href="contabilidad.php">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Contabilidad</a
+            >
+          </li>
+          <li>
+            <a href="consultas.php">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a
+            >
+          </li>
+        </ul>
+      </nav>
     </header>
+
     <section>
         <div class="seccion">
             <div>
-                <h3>Total Clientes</h3>
-                <h5 id="total">
-                    <?php
-                        $ventasTotales = "SELECT COUNT(id_cliente) FROM clientes";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ($mostrar[0]);
-                        }
-                      
-                    ?>
-                </h5>
+                <span>
+
+                    <h5 class="numerototal">
+                        <?php
+                            $ventasTotales = "SELECT COUNT(id_cliente) FROM clientes";  
+                            $resultado = mysqli_query($conn,$ventasTotales);
+                            while($mostrar = mysqli_fetch_array($resultado)){
+                                echo ($mostrar[0]);
+                            }
+                          
+                        ?>
+                    </h5>
+                    </span>
+                    <span>
+
+                        <h3>Clientes</h3>
+                    </span>
             </div>
         </div>
         
