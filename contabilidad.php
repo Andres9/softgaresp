@@ -33,7 +33,7 @@ include ('conexion.php');
 <body>
   <header>
     <div>
-      <img src="logotipo2.png" alt="logotipo" />
+      <img src="img/logotipo2.png" alt="logotipo" />
     </div>
     <nav>
       <ul>
