@@ -31,11 +31,10 @@ $fecha_actual = date("Y-m-d H:i:s");
   <link rel="stylesheet" href="fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.min.css" />
 </head>
 
-
 <body>
   <header>
     <div>
-      <img src="logotipo2.png" alt="logotipo" />
+      <img src="img/logotipo2.png" alt="logotipo" />
     </div>
     <nav>
       <ul>

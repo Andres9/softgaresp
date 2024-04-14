@@ -40,7 +40,7 @@ include "conexion.php";
      WHERE id_nota='".$id."' ");  
     mysqli_query($conn,$_GUARDAR_SQL);
 
-    header("Location: notaCliente.php");
+    header("Location: consultas.php");
 
  
 ?>

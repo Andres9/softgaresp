@@ -106,6 +106,10 @@ table td {
     text-align: center;
 }
 
+.info{
+    height: 75px;
+}
+
 .info>div {
     display: inline-block;
     width: 49%;
@@ -113,15 +117,16 @@ table td {
 
 /* PAGOS */
 #cantidades {
+    height: 45px;
     font-size: 1em;
     text-align: right;
-    line-height: 0.5em;
+    line-height: 0.8em;
     margin-top: 15px;
 }
 
 #cantidades p {
     font-weight: bold;
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
 #cantidades span {

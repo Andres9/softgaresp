@@ -25,8 +25,9 @@ $dataNota = mysqli_fetch_array($queryNotas);
     <link rel="icon" href="img/logotipo.png" />
     <!-- ARCHIVOS PERSONALIZADOS -->
     <link rel="stylesheet" href="http://<?php echo $_SERVER['HTTP_HOST']; ?>/softgaresp/css/styleReport.css" />
-      <!-- FUENTES -->
-  <link rel="stylesheet" href="http://<?php echo $_SERVER['HTTP_HOST']; ?>/softgaresp/fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.min.css" />
+    <!-- FUENTES -->
+    <link rel="stylesheet"
+        href="http://<?php echo $_SERVER['HTTP_HOST']; ?>/softgaresp/fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.min.css" />
 </head>
 
 <body>
@@ -93,7 +94,6 @@ $dataNota = mysqli_fetch_array($queryNotas);
                 </div>
 
 
-
                 <div>
                     <h5 class="titulo">Detalles del servicio</h5>
                     <table table border=1>
@@ -121,7 +121,10 @@ $dataNota = mysqli_fetch_array($queryNotas);
 
 
 
+
+
                 <?php
+
                 if ($dataNota['anticipo'] != 0) {
                     $total = $dataNota['costoServicio'];
                     $anticipo = $dataNota['anticipo'];
@@ -156,10 +159,11 @@ $dataNota = mysqli_fetch_array($queryNotas);
 
 </html>
 
-<?php   
- $html = ob_get_clean();
+<?php
+$html = ob_get_clean();
 require_once 'dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
+
 $dompdf = new Dompdf();
 $options = $dompdf->getOptions();
 $options->set(array('isRemoteEnabled' => true));
@@ -167,6 +171,6 @@ $dompdf->setOptions($options);
 $dompdf->loadHtml($html);
 $dompdf->set_paper(array(0, 0, 609.4488, 396.85), 'mediacarta');
 $dompdf->render();
-$dompdf->stream("nota_.pdf", array("Attachment" => false));  
+$dompdf->stream("nota_.pdf", array("Attachment" => false));
 
 ?>

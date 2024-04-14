@@ -1,5 +1,5 @@
-<?php 
-include('conexion.php');
+<?php
+include ('conexion.php');
 ?>
 
 <!DOCTYPE html>
@@ -31,200 +31,196 @@ include('conexion.php');
 </head>
 
 <body>
-<header>
-      <div>
-        <img src="logotipo2.png" alt="logotipo" />
-      </div>
-      <nav>
-        <ul>
-          <li>
-            <a href="index.php" >
-              <i class="fa-solid fa-list"></i> Ventas</a
-            >
-          </li>
-          <li>
-            <a href="clientes.php">
-            <i class="fa-solid fa-users"></i> Clientes</a
-            >
-          </li>
-          <li>
-            <a href="notaCliente.php"> <i class="fa-solid fa-clipboard-user"></i> Nota</a>
-          </li>
-          <li>
-            <a href="contabilidad.php" class="active">
-            <i class="fa-solid fa-file-invoice-dollar"></i> Contabilidad</a
-            >
-          </li>
-          <li>
-            <a href="consultas.php">
-            <i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a
-            >
-          </li>
-        </ul>
-      </nav>
-    </header>
+  <header>
+    <div>
+      <img src="logotipo2.png" alt="logotipo" />
+    </div>
+    <nav>
+      <ul>
+        <li>
+          <a href="index.php">
+            <i class="fa-solid fa-list"></i> Ventas</a>
+        </li>
+        <li>
+          <a href="clientes.php">
+            <i class="fa-solid fa-users"></i> Clientes</a>
+        </li>
+        <li>
+          <a href="notaCliente.php"> <i class="fa-solid fa-clipboard-user"></i> Nota</a>
+        </li>
+        <li>
+          <a href="contabilidad.php" class="active">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Contabilidad</a>
+        </li>
+        <li>
+          <a href="consultas.php">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-    <section>
-      
+  <section>
+
     <h2>ventas prestamo</h2>
-        <section class="seccion" id="seccionuno">
-        <div>
-          <i class="fa-solid fa-user"></i>
-          <h5>
-            <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=2";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-          </h5>
-          <h3>Patricia</h3>
-        </div>
+    <section class="seccion" id="seccionuno">
+      <div>
+        <i class="fa-solid fa-user"></i>
+        <h5>
+          <?php
+          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=2";
+          $resultado = mysqli_query($conn, $ventasTotales);
+          while ($mostrar = mysqli_fetch_array($resultado)) {
+            echo ("$" . $mostrar[0] . "");
+          }
 
-        <div>
-          <i class="fa-regular fa-user"></i>
-          <h5>
-            <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=3";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-          </h5>
-          <h3>Guadencio</h3>
-        </div>
-        </section>
+          ?>
+        </h5>
+        <h3>Patricia</h3>
+      </div>
 
-    
-    
-    
+      <div>
+        <i class="fa-regular fa-user"></i>
+        <h5>
+          <?php
+          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=3";
+          $resultado = mysqli_query($conn, $ventasTotales);
+          while ($mostrar = mysqli_fetch_array($resultado)) {
+            echo ("$" . $mostrar[0] . "");
+          }
+
+          ?>
+        </h5>
+        <h3>Guadencio</h3>
+      </div>
+    </section>
+
+
+
+
 
     <h2>venta negocio</h2>
-        <section class="seccion">
-          <div>
-          <span>
+    <section class="seccion">
+      <div>
+        <span>
+          <i class="fa-solid fa-file-circle-check"></i>
+          <h5>
+            <?php
+            $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=5";
+            $resultado = mysqli_query($conn, $ventasTotales);
+            while ($mostrar = mysqli_fetch_array($resultado)) {
+              echo ("$" . $mostrar[0] . "");
+            }
+
+            ?>
+          </h5>
+
+        </span>
+        <span>
+          <h3>Papeleria</h3>
+        </span>
+      </div>
+
+
+
+      <div>
         <i class="fa-solid fa-file-circle-check"></i>
         <h5>
           <?php
-                  $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=5";  
-                      $resultado = mysqli_query($conn,$ventasTotales);
-                      while($mostrar = mysqli_fetch_array($resultado)){
-                          echo ("$" . $mostrar[0] . "");
-                      }
-                    
-                  ?>
+          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=6";
+          $resultado = mysqli_query($conn, $ventasTotales);
+          while ($mostrar = mysqli_fetch_array($resultado)) {
+            echo ("$" . $mostrar[0] . "");
+          }
+          ?>
         </h5>
-        
-                    </span>
-      <span>
-        <h3>Papeleria</h3>
-                    </span>
-          </div>
-  
+        <span>
+          <h3>Hojas</h3>
+        </span>
 
 
-          <div>
-        <i class="fa-solid fa-file-circle-check"></i>
+
+      </div>
+
+
+      <div>
+        <i class="fa-solid fa-mobile-screen-button"></i>
         <h5>
           <?php
-                  $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=6";  
-                      $resultado = mysqli_query($conn,$ventasTotales);
-                      while($mostrar = mysqli_fetch_array($resultado)){
-                          echo ("$" . $mostrar[0] . "");
-                      }
-                  ?>
-        </h5>    
-      <span>
-        <h3>Hojas</h3>
-                    </span>
+          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=4";
+          $resultado = mysqli_query($conn, $ventasTotales);
+          while ($mostrar = mysqli_fetch_array($resultado)) {
+            echo ("$" . $mostrar[0] . "");
+          }
 
+          ?>
+        </h5>
+        <h3>Celular</h3>
+      </div>
 
-          
-        </div>
-
-
-        <div>
-          <i class="fa-solid fa-mobile-screen-button"></i>
-          <h5>
-            <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=4";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-          </h5>
-          <h3>Celular</h3>
-        </div>
-
-        <div>
-          <i class="fa-solid fa-cash-register"></i>
-          <h5>
-            <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=1";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-          </h5>
-          <h3>Negocio</h3>
-        </div>
-
-      
-        <div id="secciontotal">
-          <i class="fa-solid fa-cash-register"></i>
-          <h5>
-            <?php
-                    $ventasTotales = "SELECT SUM(costo) FROM ventas";  
-                        $resultado = mysqli_query($conn,$ventasTotales);
-                        while($mostrar = mysqli_fetch_array($resultado)){
-                            echo ("$" . $mostrar[0] . "");
-                        }
-                      
-                    ?>
-          </h5>
-          <h3>Total</h3>
-        </div>
-
-
-        </section>
-
-
-
-
-
-          <h2>notas</h2>
-
-        <section class="seccion">
-          <div>
-      
-      <i class="fa-solid fa-laptop"></i>
+      <div>
+        <i class="fa-solid fa-cash-register"></i>
         <h5>
           <?php
-                  $ventasTotales = "SELECT SUM(ganancia) FROM notas";  
-                      $resultado = mysqli_query($conn,$ventasTotales);
-                      while($mostrar = mysqli_fetch_array($resultado)){
-                        echo ("$" . $mostrar[0] . "");
-                      }
-                    
-                  ?>
+          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=1";
+          $resultado = mysqli_query($conn, $ventasTotales);
+          while ($mostrar = mysqli_fetch_array($resultado)) {
+            echo ("$" . $mostrar[0] . "");
+          }
+
+          ?>
+        </h5>
+        <h3>Negocio</h3>
+      </div>
+
+
+      <div id="secciontotal">
+        <i class="fa-solid fa-cash-register"></i>
+        <h5>
+          <?php
+          $ventasTotales = "SELECT SUM(costo) FROM ventas";
+          $resultado = mysqli_query($conn, $ventasTotales);
+          while ($mostrar = mysqli_fetch_array($resultado)) {
+            echo ("$" . $mostrar[0] . "");
+          }
+
+          ?>
+        </h5>
+        <h3>Total</h3>
+      </div>
+
+
+    </section>
+
+
+
+
+
+    <h2>notas</h2>
+
+    <section class="seccion">
+      <div>
+
+        <i class="fa-solid fa-laptop"></i>
+        <h5>
+          <?php
+          $ventasTotales = "SELECT SUM(ganancia) FROM notas";
+          $resultado = mysqli_query($conn, $ventasTotales);
+          while ($mostrar = mysqli_fetch_array($resultado)) {
+            echo ("$" . $mostrar[0] . "");
+          }
+
+          ?>
         </h5>
         <h3>Servicio</h3>
       </div>
-     
-        </section>
-                    </section>
 
-                    
+    </section>
+  </section>
 
-                    <footer>
+
+
+  <footer>
     <div>
       <img src="img/logotipo-blanco.png" alt="logo" />
     </div>
