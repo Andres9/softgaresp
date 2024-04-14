@@ -3,9 +3,12 @@
     padding: 0;
     border: 0;
     font-size: 18px;
+    font-family:  Verdana, Geneva, Tahoma, sans-serif;
 }
 
 /* Encabezado */
+
+
 header div {
     display: flex;
     justify-content: center;
@@ -17,6 +20,7 @@ div img {
 }
 
 nav {
+ 
     margin: 0px 0 20px 0;
 }
 
@@ -71,7 +75,6 @@ a:active {
     margin: 0 auto;
 }
 
-
 .seccion div {
     box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
     width: 250px;
@@ -100,7 +103,6 @@ a:active {
     margin: 10px 0 0 0;
 }
 
-
 .seccion h3 {
     display: flex;
     justify-content: center;
@@ -110,7 +112,6 @@ a:active {
     padding: 10px 0;
     text-transform: uppercase;
 }
-
 
 .seccion .numerototal{
     font-size: 3em;
@@ -130,6 +131,17 @@ legend{
     padding: 10px;
     text-align: center;
     box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 30px;
+    display: visible;
+    background-color: #F7F7F7;
+}
+
+#registro2 {
+    padding: 10px;
+    text-align: center;
+    box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
     width: 50%;
     margin: 0 auto;
     margin-bottom: 30px;
@@ -137,39 +149,40 @@ legend{
     background-color: #F7F7F7;
 }
 
+
 #registro h3 {
     padding: 15px;
 }
 
-#registro input,
-#registro button,
-#registro select,
-#registro textarea {
+#registro input, #registro2 input,
+#registro button,#registro2 button,
+#registro select,#registro2 select,
+#registro textarea,#registro2 textarea {
     border: 1px solid #174f72;
     width: 100%;
     height: 50%;
 }
 
-#registro form label,
-#registro input,
-#registro button,
-#registro select,
-#registro datetime {
+#registro form label,#registro2 form label,
+#registro input, #registro2 input,
+#registro button, #registro2 button,
+#registro select, #registro2 select,
+#registro datetime, #registro2 datetime {
     display: block;
     text-align: start;
     width: 100%;
 }
 
-#registro input,
-#registro label {
+#registro input, #registro2 input,
+#registro label, #registro2 label {
     margin: 0 auto;
 }
 
-#registro form select {
+#registro form select, #registro2 form select {
     margin: 0 auto;
 }
 
-#registro form button {
+#registro form button, #registro2 form button {
     display: inline;
     text-align: center;
     margin: 15px 0 15px 0;
