@@ -72,7 +72,6 @@ $fecha_actual = date("Y-m-d H:i:s");
             while ($mostrar = mysqli_fetch_array($resultado)) {
               echo ($mostrar[0]);
             }
-
             ?>
           </h5>
         </span>

@@ -236,3 +236,10 @@ footer {
     margin-top: 20px;
 }
 
+.fa-trash{
+    color: red;
+}
+
+.fa-file-pdf{
+    color: #B30B00;
+}

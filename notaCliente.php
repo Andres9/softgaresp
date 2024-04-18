@@ -232,9 +232,6 @@ $fecha_actual = date("Y-m-d H:i:s");
               <input type="text" name="modelo" class="form-control" />
             </div>
           </div>
-
-
-
         </fieldset>
 
         <fieldset>
