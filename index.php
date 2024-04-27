@@ -70,7 +70,7 @@ $fecha_actual = date("Y-m-d H:i:s");
             $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE fecha_venta >= DATE(NOW()) ";
             $resultado = mysqli_query($conn, $ventasTotales);
             while ($mostrar = mysqli_fetch_array($resultado)) {
-              echo ($mostrar[0]);
+              echo ("$".$mostrar[0]);
             }
             ?>
           </h5>

@@ -2,7 +2,7 @@
 
 $(document).ready(function () {
 
-    $('#tablaclientes,#tablaventas,#myTable,#myTable2').DataTable({
+    $('#tablaclientes,#tablaventas,#myTable,#myTable2,#tablacontabilidad').DataTable({
         language:{
             "processing": "Procesando...",
             "lengthMenu": "Mostrar _MENU_ registros",
