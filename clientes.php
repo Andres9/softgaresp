@@ -143,10 +143,10 @@ $fecha_actual = date("Y-m-d H:i:s");
               <th>ID</th>
               <th>Nombre</th>
               <th>Apellidos</th>
+              <th>Servicios</th>
               <th>Descripcion</th>
               <th>Calle</th>
               <th>Domicilio</th>
-              <th>Servicios</th>
               <th>Telefono</th>
               <th>Editar</th>
               <th>Eliminar</th>
@@ -164,10 +164,10 @@ $fecha_actual = date("Y-m-d H:i:s");
                 <td><?php echo $mostrar['id_cliente'] ?></td>
                 <td><?php echo $mostrar['nombre'] ?></td>
                 <td><?php echo $mostrar['apellidos'] ?></td>
+                <td><?php echo $mostrar['numServicio'] ?></td>
                 <td><?php echo $mostrar['descripcionProfesion'] ?></td>
                 <td><?php echo $mostrar['calle'] ?></td>
                 <td><?php echo $mostrar['domicilio'] ?></td>
-                <td><?php echo $mostrar['numServicio'] ?></td>
                 <td><?php echo $mostrar['telefono'] ?></td>
 
                 <td>
