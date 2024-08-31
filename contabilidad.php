@@ -1,5 +1,5 @@
 <?php
-include ('conexion.php');
+include('conexion.php');
 ?>
 
 <!DOCTYPE html>
@@ -12,12 +12,12 @@ include ('conexion.php');
   <link rel="icon" href="img/logotipo.png" />
   <!-- ARCHIVOS PERSONALIZADOS -->
   <link rel="stylesheet" href="css/style.css" />
- <!-- BOOTSTRAP -->
- <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <!-- BOOTSTRAP -->
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
 
-<!-- DATATABLES -->
-<link rel="stylesheet" href="css/datatables.min.css" />
-<link rel="stylesheet" href="css/responsive.dataTables.min.css" />
+  <!-- DATATABLES -->
+  <link rel="stylesheet" href="css/datatables.min.css" />
+  <link rel="stylesheet" href="css/responsive.dataTables.min.css" />
 
 
   <!-- SELECT2 -->
@@ -62,132 +62,157 @@ include ('conexion.php');
 
     <h2>ventas prestamo</h2>
     <section class="seccion" id="seccionuno">
-      <div>
-        <i class="fa-solid fa-user"></i>
-        <h5>
-          <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=2";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            echo ("$" . $mostrar[0] . "");
-          }
 
-          ?>
-        </h5>
-        <h3>Patricia</h3>
-      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Icon</th>
+            <th>Categoria</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th> <i class="fa-solid fa-users"></i></th>
+            <th>Patricia</th>
+            <th class="cantidad">
+              <?php
+              $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=2";
+              $resultado = mysqli_query($conn, $ventasTotales);
+              while ($mostrar = mysqli_fetch_array($resultado)) {
+                $vt  = number_format($mostrar[0],2, '.', ',');
+                echo ("$" . $vt.PHP_EOL . "");
+              }
 
-      <div>
-        <i class="fa-regular fa-user"></i>
-        <h5>
-          <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=3";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            echo ("$" . $mostrar[0] . "");
-          }
+              ?>
+            </th>
+          </tr>
+          <tr>
+            <th> <i class="fa-solid fa-users"></i></i></th>
+            <th>Gaudencio</th>
+            <th class="cantidad">
+              <?php
+              $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=3";
+              $resultado = mysqli_query($conn, $ventasTotales);
+              while ($mostrar = mysqli_fetch_array($resultado)) {
+                $vt  = number_format($mostrar[0],2, '.', ',');
+                echo ("$" . $vt.PHP_EOL . "");
+              }
 
-          ?>
-        </h5>
-        <h3>Guadencio</h3>
-      </div>
+              ?>
+            </th>
+          </tr>
+        </tbody>
+      </table>
     </section>
-
-
-
-
 
     <h2>venta negocio</h2>
     <section class="seccion">
-      <div>
-        <span>
-          <i class="fa-solid fa-file-circle-check"></i>
-          <h5>
-            <?php
-            $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=5";
-            $resultado = mysqli_query($conn, $ventasTotales);
-            while ($mostrar = mysqli_fetch_array($resultado)) {
-              echo ("$" . $mostrar[0] . "");
-            }
-
-            ?>
-          </h5>
-
-        </span>
-        <span>
-          <h3>Papeleria</h3>
-        </span>
-      </div>
 
 
+      <table class="table">
 
-      <div>
-        <i class="fa-solid fa-file-circle-check"></i>
-        <h5>
-          <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=6";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            echo ("$" . $mostrar[0] . "");
-          }
-          ?>
-        </h5>
-        <span>
-          <h3>Hojas</h3>
-        </span>
+        <thead class="thead-light">
+          <tr>
+            <th>Icon</th>
+            <th>Categoria</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <th> <i class="fa-solid fa-folder"></i></th>
+            <th>
+              Papeleria
+            </th>
+            <th class="cantidad">
+              <?php
+              $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=5";
+              $resultado = mysqli_query($conn, $ventasTotales);
+              while ($mostrar = mysqli_fetch_array($resultado)) {
+                $vt  = number_format($mostrar[0],2, '.', ',');
+                echo ("$" . $vt.PHP_EOL . "");
+              }
+
+              ?>
+            </th>
+          </tr>
+          <tr>
+            <th> <i class="fa-solid fa-sheet-plastic"></i></th>
+            <th>
+              Hojas
+            </th>
+            <th class="cantidad">
+              <?php
+              $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=6";
+              $resultado = mysqli_query($conn, $ventasTotales);
+              while ($mostrar = mysqli_fetch_array($resultado)) {
+                $vt  = number_format($mostrar[0],2, '.', ',');
+                echo ("$" . $vt.PHP_EOL . "");
+              }
+              ?>
+            </th>
+          </tr>
+          <tr>
+            <th> <i class="fa-solid fa-mobile-screen-button"></i></th>
+            <th>
+              Celular
+            </th>
+            <th class="cantidad">
+              <?php
+              $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=4";
+              $resultado = mysqli_query($conn, $ventasTotales);
+              while ($mostrar = mysqli_fetch_array($resultado)) {
+                $vt  = number_format($mostrar[0],2, '.', ',');
+                echo ("$" . $vt.PHP_EOL . "");
+              }
+
+              ?>
+            </th>
+          </tr>
+          <tr>
+            <th> <i class="fa-solid fa-laptop"></i></th>
+            <th>
+              Negocio
+            </th>
+            <th class="cantidad">
+              <?php
+              $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=1";
+              $resultado = mysqli_query($conn, $ventasTotales);
+              while ($mostrar = mysqli_fetch_array($resultado)) {
+                $vt  = number_format($mostrar[0],2, '.', ',');
+                echo ("$" . $vt.PHP_EOL . "");
+              }
+
+              ?>
+            </th>
+          </tr>
+          <tr>
+            <th> <i class="fa-solid fa-cash-register"></i></th>
+            <th>
+              Total
+            </th>
+            <th class="cantidad total">
+              <?php
+
+              $ventasTotales = "SELECT SUM(costo) FROM ventas";
+
+              $resultado = mysqli_query($conn, $ventasTotales);
+              
+              while ($mostrar = mysqli_fetch_array($resultado)) {
+                $vt  = number_format($mostrar[0],2, '.', ',');
+                echo ("$" . $vt.PHP_EOL . "");
+              }
+
+              ?>
+            </th>
+          </tr>
+        </tbody>
 
 
-
-      </div>
-
-
-      <div>
-        <i class="fa-solid fa-mobile-screen-button"></i>
-        <h5>
-          <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=4";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            echo ("$" . $mostrar[0] . "");
-          }
-
-          ?>
-        </h5>
-        <h3>Celular</h3>
-      </div>
-
-      <div>
-        <i class="fa-solid fa-cash-register"></i>
-        <h5>
-          <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=1";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            echo ("$" . $mostrar[0] . "");
-          }
-
-          ?>
-        </h5>
-        <h3>Negocio</h3>
-      </div>
-
-
-      <div id="secciontotal">
-        <i class="fa-solid fa-cash-register"></i>
-        <h5>
-          <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            echo ("$" . $mostrar[0] . "");
-          }
-
-          ?>
-        </h5>
-        <h3>Total</h3>
-      </div>
-
-
+      </table>
     </section>
 
 
@@ -205,7 +230,8 @@ include ('conexion.php');
           $ventasTotales = "SELECT SUM(ganancia) FROM notas";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
-            echo ("$" . $mostrar[0] . "");
+            $vt  = number_format($mostrar[0],2, '.', ',');
+            echo ("$" . $vt.PHP_EOL . "");
           }
 
           ?>
@@ -215,7 +241,7 @@ include ('conexion.php');
 
     </section>
 
-  
+
   </section>
 
 
@@ -234,7 +260,7 @@ include ('conexion.php');
 
 <script src="js/bootstrap.min.js"></script>
 
-<script src="js/datatables.min.js"></script> 
+<script src="js/datatables.min.js"></script>
 <script src="js/dataTables.responsive.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

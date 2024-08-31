@@ -3,7 +3,7 @@
     padding: 0;
     box-sizing: border-box;
     font-size: 18px;
-    font-family:  Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 /* Encabezado */
@@ -28,7 +28,7 @@ nav {
 }
 
 
- nav ul {
+nav ul {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -38,11 +38,11 @@ nav {
     height: 60px;
 }
 
-nav li{
+nav li {
     list-style: none;
 }
 
-nav a{
+nav a {
     text-decoration: none;
     color: #FFF;
     background-color: #014579;
@@ -62,8 +62,8 @@ nav a:hover {
     color: #FFF;
     font-weight: 200;
 }
- 
- /* NOTIFICACIONES */
+
+/* NOTIFICACIONES */
 .seccion {
     display: flex;
     flex-direction: row;
@@ -113,14 +113,14 @@ nav a:hover {
     text-transform: uppercase;
 }
 
-.seccion .numerototal{
+.seccion .numerototal {
     font-size: 3em;
     color: #24355B;
     margin-top: 0;
 }
 
 /* FORMULARIO */
-legend{
+legend {
     background-color: #014579;
     color: #FFF;
     margin-top: 10px;
@@ -154,35 +154,48 @@ legend{
     padding: 15px;
 }
 
-#registro input, #registro2 input,
-#registro button,#registro2 button,
-#registro select,#registro2 select,
-#registro textarea,#registro2 textarea {
+#registro input,
+#registro2 input,
+#registro button,
+#registro2 button,
+#registro select,
+#registro2 select,
+#registro textarea,
+#registro2 textarea {
     border: 1px solid #174f72;
     width: 100%;
     height: 50%;
 }
 
-#registro form label,#registro2 form label,
-#registro input, #registro2 input,
-#registro button, #registro2 button,
-#registro select, #registro2 select,
-#registro datetime, #registro2 datetime {
+#registro form label,
+#registro2 form label,
+#registro input,
+#registro2 input,
+#registro button,
+#registro2 button,
+#registro select,
+#registro2 select,
+#registro datetime,
+#registro2 datetime {
     display: block;
     text-align: start;
     width: 100%;
 }
 
-#registro input, #registro2 input,
-#registro label, #registro2 label {
+#registro input,
+#registro2 input,
+#registro label,
+#registro2 label {
     margin: 0 auto;
 }
 
-#registro form select, #registro2 form select {
+#registro form select,
+#registro2 form select {
     margin: 0 auto;
 }
 
-#registro form button, #registro2 form button {
+#registro form button,
+#registro2 form button {
     display: inline;
     text-align: center;
     margin: 15px 0 15px 0;
@@ -206,22 +219,31 @@ section h2 {
     font-weight: bold;
     font-size: 2rem;
 }
+
 /* CONTABILIDAD */
-#seccionuno i{
-  color: orange;
+
+table .fa-solid{
+    font-size: 2em;
 }
 
-#secciontotal{
-    background-color: #0078E0;
+table thead {
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
 }
 
-#secciontotal h5,h3{
-    color: orange;
+table th {
+    font-size: 1.2em;
+    text-align: center;
 }
 
-#secciontotal i{
-    color: #FFF;
+.cantidad{
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #24355B;
+    border-bottom: 1px solid #24355B;
 }
+
 
 
 /* PIE DE PAGINA */
@@ -236,10 +258,10 @@ footer {
     margin-top: 20px;
 }
 
-.fa-trash{
+.fa-trash {
     color: red;
 }
 
-.fa-file-pdf{
+.fa-file-pdf {
     color: #B30B00;
 }
