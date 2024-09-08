@@ -251,7 +251,8 @@ $fecha_actual = date("Y-m-d H:i:s");
                             JOIN equipo e ON n.equipo =  e.id_equipo 
                             JOIN servicio s ON n.servicio =  s.id_servicio
                             JOIN estadoservicio es ON n.estado =  es.id_estado 
-                            WHERE YEAR(fecha_alta) = 2024";
+                          ";
+                         /*  WHERE YEAR(fecha_alta) = 2024 */
         /* WHERE fecha_alta >= DATE(NOW()) */
         $resultado = mysqli_query($conn, $consulta);
         while ($mostrar = mysqli_fetch_array($resultado)) {
