@@ -106,6 +106,21 @@ include('conexion.php');
               ?>
             </th>
           </tr>
+          <tr>
+            <th> <i class="fa-solid fa-users"></i></i></th>
+            <th>Total</th>
+            <th class="cantidad_total">
+              <?php
+              $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=2 OR seccion=3";
+              $resultado = mysqli_query($conn, $ventasTotales);
+              while ($mostrar = mysqli_fetch_array($resultado)) {
+                $vt  = number_format($mostrar[0],2, '.', ',');
+                echo ("$" . $vt.PHP_EOL . "");
+              }
+
+              ?>
+            </th>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -198,10 +213,10 @@ include('conexion.php');
             <th>
               Total
             </th>
-            <th class="cantidad total">
+            <th class="cantidad_total">
               <?php
 
-              $ventasTotales = "SELECT SUM(costo) FROM ventas";
+              $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=1 or seccion=4 or seccion=5 or seccion = 6";
 
               $resultado = mysqli_query($conn, $ventasTotales);
               
