@@ -58,6 +58,10 @@ $fecha_actual = date("Y-m-d H:i:s");
           <a href="consultas.php" class="active">
             <i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
         </li>
+        <li>
+          <a href="configuracion.php">
+            <i class="fa-solid fa-file-invoice-dollar icon"></i> Configuración</a>
+        </li>
       </ul>
     </nav>
   </header>
@@ -175,6 +179,7 @@ $fecha_actual = date("Y-m-d H:i:s");
 
 
     <!-- DETALLES -->
+    <h2>Consultas Personalizadas</h2>
     <div class="seccion">
       <div>
         <h5 class="numerototal">
@@ -197,7 +202,8 @@ $fecha_actual = date("Y-m-d H:i:s");
           $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2024";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
-            echo ("$" . $mostrar[0] . "");
+            $vt  = number_format($mostrar[0],2, '.', ',');
+            echo ("$" . $vt.PHP_EOL . "");
           }
 
           ?>
@@ -218,8 +224,38 @@ $fecha_actual = date("Y-m-d H:i:s");
         </span>
       </div>
     </div>
+    <h2>Consultas Personalizadas</h2>
 
-    <h2>Notas</h2>
+    <form action="">
+      <label for="">Mostrar</label>
+      <select name="" id="">
+        <option value="1">Notas</option>
+        <option value="2">Ventas</option>
+      </select>
+      <label for="">Mostrar detalles de</label>
+      <select name="" id="">
+        <option value="1">Hoy</option>
+        <option value="2">Ayer</option>
+        <option value="3">Esta semana</option>
+        <option value="4">La semana pasada</option>
+        <option value="5">Del mes</option>
+        <option value="6">De un periodo</option>
+      </select>
+      <label for="">Fecha inicio</label>
+      <input type="date">
+
+      <label for="">Fecha fin</label>
+      <input type="date">
+
+      <button>Buscar</button>
+    </form>
+
+    
+
+
+    
+
+    <h2>Consultas</h2>
     <table id="myTable2" class="display responsive nowrap" style="width: 100%">
       <thead>
         <tr>
@@ -290,6 +326,7 @@ $fecha_actual = date("Y-m-d H:i:s");
       </tbody>
     </table>
   </section>
+
 
   <footer>
     <div>

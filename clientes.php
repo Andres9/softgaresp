@@ -59,6 +59,10 @@ $fecha_actual = date("Y-m-d H:i:s");
           <a href="consultas.php">
             <i class="fa-solid fa-file-invoice-dollar"></i> Reportes</a>
         </li>
+        <li>
+          <a href="configuracion.php">
+            <i class="fa-solid fa-file-invoice-dollar icon"></i> Configuración</a>
+        </li>
       </ul>
     </nav>
   </header>
