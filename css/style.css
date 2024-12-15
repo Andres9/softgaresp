@@ -244,8 +244,6 @@ table th {
     border-bottom: 1px solid #24355B;
 }
 
-
-
 /* PIE DE PAGINA */
 footer {
     display: flex;
@@ -268,7 +266,13 @@ footer {
 
 .cantidad_total {
     border-bottom: 2px solid #000;
-    color:  #ff9d00;
+    color: #ff9d00;
     font-size: 2em;
     text-shadow: 2px 2px 3px black;
+}
+
+#resultado_busqueda{
+    padding: 15px;
+    height: 150px;
+    margin-top: 10px;
 }
