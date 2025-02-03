@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-include ('conexion.php');
+include('conexion.php');
 
 if (isset($_GET['idNota']))
     $idNota = $_GET['idNota'];
@@ -43,7 +43,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
                 </p>
             </div>
             <div id="servicios">
-                <p>Servicio Técnico de computadoras e impresoras</p>
+                <p>Servicio Técnico computadoras e impresoras</p>
                 <p>Cotización de equipos de cómputo</p>
                 <p>Desarrollo de paginas web</p>
             </div>
@@ -57,7 +57,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
 
         <section id="bodyReport">
 
-            <h5 class="titulo">Dato de contacto</h5>
+            <h5 class="titulo">Datos del cliente</h5>
             </p>
             <p class="titlehead">Nombre del cliente:
 
@@ -69,7 +69,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
 
             <div class="info">
                 <div>
-                    <h5 class="titulo">Detalles del equipo</h5>
+                    <h5 class="titulo">Información del equipo</h5>
                     <table border=1>
                         <thead>
                             <tr>
@@ -95,7 +95,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
 
 
                 <div>
-                    <h5 class="titulo">Detalles del servicio</h5>
+                    <h5 class="titulo">servicio</h5>
                     <table table border=1>
                         <thead class="thead-light">
                             <tr>
@@ -117,11 +117,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
                 <!--  <h5 class="titulo">Pago</h5> -->
 
 
-                <p>Monto Total: <span><?php echo '$' . $dataNota['costoServicio'] ?></span></p>
-
-
-
-
+                <p>Total servicio: <span><?php echo '$' . $dataNota['costoServicio'] ?>.00</span></p>
 
                 <?php
 

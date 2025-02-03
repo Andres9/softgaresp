@@ -12,19 +12,10 @@
         <option value="notas">Notas</option>
         <option value="ventas">Ventas</option>
       </select> 
-
-
-
       <button type="submit" onclick="buscar_filtro($('#tabla').val())">Buscar</button>
     </form>
 
-
     <section id="resultado_busqueda"></section>
-
-    
-    <?php include_once 'notasReportes.php'; ?>
-    <?php include_once 'ventasReportes.php'; ?>
-
 
 
 

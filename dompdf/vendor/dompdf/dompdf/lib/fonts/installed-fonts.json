@@ -3,15 +3,15 @@
         "normal": "font_awesome_6_brands_normal_1072e0c6273c12a8894bb030e955457c"
     },
     "font awesome 6 free": {
-        "normal": "C:\\xampp\\htdocs\\SoftGaresp\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/font_awesome_6_free_normal_01fa29dd38a02a33548b49128e0ca50a",
-        "900": "font_awesome_6_free_900_9f3696696df1b219c5bdb211883930e5"
+        "normal": "font_awesome_6_free_normal_01fa29dd38a02a33548b49128e0ca50a",
+        "900": "C:\\xampp\\htdocs\\softgaresp\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/font_awesome_6_free_900_9f3696696df1b219c5bdb211883930e5"
     },
     "font awesome 5 brands": {
         "normal": "font_awesome_5_brands_normal_1072e0c6273c12a8894bb030e955457c"
     },
     "font awesome 5 free": {
-        "900": "C:\\xampp\\htdocs\\SoftGaresp\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/font_awesome_5_free_900_9f3696696df1b219c5bdb211883930e5",
-        "normal": "font_awesome_5_free_normal_01fa29dd38a02a33548b49128e0ca50a"
+        "900": "font_awesome_5_free_900_9f3696696df1b219c5bdb211883930e5",
+        "normal": "C:\\xampp\\htdocs\\softgaresp\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/font_awesome_5_free_normal_01fa29dd38a02a33548b49128e0ca50a"
     },
     "fontawesome": {
         "normal": "fontawesome_normal_15db82d5bc7ac3db6a06f7ff035d0da5"

@@ -35,13 +35,21 @@ $fecha_actual = date("Y-m-d H:i:s");
 <body>
   <header>
     <div>
-      <img src="img/logotipo2.png" alt="logotipo" />
+      <a href="index.php">
+        <img src="img/logotipo2.png" alt="logotipo" />
+      </a>
+      <div>
+        <a href="">
+        <i class="fa-solid fa-user userSystem"></i>
+        </a>
+        <span>Andres GE</span>
+      </div>
     </div>
     <nav>
       <ul>
         <li>
           <a href="index.php" class="active">
-            <i class="fa-solid fa-list"></i> Ventas</a>
+            <i class="fa-solid fa-cash-register"></i> Ventas</a>
         </li>
         <li>
           <a href="clientes.php">

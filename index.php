@@ -1,4 +1,4 @@
-  <?php include_once 'encabezado.php';?>
+<?php include_once 'encabezado.php'; ?>
 
   <section>
     <div class="seccion">
@@ -9,8 +9,8 @@
             $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE fecha_venta >= DATE(NOW()) ";
             $resultado = mysqli_query($conn, $ventasTotales);
             while ($mostrar = mysqli_fetch_array($resultado)) {
-              $vt  = number_format($mostrar[0],2, '.', ',');
-              echo ("$" . $vt.PHP_EOL . "");
+              $vt = number_format($mostrar[0], 2, '.', ',');
+              echo ("$" . $vt . PHP_EOL . "");
             }
             ?>
           </h5>
@@ -34,18 +34,18 @@
                 </div>
               </div>
               <div class="col-md-2 col-xs-12">
-                <label for="">Cantidad</label>
+                <label for="">Cant.</label>
                 <input type="number" value="1" name="cantidad" class="form-control" />
               </div>
               <div class="col-md-10 col-xs-12">
                 <label for="">Descripción</label>
                 <input type="text" name="descripcion" class="form-control" />
               </div>
-              <div class="col-md-6 col-xs-12">
+              <div class="col-md-4 col-xs-12">
                 <label for="">Costo</label>
                 <input type="number" name="costo" class="form-control" step="0.01" />
               </div>
-              <div class="col-md-6 col-xs-12">
+              <div class="col-md-8 col-xs-12">
                 <label for="">Sección</label>
                 <select name="opcionnegocio" class="select">
                   <option value="">Selecciona una opcion</option>
@@ -64,9 +64,16 @@
                   ?>
                 </select>
               </div>
+              <div class="col-md-3 col-xs-12">
+                <label for="">Facturar</label>
+                <select name="factura" class="select">
+                  <option value="no">No</option>
+                  <option value="factura">Si</option>
+                </select>
+              </div>
             </div>
             <button type="submit" class="btn btn-primary">
-              <i class="fa-solid fa-floppy-disk"></i> Agregar
+              <i class="fa-solid fa-floppy-disk"></i> Registrar
             </button>
           </form>
         </div>
@@ -119,5 +126,6 @@
     </div>
 
   </section>
-  
-<?php include_once 'footer.php'; ?>
+
+  <?php include_once 'footer.php'; ?>
+</body>

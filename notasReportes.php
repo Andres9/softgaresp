@@ -5,7 +5,7 @@
       <div>
         <h5 class="numerototal">
           <?php
-          $ventasTotales = "SELECT COUNT(id_nota) FROM notas WHERE YEAR(fecha_alta) = 2024 ";
+          $ventasTotales = "SELECT COUNT(id_nota) FROM notas WHERE YEAR(fecha_alta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             echo ($mostrar[0] . "");
@@ -20,7 +20,7 @@
       <div>
         <h5 class="numerototal">
           <?php
-          $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2024";
+          $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             $vt  = number_format($mostrar[0],2, '.', ',');

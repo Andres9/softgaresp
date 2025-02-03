@@ -1,3 +1,5 @@
+/* ESTILOS GENERALES */
+
 * {
     margin: 0;
     padding: 0;
@@ -6,18 +8,31 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* Encabezado */
+body{
+    background: rgb(170, 168, 168);
+}
+
+/* HEADER - MENU */
 header div {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
+    align-items: center;
 }
+
+.userSystem{
+    font-size: 2rem;
+    color: #000;
+}
+
+header div span{
+    margin: 0 10px;
+}
+
 
 div img {
     padding: 15px;
     width: 200px;
 }
-
-/* Navegacion */
 
 nav {
     margin: 0px 0 20px 0;
@@ -26,7 +41,6 @@ nav {
 .logo img {
     width: 200px;
 }
-
 
 nav ul {
     width: 100%;
@@ -69,10 +83,10 @@ nav a:hover {
     flex-direction: row;
     justify-content: space-around;
     margin-bottom: 20px;
-    margin-top: 20px;
-    padding: 30px 30px;
+    padding: 0 0 30px 0;
     width: 90%;
     margin: 0 auto;
+
 }
 
 .seccion div {
@@ -80,8 +94,8 @@ nav a:hover {
     width: 250px;
     margin: 10px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    border-radius: 50%;
-
+    border-radius: 10%;
+    background-color: #24355B;
 }
 
 .seccion i {
@@ -90,7 +104,6 @@ nav a:hover {
     font-size: 2.5em;
     font-weight: bold;
     color: #FFF;
-    color: #24355B;
     padding: 10px;
 }
 
@@ -106,16 +119,16 @@ nav a:hover {
 .seccion h3 {
     display: flex;
     justify-content: center;
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     font-weight: bold;
-    color: #000;
-    padding: 10px 0;
+    padding: 6px 0;
     text-transform: uppercase;
+    color: #FFF;
 }
 
 .seccion .numerototal {
     font-size: 3em;
-    color: #24355B;
+    color: yellow;
     margin-top: 0;
 }
 
@@ -142,7 +155,7 @@ legend {
     padding: 10px;
     text-align: center;
     box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
-    width: 50%;
+    width: 90%;
     margin: 0 auto;
     margin-bottom: 30px;
     display: visible;
@@ -212,7 +225,7 @@ section {
 section h2 {
     text-align: center;
     padding: 15px 0 15px 0;
-    background-color: #014579;
+    background-color: #24355B;
     color: #FFF;
     text-transform: uppercase;
     margin-bottom: 20px;
@@ -256,14 +269,6 @@ footer {
     margin-top: 20px;
 }
 
-.fa-trash {
-    color: red;
-}
-
-.fa-file-pdf {
-    color: #B30B00;
-}
-
 .cantidad_total {
     border-bottom: 2px solid #000;
     color: #ff9d00;
@@ -271,8 +276,27 @@ footer {
     text-shadow: 2px 2px 3px black;
 }
 
-#resultado_busqueda{
+#resultado_busqueda {
     padding: 15px;
     height: 150px;
     margin-top: 10px;
+}
+
+
+/* CONFIGURACION */
+#btnRespaldo{
+    width: 250px;
+    height: 50px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* DATATABLES ESTILOS */
+.fa-trash {
+    color: red;
+}
+
+.fa-file-pdf {
+    color: #B30B00;
 }

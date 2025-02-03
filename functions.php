@@ -7,12 +7,13 @@ include "conexion.php";
    $descripcion = $_POST["descripcion"];
     $costo = $_POST["costo"];
     $opcionNegocio = $_POST["opcionnegocio"];
+    $factura = $_POST["factura"];
     $fechaVenta = $_POST["fechaVenta"];
     $tabla = "ventas";
 
 
-    $campos = 'cantidad,descripcion,costo,seccion,fecha_venta';
-    $variables = "$cantidad, '$descripcion',$costo,'$opcionNegocio','$fechaVenta'";
+    $campos = 'cantidad,descripcion,costo,seccion,factura,fecha_venta';
+    $variables = "$cantidad, '$descripcion',$costo,'$opcionNegocio','$factura','$fechaVenta'";
     $_GUARDAR_SQL = "INSERT INTO $tabla ($campos) VALUES ($variables)";  
     mysqli_query($conn,$_GUARDAR_SQL);
 

@@ -184,7 +184,7 @@
         <i class="fa-solid fa-laptop"></i>
         <h5>
           <?php
-          $ventasTotales = "SELECT SUM(ganancia) FROM notas";
+          $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             $vt  = number_format($mostrar[0],2, '.', ',');

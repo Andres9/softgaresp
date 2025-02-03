@@ -4,7 +4,7 @@
       <div>
         <h5 class="numerototal">
           <?php
-          $ventasTotales = "SELECT COUNT(id_venta) FROM ventas WHERE YEAR(fecha_venta) = 2024";
+          $ventasTotales = "SELECT COUNT(id_venta) FROM ventas WHERE YEAR(fecha_venta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             echo ($mostrar[0] . "");
@@ -19,7 +19,7 @@
       <div>
         <h5 class="numerototal">
           <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2024";
+          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             $vt  = number_format($mostrar[0],2, '.', ',');
@@ -54,6 +54,7 @@
           <th>Descripcion</th>
           <th>Costo</th>
           <th>Seccion</th>
+          <th>Factura</th>
           <th>fecha_venta</th>
           <th>PDF</th>
           <th>Editar</th>
@@ -65,7 +66,7 @@
         <?php
         $consulta = "select * from ventas v
                             JOIN seccion s ON v.seccion  = s.id_seccion 
-                            WHERE YEAR(fecha_venta) = 2024";
+                            WHERE YEAR(fecha_venta) = 2025";
 
         $resultado = mysqli_query($conn, $consulta);
         while ($mostrar = mysqli_fetch_array($resultado)) {
@@ -85,6 +86,9 @@
             </td>
             <td>
               <?php echo $mostrar['descripcionSeccion'] ?>
+            </td>
+            <td>
+              <?php echo $mostrar['factura'] ?>
             </td>
             <td>
               <?php echo $mostrar['fecha_venta'] ?>
