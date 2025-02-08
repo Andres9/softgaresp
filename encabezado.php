@@ -35,7 +35,7 @@ $fecha_actual = date("Y-m-d H:i:s");
 <body>
   <header>
     <div>
-      <a href="index.php">
+      <a href="ventas.php">
         <img src="img/logotipo2.png" alt="logotipo" />
       </a>
       <div>
@@ -48,7 +48,7 @@ $fecha_actual = date("Y-m-d H:i:s");
     <nav>
       <ul>
         <li>
-          <a href="index.php" class="active">
+          <a href="ventas.php" class="active">
             <i class="fa-solid fa-cash-register"></i> Ventas</a>
         </li>
         <li>

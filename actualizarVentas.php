@@ -21,6 +21,6 @@ $descripcion = $_REQUEST["descripcion"];
      WHERE id_venta='".$id."' ");  
     mysqli_query($conn,$_GUARDAR_SQL);
 
-    header("Location: index.php");
+    header("Location: ventas.php");
 
 ?>

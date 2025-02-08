@@ -2,12 +2,9 @@
 
 include_once 'conexion.php';
 
-if ($_POST["tabla"] == "ventas") {
-  include 'ventasReportes.php';
-}
-
-if ($_POST["tabla"] == "notas") {
-  include 'notasReportes.php';
-
+if ($_POST["tabla"] == 'ventas') {
+  include_once 'ventasReportes.php';
+} else if ($_POST["tabla"] == 'notas') {
+  include_once 'notasReportes.php';
 }
 
