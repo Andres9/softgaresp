@@ -34,12 +34,17 @@ div img {
     width: 200px;
 }
 
+
 nav {
     margin: 0px 0 20px 0;
 }
 
 .logo img {
     width: 200px;
+}
+
+#logo{
+    width: 300px;
 }
 
 nav ul {
@@ -128,6 +133,12 @@ nav a:hover {
 
 .seccion .numerototal {
     font-size: 3em;
+    color: yellow;
+    margin-top: 0;
+}
+
+#cantidadS{
+    font-size: 2em;
     color: yellow;
     margin-top: 0;
 }
@@ -275,6 +286,7 @@ footer {
     font-size: 2em;
     text-shadow: 2px 2px 3px black;
 }
+
 
 #resultado_busqueda {
     padding: 15px;

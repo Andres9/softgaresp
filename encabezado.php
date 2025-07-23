@@ -36,7 +36,7 @@ $fecha_actual = date("Y-m-d H:i:s");
   <header>
     <div>
       <a href="ventas.php">
-        <img src="img/logotipo2.png" alt="logotipo" />
+        <img src="img/logos.jpg" alt="logotipo" id="logo"/>
       </a>
       <div>
         <a href="">

@@ -182,7 +182,7 @@
       <div>
 
         <i class="fa-solid fa-laptop"></i>
-        <h5>
+        <h5 id="cantidadS">
           <?php
           $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
