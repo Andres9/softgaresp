@@ -47,6 +47,11 @@ html {
     width: 20%;
     line-height: 0.3em;
     margin-bottom: 25px;
+    font-size: 1em;
+}
+
+#imglogo{
+    width: 150px;
 }
 
 #servicios {

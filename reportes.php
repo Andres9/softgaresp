@@ -22,7 +22,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SoftGaresp</title>
-    <link rel="icon" href="img/logotipo.png" />
+    <link rel="icon" href="img/logosAZUL.png" />
     <!-- ARCHIVOS PERSONALIZADOS -->
     <link rel="stylesheet" href="http://<?php echo $_SERVER['HTTP_HOST']; ?>/softgaresp/css/styleReport.css" />
     <!-- FUENTES -->
@@ -35,7 +35,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
         <div id="title">Nota de entrada</div>
         <div class="headReport">
             <div id="logo">
-                <img src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/softgaresp/img/logotipo2.jpg">
+                <img src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/softgaresp/img/logosnegro.jpg" id="imglogo">
                 <p>RFC: GAEA941128IT5</p>
                 <!-- <p>Fecha de entrada: </p> -->
                 <p>
@@ -45,7 +45,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
             <div id="servicios">
                 <p>Servicio Técnico computadoras e impresoras</p>
                 <p>Cotización de equipos de cómputo</p>
-                <p>Desarrollo de paginas web</p>
+                <p>Desarrollo de paginas web | ecommerce</p>
             </div>
             <div id="notaid">
                 <p class="titulo">Num. nota</p>
@@ -156,6 +156,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
 </html>
 
 <?php
+
 $html = ob_get_clean();
 require_once 'dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
