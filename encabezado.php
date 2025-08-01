@@ -67,8 +67,16 @@ $fecha_actual = date("Y-m-d H:i:s");
             <i class="fa-solid fa-file-invoice-dollar icon"></i> Reportes</a>
         </li>
         <li>
-          <a href="configuracion.php">
-            <i class="fa-solid fa-file-invoice-dollar icon"></i> Configuración</a>
+          <a href="reportesnotas.php">
+            <i class="fa-solid fa-file-invoice-dollar icon"></i> R. notas</a>
+        </li>
+        <li>
+          <a href="reportesventas.php">
+            <i class="fa-solid fa-file-invoice-dollar icon"></i> R. ventas</a>
+        </li>
+        <li>
+          <a href="configuraciones.php">
+            <i class="fa-solid fa-file-invoice-dollar icon"></i> Configuracion</a>
         </li>
       </ul>
     </nav>

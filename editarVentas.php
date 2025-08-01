@@ -70,6 +70,14 @@ $dataVenta = mysqli_fetch_array($queryVenta);
           <label for="">Costo</label>
           <input type="number" name="costo" class="form-control" step="0.01" value="<?php echo $dataVenta['costo'] ?>">
         </div>
+        <div class="col-md-4 col-xs-12">
+          <label for="">Precio compra</label>
+          <input type="number" name="pc" class="form-control" step="0.01" value="<?php echo $dataVenta['preciocosto'] ?>">
+        </div>
+        <div class="col-md-4 col-xs-12">
+          <label for="">Ganancia</label>
+          <input type="number" name="g" class="form-control" step="0.01" value="<?php echo $dataVenta['ganancia'] ?>">
+        </div>
         <div class="col-6">
           <label for="">Seccion</label>
           <select name="opcionnegocio" class="select">
@@ -82,7 +90,7 @@ $dataVenta = mysqli_fetch_array($queryVenta);
               $profesion = $mostrar["descripcionSeccion"];
 
               if ($id == $dataVenta['seccion']) {
-                ?>
+            ?>
                 <option value="<?php echo $id; ?>" selected>
                   <?php echo $profesion ?>
                 </option>
@@ -91,7 +99,7 @@ $dataVenta = mysqli_fetch_array($queryVenta);
                   <?php echo $profesion ?>
                 </option>
 
-                <?php
+            <?php
               }
             }
             ?>
@@ -109,7 +117,7 @@ $dataVenta = mysqli_fetch_array($queryVenta);
               $profesion = $mostrar["descripcionSeccion"];
 
               if ($id == $dataVenta['seccion']) {
-                ?>
+            ?>
                 <option value="<?php echo $id; ?>" selected>
                   <?php echo $profesion ?>
                 </option>
@@ -118,7 +126,7 @@ $dataVenta = mysqli_fetch_array($queryVenta);
                   <?php echo $profesion ?>
                 </option>
 
-                <?php
+            <?php
               }
             }
             ?>

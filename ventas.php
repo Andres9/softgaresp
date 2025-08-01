@@ -45,6 +45,14 @@
                 <label for="">Costo</label>
                 <input type="number" name="costo" class="form-control" step="0.01" />
               </div>
+              <div class="col-md-4 col-xs-12">
+                <label for="">Precio compra</label>
+                <input type="number" name="pc" class="form-control" step="0.01" />
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <label for="">Ganancia</label>
+                <input type="number" name="g" class="form-control" step="0.01" />
+              </div>
               <div class="col-md-8 col-xs-12">
                 <label for="">Sección</label>
                 <select name="opcionnegocio" class="select">
