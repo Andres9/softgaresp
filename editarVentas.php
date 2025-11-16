@@ -78,7 +78,7 @@ $dataVenta = mysqli_fetch_array($queryVenta);
           <label for="">Ganancia</label>
           <input type="number" name="g" class="form-control" step="0.01" value="<?php echo $dataVenta['ganancia'] ?>">
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <label for="">Seccion</label>
           <select name="opcionnegocio" class="select">
             <option value="">Selecciona una opcion</option>
@@ -105,32 +105,11 @@ $dataVenta = mysqli_fetch_array($queryVenta);
             ?>
           </select>
         </div>
-        <div class="col-6">
+
+             <div class="col-4">
+
           <label for="">Factura</label>
-          <select name="factura" class="select">
-            <option value="">Selecciona una opcion</option>
-            <?php
-            $ventasTotales = "SELECT * FROM seccion";
-            $resultado = mysqli_query($conn, $ventasTotales);
-            while ($mostrar = mysqli_fetch_array($resultado)) {
-              $id = $mostrar["id_seccion"];
-              $profesion = $mostrar["descripcionSeccion"];
-
-              if ($id == $dataVenta['seccion']) {
-            ?>
-                <option value="<?php echo $id; ?>" selected>
-                  <?php echo $profesion ?>
-                </option>
-              <?php } else { ?>
-                <option value="<?php echo $id; ?>">
-                  <?php echo $profesion ?>
-                </option>
-
-            <?php
-              }
-            }
-            ?>
-          </select>
+          <input type="text" value="<?php echo $dataVenta['factura'] ?>" name="factura" class="form-control">
         </div>
 
 

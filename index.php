@@ -16,7 +16,7 @@ include ('conexion.php');
 <body>
     
     <form action="loginAcceso.php" method="post">
-        <img src="img/logotipo.png" alt="">
+        <img src="img/logosnegro.jpg" alt="">
 
         <label for="">Usuario</label>
         <input type="text" name="usuario">                                                                                                             
