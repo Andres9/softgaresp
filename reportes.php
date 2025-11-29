@@ -35,15 +35,19 @@ $dataNota = mysqli_fetch_array($queryNotas);
         <div id="title">Nota de entrada</div>
         <div class="headReport">
             <div id="logo">
-                <img src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/softgaresp/img/logosnegro.jpg" id="imglogo">
-                <p>RFC: GAEA941128IT5</p>
-                <!-- <p>Fecha de entrada: </p> -->
-                <p>
-                    <?php echo $dataNota['fecha_alta'] ?>
-                </p>
+                <img src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/softgaresp/img/logos2.jpg" id="imglogo">
+                <span id="dataFecha">
+                    <p>RFC: GAEA941128IT5</p>
+                    <!-- <p>Fecha de entrada: </p> -->
+                    <p id="fechaalta">
+                        <?php echo $dataNota['fecha_alta'] ?>
+                    </p>
+                </span>
+
             </div>
             <div id="servicios">
-                <p>Servicio Técnico computadoras e impresoras</p>
+                <p>Servicio Técnico</p>
+                <p id="compimp">computadoras e impresoras</p>
                 <p>Cotización de equipos de cómputo</p>
                 <p>Desarrollo de paginas web | ecommerce</p>
             </div>
@@ -125,7 +129,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
                     $total = $dataNota['costoServicio'];
                     $anticipo = $dataNota['anticipo'];
                     $restante = $total - $anticipo;
-                    ?>
+                ?>
 
                     <p>Anticipo: <span><?php echo '$' . $anticipo ?></span></p>
 
@@ -135,16 +139,16 @@ $dataNota = mysqli_fetch_array($queryNotas);
 
 
                     <!--  <h3>Pagado: <? php/* echo $dataNota['pagado']*/ ?> -->
-                    <?php
+                <?php
                 }
                 ?>
             </div>
         </section>
 
         <div id="footerReport">
-            <p>Los pinos #17, col. La Mixteca, Tlaxiaco, Oaxaca</p>
+            <p id="direccion">Los pinos #17, col. La Mixteca, Tlaxiaco, Oaxaca</p>
             <div>
-                <i class="fa-brands fa-whatsapp"></i> <span>9531272241</span>
+                <i class="fa-brands fa-whatsapp"></i> <span id="contacto">9531272241</span>
             </div>
             <div>
                 <i class="fa-brands fa-facebook"></i> <span>GARESP - Servicio informatico</span>
@@ -159,6 +163,7 @@ $dataNota = mysqli_fetch_array($queryNotas);
 
 $html = ob_get_clean();
 require_once 'dompdf/autoload.inc.php';
+
 use Dompdf\Dompdf;
 
 $dompdf = new Dompdf();
@@ -170,4 +175,4 @@ $dompdf->set_paper(array(0, 0, 609.4488, 396.85), 'mediacarta');
 $dompdf->render();
 $dompdf->stream("nota_.pdf", array("Attachment" => false));
 
-?>
+?> 

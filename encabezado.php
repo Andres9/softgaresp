@@ -31,7 +31,6 @@ $fecha_actual = date("Y-m-d H:i:s");
   <link rel="stylesheet" href="fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.min.css" />
 </head>
 
-
 <body>
   <header>
     <div>
@@ -68,7 +67,7 @@ $fecha_actual = date("Y-m-d H:i:s");
         </li>
         <li>
           <a href="reportesnotas.php">
-            <i class="fa-solid fa-file-invoice-dollar icon"></i> R. notas</a>
+            <i class="fa-solid fa-note-sticky"></i> R. notas</a>
         </li>
         <li>
           <a href="reportesventas.php">

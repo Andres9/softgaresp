@@ -14,13 +14,13 @@ html {
 
 /* NOTA DE ENTRADA */
 #title {
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: bold;
     text-align: center;
     background-color: #014579;
-    color: #FFF;
+    color: #fff;
     text-transform: uppercase;
-    padding: 10px 0;
+    padding: 12px 0;
 }
 
 /* LOGO,SERVICIOS Y NOTA */
@@ -30,7 +30,7 @@ html {
     text-transform: uppercase;
     font-weight: bold;
     line-height: 0.2em;
-    height: 100px;
+    height: 120px;
 }
 
 .headReport>div {
@@ -40,44 +40,54 @@ html {
 
 .headReport img {
     width: 100px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 #logo {
-    width: 20%;
+    width: 22%;
     line-height: 0.3em;
-    margin-bottom: 25px;
     font-size: 1em;
 }
 
-#imglogo{
+#dataFecha {
+    font-size: 1.2em;
+}
+
+#fechaalta {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: red;
+}
+
+#imglogo {
     width: 150px;
+    margin: 0;
 }
 
 #servicios {
-    margin-bottom: 25px;
+    margin-bottom: 10px;
     width: 60%;
     font-size: 1.5em;
 }
 
 #notaid {
-    margin-top: 30px;
+    margin-top: 40px;
     width: 15%;
 }
 
 .titulo {
-    background-color: #014579;
-    color: #FFF;
-    padding: 12px 0;
+     background-color: #014579;
+    color: #fff;
+    padding: 8px 0;
     text-align: center;
-    font-size: 1.8em;
+    font-size: 1.5em;
     margin: 0;
     text-transform: uppercase;
 }
 
 #idnota {
     color: red;
-    font-size: 4em;
+    font-size: 4.2em;
 }
 
 /* CUERPO DE LA NOTA DE ENTRADA */
@@ -113,7 +123,7 @@ table td {
     text-align: center;
 }
 
-.info{
+.info {
     height: 75px;
 }
 
@@ -148,12 +158,28 @@ table td {
     background-color: #014579;
     font-size: 0.8em;
     text-align: center;
-    color: #FFF;
+    color: #fff;
     font-weight: bold;
     padding: 10px 0;
     text-transform: uppercase;
 }
 
-#footerReport p{
+#footerReport p {
     margin: 0;
+}
+
+ #contacto{
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+
+#direccion{
+    font-size: 1em;
+    font-style: italic;
+    text-transform: capitalize;
+}
+
+#compimp{
+    font-size: 1.5em;
 }
