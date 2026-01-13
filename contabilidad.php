@@ -16,7 +16,7 @@
       </thead>
       <tbody>
         <tr>
-      
+
           <th>Patricia</th>
           <th class="cantidad">
             <?php
@@ -53,7 +53,7 @@
           </th>
         </tr>
         <tr>
-       
+
           <th>Gaudencio</th>
           <th class="cantidad">
             <?php
@@ -90,7 +90,7 @@
           </th>
         </tr>
         <tr>
-       
+
           <th>Total</th>
           <th class="cantidad_total">
             <?php
@@ -146,43 +146,45 @@
       </thead>
 
       <tbody>
-        <th>
-          Papeleria
-        </th>
-        <th class="cantidad">
-          <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=5";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            $vt  = number_format($mostrar[0], 2, '.', ',');
-            echo ("$" . $vt . PHP_EOL . "");
-          }
-          ?>
-        </th>
+        <tr>
+          <th>
+            Papeleria
+          </th>
+          <th class="cantidad">
+            <?php
+            $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=5";
+            $resultado = mysqli_query($conn, $ventasTotales);
+            while ($mostrar = mysqli_fetch_array($resultado)) {
+              $vt  = number_format($mostrar[0], 2, '.', ',');
+              echo ("$" . $vt . PHP_EOL . "");
+            }
+            ?>
+          </th>
 
-        <th class="cantidad">
-          <?php
-          $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE seccion=5";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            $vt  = number_format($mostrar[0], 2, '.', ',');
-            echo ("$" . $vt . PHP_EOL . "");
-          }
 
-          ?>
-        </th>
+          <th class="cantidad">
+            <?php
+            $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE seccion=5";
+            $resultado = mysqli_query($conn, $ventasTotales);
+            while ($mostrar = mysqli_fetch_array($resultado)) {
+              $vt  = number_format($mostrar[0], 2, '.', ',');
+              echo ("$" . $vt . PHP_EOL . "");
+            }
 
-        <th class="cantidad">
-          <?php
-          $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE seccion=5";
-          $resultado = mysqli_query($conn, $ventasTotales);
-          while ($mostrar = mysqli_fetch_array($resultado)) {
-            $vt  = number_format($mostrar[0], 2, '.', ',');
-            echo ("$" . $vt . PHP_EOL . "");
-          }
+            ?>
+          </th>
 
-          ?>
-        </th>
+          <th class="cantidad">
+            <?php
+            $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE seccion=5";
+            $resultado = mysqli_query($conn, $ventasTotales);
+            while ($mostrar = mysqli_fetch_array($resultado)) {
+              $vt  = number_format($mostrar[0], 2, '.', ',');
+              echo ("$" . $vt . PHP_EOL . "");
+            }
+
+            ?>
+          </th>
         </tr>
 
         <tr>
@@ -223,6 +225,43 @@
 
         <tr>
           <th>
+            Impresion
+          </th>
+          <th class="cantidad">
+            <?php
+            $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=7";
+            $resultado = mysqli_query($conn, $ventasTotales);
+            while ($mostrar = mysqli_fetch_array($resultado)) {
+              $vt  = number_format($mostrar[0], 2, '.', ',');
+              echo ("$" . $vt . PHP_EOL . "");
+            }
+            ?>
+          </th>
+          <th class="cantidad">
+            <?php
+            $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE seccion=7";
+            $resultado = mysqli_query($conn, $ventasTotales);
+            while ($mostrar = mysqli_fetch_array($resultado)) {
+              $vt  = number_format($mostrar[0], 2, '.', ',');
+              echo ("$" . $vt . PHP_EOL . "");
+            }
+            ?>
+          </th>
+          <th class="cantidad">
+            <?php
+            $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE seccion=7";
+            $resultado = mysqli_query($conn, $ventasTotales);
+            while ($mostrar = mysqli_fetch_array($resultado)) {
+              $vt  = number_format($mostrar[0], 2, '.', ',');
+              echo ("$" . $vt . PHP_EOL . "");
+            }
+            ?>
+          </th>
+        </tr>
+
+
+        <tr>
+          <th>
             Celular
           </th>
           <th class="cantidad">
@@ -236,8 +275,8 @@
 
             ?>
           </th>
-        
-          
+
+
           <th class="cantidad">
             <?php
             $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE seccion=4";
@@ -249,7 +288,7 @@
 
             ?>
           </th>
-    
+
           <th class="cantidad">
             <?php
             $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE seccion=4";
@@ -277,8 +316,8 @@
 
             ?>
           </th>
-       
-          
+
+
           <th class="cantidad">
             <?php
             $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE seccion=1";
@@ -290,8 +329,8 @@
 
             ?>
           </th>
-      
-         
+
+
           <th class="cantidad">
             <?php
             $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE seccion=1";
@@ -306,14 +345,14 @@
         </tr>
 
         <tr>
-        
+
           <th>
             Total
           </th>
           <th class="cantidad_total">
             <?php
 
-            $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=1 or seccion=4 or seccion=5 or seccion = 6";
+            $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=1 or seccion=4 or seccion=5 or seccion = 6 or seccion=7" ;
 
             $resultado = mysqli_query($conn, $ventasTotales);
 
@@ -371,7 +410,7 @@
       <i class="fa-solid fa-laptop"></i>
       <h5 id="cantidadS">
         <?php
-        $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2025";
+        $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2026";
         $resultado = mysqli_query($conn, $ventasTotales);
         while ($mostrar = mysqli_fetch_array($resultado)) {
           $vt  = number_format($mostrar[0], 2, '.', ',');

@@ -19,7 +19,7 @@
       <div>
         <h5 class="numerototal">
           <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2025";
+          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             $vt  = number_format($mostrar[0],2, '.', ',');
@@ -66,7 +66,7 @@
         <?php
         $consulta = "select * from ventas v
                             JOIN seccion s ON v.seccion  = s.id_seccion 
-                            WHERE YEAR(fecha_venta) = 2025";
+                            WHERE YEAR(fecha_venta) = 2026";
 
         $resultado = mysqli_query($conn, $consulta);
         while ($mostrar = mysqli_fetch_array($resultado)) {
