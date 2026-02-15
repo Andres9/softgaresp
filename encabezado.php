@@ -50,6 +50,10 @@ $fecha_actual = date("Y-m-d H:i:s");
           <a href="contabilidad.php">
             <i class="fa-solid fa-file-invoice-dollar"></i> Contabilidad</a>
         </li>
+          <li>
+          <a href="impresion.php">
+            <i class="fa-solid fa-file-invoice-dollar"></i>Impresion</a>
+        </li>
         <li>
           <a href="ventas.php" class="active">
             <i class="fa-solid fa-cash-register"></i> Ventas</a>

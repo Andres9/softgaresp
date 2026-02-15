@@ -229,7 +229,7 @@
           </th>
           <th class="cantidad">
             <?php
-            $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE seccion=7";
+            $ventasTotales = "SELECT SUM(PRECIO) FROM IMPRESION";
             $resultado = mysqli_query($conn, $ventasTotales);
             while ($mostrar = mysqli_fetch_array($resultado)) {
               $vt  = number_format($mostrar[0], 2, '.', ',');
@@ -399,9 +399,6 @@
   </section>
 
 
-
-
-
   <h2>notas</h2>
 
   <section class="seccion">
@@ -419,10 +416,75 @@
 
         ?>
       </h5>
-      <h3>Servicio</h3>
+      <h3>Servicio 2026</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2025";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+
+        ?>
+      </h5>
+      <h3>Servicio 2025</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2024";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+
+        ?>
+      </h5>
+      <h3>Servicio 2024</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2023";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+
+        ?>
+      </h5>
+      <h3>Servicio 2023</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2022";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+
+        ?>
+      </h5>
+      <h3>Servicio 2022</h3>
     </div>
 
   </section>
+  
 
 
 </section>
