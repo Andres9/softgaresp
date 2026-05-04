@@ -9,7 +9,7 @@
 }
 
 body{
-    background: rgb(170, 168, 168);
+    background-color: #838684;
 }
 
 /* HEADER - MENU */
@@ -92,24 +92,6 @@ nav a:hover {
 
 }
 
-.seccion div {
-    box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
-    width: 250px;
-    margin: 10px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    border-radius: 10%;
-    background-color: #24355B;
-}
-
-.seccion i {
-    display: flex;
-    justify-content: center;
-    font-size: 2.5em;
-    font-weight: bold;
-    color: #FFF;
-    padding: 10px;
-}
-
 .seccion h5 {
     display: flex;
     justify-content: center;
@@ -119,6 +101,40 @@ nav a:hover {
     margin: 10px 0 0 0;
 }
 
+/* CANTIDADES */
+.seccion .numerototal {
+    font-size: 3em;
+    color:#ffc933;
+    margin-top: 0;
+}
+
+/* FONDO DE LOS REPORTES */
+.seccion div {
+    box-shadow: 2px 9px 5px 0px rgba(0, 0, 0, 0.75);
+    width: 250px;
+    margin: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    border-radius: 10%;
+    background-color: #1974AF;
+}
+
+/* ICONO DE LOS REPORTES */
+.seccion i {
+    display: flex;
+    justify-content: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #FFF;
+    padding: 10px;
+}
+
+/* CANTIDAD REPORTES */
+#cantidadS{
+    font-size: 2em;
+    color: #ffd255;
+    margin-top: 0;
+}
+/* TITULO DE LOS REPORTES */
 .seccion h3 {
     display: flex;
     justify-content: center;
@@ -126,19 +142,7 @@ nav a:hover {
     font-weight: bold;
     padding: 6px 0;
     text-transform: uppercase;
-    color: #FFF;
-}
-
-.seccion .numerototal {
-    font-size: 3em;
-    color: yellow;
-    margin-top: 0;
-}
-
-#cantidadS{
-    font-size: 2em;
-    color: yellow;
-    margin-top: 0;
+    color: #ffc933;
 }
 
 /* FORMULARIO */
@@ -231,11 +235,12 @@ section {
     margin: 0 auto;
 }
 
+/* TITULO DE LAS SECCIONES */
 section h2 {
     text-align: center;
     padding: 15px 0 15px 0;
-    background-color: #24355B;
-    color: #FFF;
+    background-color: #125683;
+    color: #E5F3FB;
     text-transform: uppercase;
     margin-bottom: 20px;
     font-weight: bold;
@@ -310,5 +315,5 @@ footer {
 .fa-file-pdf {
     color: #B30B00;
 }
-
+.
 /* NOTAS PDF */

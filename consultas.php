@@ -393,6 +393,303 @@
 
   </section>
 
+  <h2>Venta Factura - ABRIL 2026</h2>
+
+  <section class="seccion">
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026 AND MONTH(fecha_venta) = 4 AND FACTURA='FACTURA'";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>2026</h3>
+    </div>
+
+  </section>
+  <h2>Capital Negocio</h2>
+
+  <section class="seccion">
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 1  AND preciocosto > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Negocio</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 4  AND preciocosto > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Celular</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 6  AND preciocosto > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Hojas</h3>
+    </div>
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 2 AND preciocosto > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>PATRICIA</h3>
+    </div>
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 5 AND preciocosto > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>PAPELERIA</h3>
+    </div>
+    
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(preciocosto) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND preciocosto > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>SUMA</h3>
+    </div>
+  </section>
+  <h2>Ganancia Negocio</h2>
+
+  <section class="seccion">
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 1  AND ganancia > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Negocio</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 4  AND ganancia > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Celular</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 6  AND ganancia > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Hojas</h3>
+    </div>
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 2 AND ganancia > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>PATRICIA</h3>
+    </div>
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 5 AND ganancia > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>PAPELERIA</h3>
+    </div>
+
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND ganancia > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>SUMA</h3>
+    </div>
+  </section>
+  
+  <h2>Ventas</h2>
+  <section class="seccion">
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 1 AND costo > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Negocio</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 4  AND costo > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Celular</h3>
+    </div>
+    <div>
+
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 6  AND costo > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>Hojas</h3>
+    </div>
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 2 AND costo > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>PATRICIA</h3>
+    </div>
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND SECCION= 5 AND costo > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>PAPELERIA</h3>
+    </div>
+
+    <div>
+      <i class="fa-solid fa-laptop"></i>
+      <h5 id="cantidadS">
+        <?php
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026  AND costo > 0";
+        $resultado = mysqli_query($conn, $ventasTotales);
+        while ($mostrar = mysqli_fetch_array($resultado)) {
+          $vt  = number_format($mostrar[0], 2, '.', ',');
+          echo ("$" . $vt . PHP_EOL . "");
+        }
+        ?>
+      </h5>
+      <h3>SUMA</h3>
+    </div>
+  </section>
+
 
 </section>
 

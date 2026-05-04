@@ -21,8 +21,8 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
-        <h2>Registro Impresiones</h2>
+      <div class="col-md-5">
+        <h2>Registro</h2>
         <div id="registro" class="container">
           <form action="registroimpresion.php" method="post">
             <div class="row">
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-7">
         <h2>Movimientos</h2>
         <table id="tablaventas" class="display responsive nowrap" style="width: 100%">
           <thead>
