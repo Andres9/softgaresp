@@ -393,7 +393,7 @@
 
   </section>
 
-  <h2>Venta Factura - ABRIL 2026</h2>
+  <h2>Venta Factura - AGOSTO 2026</h2>
 
   <section class="seccion">
     <div>
@@ -401,7 +401,7 @@
       <i class="fa-solid fa-laptop"></i>
       <h5 id="cantidadS">
         <?php
-        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026 AND MONTH(fecha_venta) = 4 AND FACTURA='FACTURA'";
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026 AND MONTH(fecha_venta) = 8 AND FACTURA='FACTURA'";
         $resultado = mysqli_query($conn, $ventasTotales);
         while ($mostrar = mysqli_fetch_array($resultado)) {
           $vt  = number_format($mostrar[0], 2, '.', ',');
