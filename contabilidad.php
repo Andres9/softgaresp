@@ -52,44 +52,7 @@
             ?>
           </th>
         </tr>
-        <tr>
-
-          <th>Gaudencio</th>
-          <th class="cantidad">
-            <?php
-            $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE seccion=3";
-            $resultado = mysqli_query($conn, $ventasTotales);
-            while ($mostrar = mysqli_fetch_array($resultado)) {
-              $vt  = number_format($mostrar[0], 2, '.', ',');
-              echo ("$" . $vt . PHP_EOL . "");
-            }
-
-            ?>
-          </th>
-          <th class="cantidad">
-            <?php
-            $ventasTotales = "SELECT SUM(-preciocosto) FROM ventas WHERE seccion=3";
-            $resultado = mysqli_query($conn, $ventasTotales);
-            while ($mostrar = mysqli_fetch_array($resultado)) {
-              $vt  = number_format($mostrar[0], 2, '.', ',');
-              echo ("$" . $vt . PHP_EOL . "");
-            }
-
-            ?>
-          </th>
-          <th class="cantidad">
-            <?php
-            $ventasTotales = "SELECT SUM(ganancia) FROM ventas WHERE seccion=3";
-            $resultado = mysqli_query($conn, $ventasTotales);
-            while ($mostrar = mysqli_fetch_array($resultado)) {
-              $vt  = number_format($mostrar[0], 2, '.', ',');
-              echo ("$" . $vt . PHP_EOL . "");
-            }
-
-            ?>
-          </th>
-        </tr>
-        <tr>
+   
 
           <th>Total</th>
           <th class="cantidad_total">

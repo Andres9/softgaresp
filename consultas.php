@@ -392,8 +392,24 @@
     </div>
 
   </section>
+  <?php
 
-  <h2>Venta Factura - AGOSTO 2026</h2>
+// Establecer la zona horaria (opcional pero recomendado)
+date_default_timezone_set('America/Mexico_City');
+
+$meses = [
+    1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+    5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+    9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+];
+
+  $mesActual = $meses[(int) date('n')];
+  $anioActual = date('Y');
+
+  echo ("<h2>Venta Factura - " . $mesActual . " " . $anioActual . "</h2>");
+  ?>
+
+  <!-- <h2>Venta Factura - NOVIEMBRE 2026</h2> -->
 
   <section class="seccion">
     <div>
@@ -401,7 +417,8 @@
       <i class="fa-solid fa-laptop"></i>
       <h5 id="cantidadS">
         <?php
-        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026 AND MONTH(fecha_venta) = 8 AND FACTURA='FACTURA'";
+        $mes = date('n'); 
+        $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026 AND MONTH(fecha_venta) = $mes AND FACTURA='FACTURA'";
         $resultado = mysqli_query($conn, $ventasTotales);
         while ($mostrar = mysqli_fetch_array($resultado)) {
           $vt  = number_format($mostrar[0], 2, '.', ',');

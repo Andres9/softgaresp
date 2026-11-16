@@ -33,15 +33,12 @@
         </span>
 
       </div>
-
       <div>
-        <h5>
-          <a href=""> <i class="fa-solid fa-file-pdf"></i></a>
-
-        </h5>
-        <span>
+        <a href="ventasMesPDF.php" target="_blank" rel="noopener"
+          aria-label="Generar PDF de ventas del mes actual">
+          <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
           <h3>GENERAR PDF</h3>
-        </span>
+        </a>
       </div>
     </div>
 
