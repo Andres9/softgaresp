@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/auth.php';
+requerir_usuario_autenticado();
 include "conexion.php";
 
 /* INSERTAR REGISTROS EN LA TABLA */

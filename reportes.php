@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/auth.php';
+requerir_usuario_autenticado();
 ob_start();
 
 include('conexion.php');

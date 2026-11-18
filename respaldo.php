@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/auth.php';
+requerir_usuario_autenticado();
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {

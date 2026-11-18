@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/auth.php';
+requerir_usuario_autenticado();
 require_once 'conexion.php';
 require_once 'dompdf/autoload.inc.php';
 
