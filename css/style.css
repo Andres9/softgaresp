@@ -61,47 +61,54 @@ body{
 }
 
 .main-nav {
+    width: 100%;
     margin: 0;
-    padding: 0 16px 14px;
+    padding: 0 0 14px;
 }
 
 .main-nav .nav-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+    gap: 4px;
+    width: 100%;
+    margin: 0;
+    padding: 8px 12px;
     list-style: none;
     background-color: #24355B;
-    border-radius: 12px;
 }
 
 .main-nav .nav-list li {
+    min-width: 0;
     list-style: none;
 }
 
 .main-nav a {
-    display: inline-flex;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 9px;
-    min-height: 46px;
-    padding: 10px 14px;
+    gap: 6px;
+    min-height: 80px;
+    padding: 8px 4px;
     border-radius: 8px;
     color: #FFF;
     background-color: transparent;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 600;
     line-height: 1.2;
     text-decoration: none;
     text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
     transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
 .main-nav a i {
-    font-size: 1rem;
+    font-size: 1.5rem;
+}
+
+.main-nav a span {
+    font-size: inherit;
 }
 
 .main-nav a:hover,
@@ -109,6 +116,7 @@ body{
     color: #FFF;
     background-color: #36527E;
     text-decoration: none;
+    transform: translateY(-1px);
 }
 
 .main-nav a.active,
@@ -134,15 +142,16 @@ body{
     }
 
     .main-nav {
-        padding: 0 10px 10px;
+        padding: 0 0 10px;
     }
 
-    .main-nav .nav-list li {
-        flex: 1 1 30%;
+    .main-nav .nav-list {
+        grid-template-columns: repeat(auto-fit, minmax(94px, 1fr));
     }
 
     .main-nav a {
-        width: 100%;
+        min-height: 76px;
+        font-size: 0.72rem;
     }
 }
 
@@ -164,14 +173,15 @@ body{
         height: 32px;
     }
 
-    .main-nav .nav-list li {
-        flex-basis: 45%;
+    .main-nav .nav-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .main-nav a {
-        justify-content: flex-start;
-        padding: 10px;
-        font-size: 0.72rem;
+        min-height: 72px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        font-size: 0.7rem;
     }
 }
 
@@ -243,6 +253,14 @@ body{
     padding: 6px 0;
     text-transform: uppercase;
     color: #ffc933;
+}
+
+.seccion .pdf-link-label {
+    display: block;
+    color: #ffc933;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 /* FORMULARIO */
@@ -372,15 +390,63 @@ table th {
 }
 
 /* PIE DE PAGINA */
-footer {
+.site-footer {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    height: 150px;
-    background-color: #014579;
-    color: #FFF;
-    margin-top: 20px;
+    gap: 32px;
+    min-height: 132px;
+    margin-top: 32px;
+    padding: 22px 6%;
+    border-top: 4px solid #60a1d2;
+    background: linear-gradient(120deg, #102b49, #014579);
+    color: #E5F3FB;
+    text-align: center;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.site-footer .footer-brand img {
+    display: block;
+    width: 170px;
+    max-width: 40vw;
+    max-height: 64px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    object-fit: contain;
+}
+
+.site-footer p {
+    margin: 0;
+    color: #E5F3FB;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+
+@media (max-width: 600px) {
+    .site-footer {
+        flex-direction: column;
+        gap: 14px;
+        min-height: 0;
+        padding: 24px 16px;
+    }
+
+    .site-footer .footer-brand img {
+        width: 145px;
+        max-width: 55vw;
+        max-height: 56px;
+    }
+
+    .site-footer p {
+        font-size: 0.75rem;
+    }
 }
 
 .cantidad_total {
@@ -415,5 +481,3 @@ footer {
 .fa-file-pdf {
     color: #B30B00;
 }
-.
-/* NOTAS PDF */

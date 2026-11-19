@@ -1,8 +1,8 @@
-<footer>
-    <div>
-      <img src="img/logotipo-blanco.png" alt="logo" />
+<footer class="site-footer">
+    <div class="footer-brand">
+      <img src="img/logotipo-blanco.png" alt="Garesp Servicio Informático" />
     </div>
-    <p>Todos los derechos reservados - garespservicioinformatico</p>
+    <p>© <?= date('Y') ?> Garesp Servicio Informático. Todos los derechos reservados.</p>
   </footer>
 
 </body>

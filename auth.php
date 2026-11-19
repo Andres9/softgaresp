@@ -65,7 +65,8 @@ function requerir_usuario_autenticado()
         'reportesnotas.php',
         'notasReportes.php',
         'reportes.php',
-        'consultaReporte.php'
+        'consultaReporte.php',
+        'serviciosMesPDF.php'
     );
 
     $paginaActual = isset($_SERVER['PHP_SELF']) ? basename($_SERVER['PHP_SELF']) : '';

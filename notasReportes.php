@@ -41,13 +41,11 @@ requerir_usuario_autenticado();
       </div>
 
       <div>
-        <h5>
-          <a href=""> <i class="fa-solid fa-file-pdf"></i></a>
-
-        </h5>
-        <span>
-          <h3>GENERAR PDF</h3>
-        </span>
+        <a href="serviciosMesPDF.php" target="_blank" rel="noopener"
+          aria-label="Generar reporte PDF de servicios del mes actual">
+          <h5><i class="fa-solid fa-file-pdf" aria-hidden="true"></i></h5>
+          <span class="pdf-link-label">GENERAR PDF</span>
+        </a>
       </div>
     </div>
 
