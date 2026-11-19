@@ -1,10 +1,13 @@
 <?php include_once 'encabezado.php'; ?>
 
   <section>
-    <div class="seccion">
-      <div>
-        <span>
-          <h5 class="numerototal">
+    <div class="seccion reportes-resumen">
+      <article class="reportes-resumen-card reportes-resumen-card-total">
+        <div class="reportes-resumen-cabecera">
+          <span class="reportes-resumen-etiqueta">Caja de impresión</span>
+          <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-print"></i></span>
+        </div>
+        <strong class="reportes-resumen-valor">
             <?php
             $ventasTotales = "SELECT SUM(precio) FROM impresion ";
             $resultado = mysqli_query($conn, $ventasTotales);
@@ -13,12 +16,9 @@
               echo ("$" . $vt . PHP_EOL . "");
             }
             ?>
-          </h5>
-        </span>
-        <span>
-          <h3>Caja Impresion</h3>
-        </span>
-      </div>
+        </strong>
+        <p class="reportes-resumen-detalle">Ingresos acumulados</p>
+      </article>
     </div>
     <div class="row">
       <div class="col-md-5">

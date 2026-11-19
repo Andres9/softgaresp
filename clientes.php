@@ -1,11 +1,13 @@
 <?php include_once 'encabezado.php'?>
 
   <section>
-    <div class="seccion">
-      <div>
-        <span>
-
-          <h5 class="numerototal">
+    <div class="seccion reportes-resumen">
+      <article class="reportes-resumen-card">
+        <div class="reportes-resumen-cabecera">
+          <span class="reportes-resumen-etiqueta">Clientes</span>
+          <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
+        </div>
+        <strong class="reportes-resumen-valor">
             <?php
             $ventasTotales = "SELECT COUNT(id_cliente) FROM clientes";
             $resultado = mysqli_query($conn, $ventasTotales);
@@ -14,13 +16,8 @@
             }
 
             ?>
-          </h5>
-        </span>
-        <span>
-
-          <h3>Clientes</h3>
-        </span>
-      </div>
+        </strong>
+        <p class="reportes-resumen-detalle">Clientes registrados</p>
     </div>
 
     <div class="row">

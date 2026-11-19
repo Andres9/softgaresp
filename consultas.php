@@ -15,11 +15,13 @@
 
   <h2>Total impresiones</h2>
 
-  <section class="seccion">
-    <div>
-
-      <i class="fa-solid fa-laptop"></i>
-      <h5 id="cantidadS">
+  <section class="seccion reportes-resumen">
+    <article class="reportes-resumen-card reportes-resumen-card-total">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Impresiones</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-print"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT SUM(precio) FROM impresion WHERE YEAR(fecha_impresion) = 2026 AND precio>0";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -28,9 +30,9 @@
           echo ("$" . $vt . PHP_EOL . "");
         }
         ?>
-      </h5>
-      <h3>2026</h3>
-    </div>
+      </strong>
+      <p class="reportes-resumen-detalle">Total de 2026</p>
+    </article>
 
   </section>
   <?php
@@ -52,11 +54,13 @@ $meses = [
 
   <!-- <h2>Venta Factura - NOVIEMBRE 2026</h2> -->
 
-  <section class="seccion">
-    <div>
-
-      <i class="fa-solid fa-laptop"></i>
-      <h5 id="cantidadS">
+  <section class="seccion reportes-resumen">
+    <article class="reportes-resumen-card reportes-resumen-card-total">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Venta con factura</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $mes = date('n'); 
         $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026 AND MONTH(fecha_venta) = $mes AND FACTURA='FACTURA'";
@@ -66,9 +70,9 @@ $meses = [
           echo ("$" . $vt . PHP_EOL . "");
         }
         ?>
-      </h5>
-      <h3>2026</h3>
-    </div>
+      </strong>
+      <p class="reportes-resumen-detalle">Total de <?= htmlspecialchars($mesActual . ' ' . $anioActual, ENT_QUOTES, 'UTF-8') ?></p>
+    </article>
 
   </section>
  

@@ -5,9 +5,13 @@ requerir_usuario_autenticado();
 
       <!-- SECCION DE VENTAS -->
       
-    <div class="seccion">
-      <div>
-        <h5 class="numerototal">
+    <div class="seccion reportes-resumen">
+      <article class="reportes-resumen-card">
+        <div class="reportes-resumen-cabecera">
+          <span class="reportes-resumen-etiqueta">Ventas</span>
+          <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span>
+        </div>
+        <strong class="reportes-resumen-valor">
           <?php
           $ventasTotales = "SELECT COUNT(id_venta) FROM ventas WHERE YEAR(fecha_venta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
@@ -16,15 +20,17 @@ requerir_usuario_autenticado();
           }
 
           ?>
-        </h5>
-        <span>
-          <h3>Ventas</h3>
-        </span>
-      </div>
-      <div>
-        <h5 class="numerototal">
+        </strong>
+        <p class="reportes-resumen-detalle">Registros de 2025</p>
+      </article>
+      <article class="reportes-resumen-card reportes-resumen-card-total">
+        <div class="reportes-resumen-cabecera">
+          <span class="reportes-resumen-etiqueta">Total</span>
+          <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-sack-dollar"></i></span>
+        </div>
+        <strong class="reportes-resumen-valor">
           <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026";
+          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026 AND costo >= 0";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             $vt  = number_format($mostrar[0],2, '.', ',');
@@ -32,19 +38,18 @@ requerir_usuario_autenticado();
           }
 
           ?>
-        </h5>
-        <span>
-          <h3>Total</h3>
-        </span>
-
-      </div>
-      <div>
-        <a href="ventasMesPDF.php" target="_blank" rel="noopener"
+        </strong>
+        <p class="reportes-resumen-detalle">Ventas registradas en 2026</p>
+      </article>
+      <a class="reportes-resumen-pdf" href="ventasMesPDF.php" target="_blank" rel="noopener"
           aria-label="Generar PDF de ventas del mes actual">
-          <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
-          <h3>GENERAR PDF</h3>
-        </a>
-      </div>
+        <span class="reportes-resumen-pdf-icono" aria-hidden="true"><i class="fa-solid fa-file-pdf"></i></span>
+        <span class="reportes-resumen-pdf-texto">
+          <strong>Generar PDF</strong>
+          <small>Ventas del mes actual</small>
+        </span>
+        <i class="fa-solid fa-chevron-right reportes-resumen-pdf-flecha" aria-hidden="true"></i>
+      </a>
     </div>
 
     <h2>Ventas</h2>

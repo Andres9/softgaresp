@@ -6,9 +6,13 @@ requerir_usuario_autenticado();
 <section>
 
     <!-- SECCION DE NOTAS -->
-    <div class="seccion">
-      <div>
-        <h5 class="numerototal">
+    <div class="seccion reportes-resumen">
+      <article class="reportes-resumen-card">
+        <div class="reportes-resumen-cabecera">
+          <span class="reportes-resumen-etiqueta">Servicios</span>
+          <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-toolbox"></i></span>
+        </div>
+        <strong class="reportes-resumen-valor">
           <?php
           $ventasTotales = "SELECT COUNT(id_nota) FROM notas WHERE YEAR(fecha_alta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
@@ -17,13 +21,15 @@ requerir_usuario_autenticado();
           }
 
           ?>
-        </h5>
-        <span>
-          <h3>Servicios</h3>
-        </span>
-      </div>
-      <div>
-        <h5 class="numerototal">
+        </strong>
+        <p class="reportes-resumen-detalle">Registros de 2025</p>
+      </article>
+      <article class="reportes-resumen-card reportes-resumen-card-total">
+        <div class="reportes-resumen-cabecera">
+          <span class="reportes-resumen-etiqueta">Total</span>
+          <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-sack-dollar"></i></span>
+        </div>
+        <strong class="reportes-resumen-valor">
           <?php
           $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2026";
           $resultado = mysqli_query($conn, $ventasTotales);
@@ -33,20 +39,18 @@ requerir_usuario_autenticado();
           }
 
           ?>
-        </h5>
-        <span>
-          <h3>Total</h3>
-        </span>
-
-      </div>
-
-      <div>
-        <a href="serviciosMesPDF.php" target="_blank" rel="noopener"
+        </strong>
+        <p class="reportes-resumen-detalle">Ganancia registrada en 2026</p>
+      </article>
+      <a class="reportes-resumen-pdf" href="serviciosMesPDF.php" target="_blank" rel="noopener"
           aria-label="Generar reporte PDF de servicios del mes actual">
-          <h5><i class="fa-solid fa-file-pdf" aria-hidden="true"></i></h5>
-          <span class="pdf-link-label">GENERAR PDF</span>
-        </a>
-      </div>
+        <span class="reportes-resumen-pdf-icono" aria-hidden="true"><i class="fa-solid fa-file-pdf"></i></span>
+        <span class="reportes-resumen-pdf-texto">
+          <strong>Generar PDF</strong>
+          <small>Servicios del mes actual</small>
+        </span>
+        <i class="fa-solid fa-chevron-right reportes-resumen-pdf-flecha" aria-hidden="true"></i>
+      </a>
     </div>
 
     

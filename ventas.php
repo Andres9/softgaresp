@@ -548,10 +548,13 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
 
 <?php if (!$mostrarGraficosEnReportes) { ?>
   <section>
-    <div class="seccion">
-      <div>
-        <span>
-          <h5 class="numerototal">
+    <div class="seccion reportes-resumen">
+      <article class="reportes-resumen-card reportes-resumen-card-total">
+        <div class="reportes-resumen-cabecera">
+          <span class="reportes-resumen-etiqueta">Venta de hoy</span>
+          <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span>
+        </div>
+        <strong class="reportes-resumen-valor">
             <?php
             $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE fecha_venta >= DATE(NOW()) ";
             $resultado = mysqli_query($conn, $ventasTotales);
@@ -560,12 +563,9 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
               echo ("$" . $vt . PHP_EOL . "");
             }
             ?>
-          </h5>
-        </span>
-        <span>
-          <h3>Venta</h3>
-        </span>
-      </div>
+        </strong>
+        <p class="reportes-resumen-detalle">Total registrado hoy</p>
+      </article>
     </div>
 
     <div class="row">
@@ -1230,23 +1230,47 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
         </div>
       </div>
       <?php if (count($resumenAnualServicios) > 0) { ?>
-        <div class="servicios-totales-anuales">
-          <?php foreach ($resumenAnualServicios as $anioResumenServicio => $totalesAnualesServicio) { ?>
-            <details class="servicios-anual-detalle">
-              <summary>Año <?= htmlspecialchars($anioResumenServicio, ENT_QUOTES, 'UTF-8') ?></summary>
-              <div class="ventas-categoria-resumen servicios-anual-metricas">
-                <div>
-                  <span>Monto total</span>
-                  <strong>$<?= number_format($totalesAnualesServicio['monto'], 2, '.', ',') ?></strong>
+        <?php
+        $valoresAnualesServicios = array_merge(
+          array_column($resumenAnualServicios, 'monto'),
+          array_column($resumenAnualServicios, 'ganancia')
+        );
+        $maximoAnualServicios = max($valoresAnualesServicios);
+        ?>
+        <ul class="servicios-totales-anuales" aria-label="Comparación anual de montos y ganancias">
+          <?php foreach ($resumenAnualServicios as $anioResumenServicio => $totalesAnualesServicio) {
+              $anchoMontoAnualServicio = $maximoAnualServicios > 0
+                ? ($totalesAnualesServicio['monto'] / $maximoAnualServicios) * 100
+                : 0;
+              $anchoGananciaAnualServicio = $maximoAnualServicios > 0
+                ? ($totalesAnualesServicio['ganancia'] / $maximoAnualServicios) * 100
+                : 0;
+              ?>
+            <li class="servicios-anual-fila">
+              <strong class="servicios-anual-ano"><?= htmlspecialchars($anioResumenServicio, ENT_QUOTES, 'UTF-8') ?></strong>
+              <div class="servicios-anual-indicadores">
+                <div class="servicios-anual-indicador">
+                  <div class="servicios-anual-indicador-encabezado">
+                    <span>Monto total</span>
+                    <strong>$<?= number_format($totalesAnualesServicio['monto'], 2, '.', ',') ?></strong>
+                  </div>
+                  <div class="servicios-anual-barra" aria-hidden="true">
+                    <span style="width: <?= number_format($anchoMontoAnualServicio, 2, '.', '') ?>%"></span>
+                  </div>
                 </div>
-                <div>
-                  <span>Ganancia total</span>
-                  <strong>$<?= number_format($totalesAnualesServicio['ganancia'], 2, '.', ',') ?></strong>
+                <div class="servicios-anual-indicador servicios-anual-indicador-ganancia">
+                  <div class="servicios-anual-indicador-encabezado">
+                    <span>Ganancia total</span>
+                    <strong>$<?= number_format($totalesAnualesServicio['ganancia'], 2, '.', ',') ?></strong>
+                  </div>
+                  <div class="servicios-anual-barra" aria-hidden="true">
+                    <span style="width: <?= number_format($anchoGananciaAnualServicio, 2, '.', '') ?>%"></span>
+                  </div>
                 </div>
               </div>
-            </details>
+            </li>
           <?php } ?>
-        </div>
+        </ul>
       <?php } else { ?>
         <p class="ventas-semana-vacia">Aún no hay servicios registrados por año.</p>
       <?php } ?>

@@ -433,11 +433,13 @@
 
   <h2>notas</h2>
 
-  <section class="seccion">
-    <div>
-
-      <i class="fa-solid fa-laptop"></i>
-      <h5 id="cantidadS">
+  <section class="seccion reportes-resumen">
+    <article class="reportes-resumen-card reportes-resumen-card-total">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Servicio 2026</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-toolbox"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2026";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -447,13 +449,15 @@
         }
 
         ?>
-      </h5>
-      <h3>Servicio 2026</h3>
-    </div>
-    <div>
-
-      <i class="fa-solid fa-laptop"></i>
-      <h5 id="cantidadS">
+      </strong>
+      <p class="reportes-resumen-detalle">Ganancia anual</p>
+    </article>
+    <article class="reportes-resumen-card reportes-resumen-card-total">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Servicio 2025</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-toolbox"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2025";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -461,15 +465,16 @@
           $vt  = number_format($mostrar[0], 2, '.', ',');
           echo ("$" . $vt . PHP_EOL . "");
         }
-
         ?>
-      </h5>
-      <h3>Servicio 2025</h3>
-    </div>
-    <div>
-
-      <i class="fa-solid fa-laptop"></i>
-      <h5 id="cantidadS">
+      </strong>
+      <p class="reportes-resumen-detalle">Ganancia anual</p>
+    </article>
+    <article class="reportes-resumen-card reportes-resumen-card-total">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Servicio 2024</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-toolbox"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2024";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -477,15 +482,16 @@
           $vt  = number_format($mostrar[0], 2, '.', ',');
           echo ("$" . $vt . PHP_EOL . "");
         }
-
         ?>
-      </h5>
-      <h3>Servicio 2024</h3>
-    </div>
-    <div>
-
-      <i class="fa-solid fa-laptop"></i>
-      <h5 id="cantidadS">
+      </strong>
+      <p class="reportes-resumen-detalle">Ganancia anual</p>
+    </article>
+    <article class="reportes-resumen-card reportes-resumen-card-total">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Servicio 2023</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-toolbox"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2023";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -493,15 +499,16 @@
           $vt  = number_format($mostrar[0], 2, '.', ',');
           echo ("$" . $vt . PHP_EOL . "");
         }
-
         ?>
-      </h5>
-      <h3>Servicio 2023</h3>
-    </div>
-    <div>
-
-      <i class="fa-solid fa-laptop"></i>
-      <h5 id="cantidadS">
+      </strong>
+      <p class="reportes-resumen-detalle">Ganancia anual</p>
+    </article>
+    <article class="reportes-resumen-card reportes-resumen-card-total">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Servicio 2022</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-toolbox"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT SUM(ganancia) FROM notas WHERE YEAR(fecha_alta) = 2022";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -509,11 +516,10 @@
           $vt  = number_format($mostrar[0], 2, '.', ',');
           echo ("$" . $vt . PHP_EOL . "");
         }
-
         ?>
-      </h5>
-      <h3>Servicio 2022</h3>
-    </div>
+      </strong>
+      <p class="reportes-resumen-detalle">Ganancia anual</p>
+    </article>
 
   </section>
 

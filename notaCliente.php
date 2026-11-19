@@ -2,10 +2,13 @@
 
 <section>
 
-  <div class="seccion">
-    <div>
-
-      <h5 class="numerototal">
+  <div class="seccion reportes-resumen">
+    <article class="reportes-resumen-card">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Notas</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-clipboard-list"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT COUNT(id_nota) FROM notas";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -14,16 +17,15 @@
         }
 
         ?>
-      </h5>
-      <span>
-        <h3>Notas</h3>
-      </span>
-    </div>
-    <div>
-      <span>
-
-
-        <h5 class="numerototal">
+      </strong>
+      <p class="reportes-resumen-detalle">Notas registradas</p>
+    </article>
+    <article class="reportes-resumen-card">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Entrada</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-inbox"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
           <?php
           $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='1'";
           $resultado = mysqli_query($conn, $ventasTotales);
@@ -32,17 +34,15 @@
           }
 
           ?>
-        </h5>
-      </span>
-      <span>
-
-        <h3>Entrada</h3>
-      </span>
-    </div>
-    <div>
-
-
-      <h5 class="numerototal">
+      </strong>
+      <p class="reportes-resumen-detalle">Esperando atención</p>
+    </article>
+    <article class="reportes-resumen-card">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Revisión</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='2'";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -51,17 +51,15 @@
         }
 
         ?>
-      </h5>
-
-      <span>
-
-        <h3>Revision</h3>
-      </span>
-    </div>
-    <div>
-      <span>
-
-        <h5 class="numerototal">
+      </strong>
+      <p class="reportes-resumen-detalle">En proceso de revisión</p>
+    </article>
+    <article class="reportes-resumen-card">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Entregado</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
           <?php
           $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='3'";
           $resultado = mysqli_query($conn, $ventasTotales);
@@ -70,18 +68,15 @@
           }
 
           ?>
-        </h5>
-      </span>
-      <span>
-
-        <h3>Entregado</h3>
-      </span>
-
-
-    </div>
-    <div>
-
-      <h5 class="numerototal">
+      </strong>
+      <p class="reportes-resumen-detalle">Servicio finalizado</p>
+    </article>
+    <article class="reportes-resumen-card">
+      <div class="reportes-resumen-cabecera">
+        <span class="reportes-resumen-etiqueta">Solución</span>
+        <span class="reportes-resumen-icono" aria-hidden="true"><i class="fa-solid fa-gear"></i></span>
+      </div>
+      <strong class="reportes-resumen-valor">
         <?php
         $ventasTotales = "SELECT COUNT(estado) FROM notas WHERE estado='4'";
         $resultado = mysqli_query($conn, $ventasTotales);
@@ -90,13 +85,9 @@
         }
 
         ?>
-      </h5>
-
-      <span>
-        <h3>Ssolucion</h3>
-      </span>
-
-    </div>
+      </strong>
+      <p class="reportes-resumen-detalle">Solución registrada</p>
+    </article>
   </div>
 
 
