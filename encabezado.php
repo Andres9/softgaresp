@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
-include __DIR__ . '/conexion.php';
+include_once __DIR__ . '/conexion.php';
 
 date_default_timezone_set('America/Mexico_City');
 $fecha_actual = date("Y-m-d H:i:s");
@@ -24,6 +24,9 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
   <!-- DATATABLES -->
   <link rel="stylesheet" href="css/datatables.min.css" />
   <link rel="stylesheet" href="css/responsive.dataTables.min.css" />
+  <?php if ($pagina_actual === 'cotizacion.php') { ?>
+  <link rel="stylesheet" href="css/cotizacion.css" />
+  <?php } ?>
 
 
   <!-- SELECT2 -->
@@ -72,6 +75,10 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
         <li>
           <a href="notaCliente.php" class="<?= $pagina_actual === 'notaCliente.php' ? 'active' : '' ?>" aria-current="<?= $pagina_actual === 'notaCliente.php' ? 'page' : 'false' ?>">
             <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i><span>Nota</span></a>
+        </li>
+        <li>
+          <a href="cotizacion.php" class="<?= in_array($pagina_actual, array('cotizacion.php', 'guardarCotizacion.php', 'cotizacionPDF.php'), true) ? 'active' : '' ?>" aria-current="<?= in_array($pagina_actual, array('cotizacion.php', 'guardarCotizacion.php', 'cotizacionPDF.php'), true) ? 'page' : 'false' ?>">
+            <i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i><span>Cotización</span></a>
         </li>
         <?php if (usuario_es_administrador()) { ?>
         <li>
