@@ -378,6 +378,115 @@ foreach ($serviciosPorMesTipo as $periodoServicio => $datosMesServicio) {
   $resumenAnualServicios[$anioResumenServicio]['ganancia'] += $datosMesServicio['ganancia'];
 }
 
+$productosPorMes = array();
+$consultaProductosMes = mysqli_prepare(
+  $conn,
+  'SELECT YEAR(v.fecha_venta) AS anio, MONTH(v.fecha_venta) AS mes,
+          COALESCE(NULLIF(TRIM(v.descripcion), \'\'), ?) AS producto,
+          COALESCE(SUM(v.cantidad), 0) AS unidades,
+          COALESCE(SUM(CASE WHEN v.costo > 0 THEN v.costo ELSE 0 END), 0) AS monto,
+          COALESCE(SUM(CASE WHEN v.ganancia > 0 THEN v.ganancia ELSE 0 END), 0) AS ganancia
+   FROM ventas v
+   WHERE v.fecha_venta IS NOT NULL
+   GROUP BY YEAR(v.fecha_venta), MONTH(v.fecha_venta), v.descripcion
+   ORDER BY anio DESC, mes DESC, ganancia DESC, unidades DESC, monto DESC'
+);
+
+if ($consultaProductosMes === false) {
+  error_log('No fue posible preparar el resumen mensual de productos: ' . mysqli_error($conn));
+  http_response_code(500);
+  exit('No se pudo cargar el gráfico mensual de productos.');
+}
+
+$productoSinNombre = 'Producto sin descripción';
+if (
+  !mysqli_stmt_bind_param($consultaProductosMes, 's', $productoSinNombre) ||
+  !mysqli_stmt_execute($consultaProductosMes) ||
+  !mysqli_stmt_bind_result($consultaProductosMes, $anioProductoMes, $mesProductoMes, $nombreProductoMes, $unidadesProductoMes, $montoProductoMes, $gananciaProductoMes)
+) {
+  error_log('No fue posible consultar los productos vendidos por mes: ' . mysqli_stmt_error($consultaProductosMes));
+  mysqli_stmt_close($consultaProductosMes);
+  http_response_code(500);
+  exit('No se pudo cargar el gráfico mensual de productos.');
+}
+
+while (mysqli_stmt_fetch($consultaProductosMes)) {
+  $claveProductoMes = sprintf('%04d-%02d', (int) $anioProductoMes, (int) $mesProductoMes);
+  if (!isset($productosPorMes[$claveProductoMes])) {
+    $mesNumeroProducto = (int) $mesProductoMes;
+    $productosPorMes[$claveProductoMes] = array(
+      'nombre' => $nombresMesesGrafica[$mesNumeroProducto - 1] . ' ' . (int) $anioProductoMes,
+      'productos' => array()
+    );
+  }
+  $productosPorMes[$claveProductoMes]['productos'][] = array(
+    'nombre' => (string) $nombreProductoMes,
+    'unidades' => (float) $unidadesProductoMes,
+    'monto' => (float) $montoProductoMes,
+    'ganancia' => (float) $gananciaProductoMes
+  );
+}
+
+if (mysqli_stmt_errno($consultaProductosMes) !== 0) {
+  error_log('Ocurrió un error al leer los productos vendidos por mes: ' . mysqli_stmt_error($consultaProductosMes));
+  mysqli_stmt_close($consultaProductosMes);
+  http_response_code(500);
+  exit('No se pudo cargar el gráfico mensual de productos.');
+}
+mysqli_stmt_close($consultaProductosMes);
+
+$productosPorAnio = array();
+$consultaProductosAnuales = mysqli_prepare(
+  $conn,
+  'SELECT YEAR(v.fecha_venta) AS anio,
+          COALESCE(NULLIF(TRIM(v.descripcion), \'\'), ?) AS producto,
+          COALESCE(SUM(v.cantidad), 0) AS unidades,
+          COALESCE(SUM(CASE WHEN v.costo > 0 THEN v.costo ELSE 0 END), 0) AS monto,
+          COALESCE(SUM(CASE WHEN v.ganancia > 0 THEN v.ganancia ELSE 0 END), 0) AS ganancia
+   FROM ventas v
+   WHERE v.fecha_venta IS NOT NULL
+   GROUP BY YEAR(v.fecha_venta), v.descripcion
+   ORDER BY anio DESC, ganancia DESC, unidades DESC, monto DESC'
+);
+
+if ($consultaProductosAnuales === false) {
+  error_log('No fue posible preparar el resumen anual de productos: ' . mysqli_error($conn));
+  http_response_code(500);
+  exit('No se pudo cargar el gráfico anual de productos.');
+}
+
+if (
+  !mysqli_stmt_bind_param($consultaProductosAnuales, 's', $productoSinNombre) ||
+  !mysqli_stmt_execute($consultaProductosAnuales) ||
+  !mysqli_stmt_bind_result($consultaProductosAnuales, $anioProductoAnual, $nombreProductoAnual, $unidadesProductoAnual, $montoProductoAnual, $gananciaProductoAnual)
+) {
+  error_log('No fue posible consultar los productos vendidos por año: ' . mysqli_stmt_error($consultaProductosAnuales));
+  mysqli_stmt_close($consultaProductosAnuales);
+  http_response_code(500);
+  exit('No se pudo cargar el gráfico anual de productos.');
+}
+
+while (mysqli_stmt_fetch($consultaProductosAnuales)) {
+  $anioProducto = (int) $anioProductoAnual;
+  if (!isset($productosPorAnio[$anioProducto])) {
+    $productosPorAnio[$anioProducto] = array();
+  }
+  $productosPorAnio[$anioProducto][] = array(
+    'nombre' => (string) $nombreProductoAnual,
+    'unidades' => (float) $unidadesProductoAnual,
+    'monto' => (float) $montoProductoAnual,
+    'ganancia' => (float) $gananciaProductoAnual
+  );
+}
+
+if (mysqli_stmt_errno($consultaProductosAnuales) !== 0) {
+  error_log('Ocurrió un error al leer los productos vendidos por año: ' . mysqli_stmt_error($consultaProductosAnuales));
+  mysqli_stmt_close($consultaProductosAnuales);
+  http_response_code(500);
+  exit('No se pudo cargar el gráfico anual de productos.');
+}
+mysqli_stmt_close($consultaProductosAnuales);
+
 $ventasPorCategoria = array();
 $consultaCategorias = mysqli_prepare(
   $conn,
@@ -921,6 +1030,185 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
         </div>
       <?php } else { ?>
         <p class="ventas-semana-vacia">Aún no hay ventas por categoría este mes.</p>
+      <?php } ?>
+    </div>
+
+    <div class="ventas-productos-card">
+      <div class="ventas-productos-encabezado">
+        <div>
+          <h2>Productos con mayores ganancias del mes</h2>
+          <p>Selecciona el año y el mes para ordenar los productos por ganancia.</p>
+        </div>
+        <div class="ventas-productos-filtros">
+          <div>
+            <label for="ventas-productos-anio">Año</label>
+            <select id="ventas-productos-anio" class="form-control">
+              <?php
+              $aniosProductos = array();
+              foreach (array_keys($productosPorMes) as $periodoProducto) {
+                $anioProductoMesDisponible = substr($periodoProducto, 0, 4);
+                if (!in_array($anioProductoMesDisponible, $aniosProductos, true)) {
+                  $aniosProductos[] = $anioProductoMesDisponible;
+                }
+              }
+              rsort($aniosProductos);
+              $anioProductoSeleccionado = in_array((string) date('Y'), $aniosProductos, true)
+                ? (string) date('Y')
+                : (count($aniosProductos) > 0 ? $aniosProductos[0] : (string) date('Y'));
+              ?>
+              <?php if (count($aniosProductos) === 0) { ?>
+                <option value="<?= $anioProductoSeleccionado ?>"><?= $anioProductoSeleccionado ?></option>
+              <?php } ?>
+              <?php foreach ($aniosProductos as $anioProductoDisponible) { ?>
+                <option value="<?= $anioProductoDisponible ?>" <?= $anioProductoDisponible === $anioProductoSeleccionado ? 'selected' : '' ?>>
+                  <?= $anioProductoDisponible ?>
+                </option>
+              <?php } ?>
+            </select>
+          </div>
+          <div>
+            <label for="ventas-productos-mes">Mes</label>
+            <select id="ventas-productos-mes" class="form-control">
+              <?php
+              $mesInicialProductoSeleccionado = (int) date('n');
+              $claveMesInicialProducto = sprintf('%s-%02d', $anioProductoSeleccionado, $mesInicialProductoSeleccionado);
+              if (!isset($productosPorMes[$claveMesInicialProducto])) {
+                $mesInicialProductoSeleccionado = 0;
+                foreach (array_keys($productosPorMes) as $periodoInicialProducto) {
+                  if (substr($periodoInicialProducto, 0, 4) === $anioProductoSeleccionado) {
+                    $mesInicialProductoSeleccionado = (int) substr($periodoInicialProducto, 5, 2);
+                    break;
+                  }
+                }
+              }
+              ?>
+              <?php for ($mesProducto = 1; $mesProducto <= 12; $mesProducto++) {
+                $claveMesProducto = sprintf('%s-%02d', $anioProductoSeleccionado, $mesProducto);
+                $mesDisponible = isset($productosPorMes[$claveMesProducto]);
+                ?>
+                <option value="<?= $mesProducto ?>" <?= $mesDisponible ? '' : 'disabled' ?> <?= $mesProducto === $mesInicialProductoSeleccionado ? 'selected' : '' ?>>
+                  <?= $nombresMesesGrafica[$mesProducto - 1] ?>
+                </option>
+              <?php } ?>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <?php
+      $periodoProductoSeleccionado = null;
+      $mesActualProducto = (int) date('n');
+      $claveProductoActual = sprintf('%s-%02d', $anioProductoSeleccionado, $mesActualProducto);
+      if (isset($productosPorMes[$claveProductoActual])) {
+        $periodoProductoSeleccionado = $claveProductoActual;
+      } else {
+        foreach (array_keys($productosPorMes) as $periodoDisponible) {
+          if (substr($periodoDisponible, 0, 4) === $anioProductoSeleccionado) {
+            $periodoProductoSeleccionado = $periodoDisponible;
+            break;
+          }
+        }
+      }
+      ?>
+      <?php foreach ($productosPorMes as $periodoProducto => $datosMesProducto) {
+        $productosMesOrdenados = $datosMesProducto['productos'];
+        usort($productosMesOrdenados, function ($productoA, $productoB) {
+          return $productoB['ganancia'] <=> $productoA['ganancia'];
+        });
+        $productosMesLimitados = array_slice($productosMesOrdenados, 0, 10);
+        $maximoGananciaMes = count($productosMesLimitados) > 0
+          ? max(array_column($productosMesLimitados, 'ganancia'))
+          : 0;
+        ?>
+        <div class="ventas-productos-vista" data-periodo="<?= $periodoProducto ?>"
+          <?= $periodoProducto === $periodoProductoSeleccionado ? '' : 'hidden' ?>>
+          <?php if (count($productosMesLimitados) > 0) { ?>
+            <?php foreach ($productosMesLimitados as $productoMes) {
+              $anchoProductoMes = $maximoGananciaMes > 0
+                ? $productoMes['ganancia'] / $maximoGananciaMes * 100
+                : 0;
+              ?>
+              <div class="ventas-productos-fila ventas-productos-fila-ganancia"
+                title="<?= htmlspecialchars(number_format($productoMes['unidades']) . ' unidades vendidas', ENT_QUOTES, 'UTF-8') ?>">
+                <span class="ventas-productos-nombre"><?= htmlspecialchars($productoMes['nombre'], ENT_QUOTES, 'UTF-8') ?></span>
+                <span class="ventas-productos-barra-fondo">
+                  <span class="ventas-productos-barra" style="width: <?= number_format($anchoProductoMes, 2, '.', '') ?>%"></span>
+                </span>
+                <strong><?= number_format($productoMes['unidades']) ?> uds.</strong>
+                <small>Ganancia: $<?= number_format($productoMes['ganancia'], 2, '.', ',') ?></small>
+              </div>
+            <?php } ?>
+          <?php } else { ?>
+            <p class="ventas-semana-vacia">No hay productos registrados en este periodo.</p>
+          <?php } ?>
+        </div>
+      <?php } ?>
+      <?php if (count($productosPorMes) === 0) { ?>
+        <p class="ventas-semana-vacia">Aún no hay ventas de productos registradas.</p>
+      <?php } ?>
+    </div>
+
+    <div class="ventas-productos-card ventas-productos-anual-card">
+      <div class="ventas-productos-encabezado">
+        <div>
+          <h2>Productos con mayores ganancias del año</h2>
+          <p>Selecciona el año para comparar la ganancia obtenida por producto.</p>
+        </div>
+        <div class="ventas-productos-filtros">
+          <div>
+            <label for="ventas-productos-anual-anio">Año</label>
+            <select id="ventas-productos-anual-anio" class="form-control">
+              <?php
+              $aniosProductosAnuales = array_keys($productosPorAnio);
+              rsort($aniosProductosAnuales);
+              $anioProductoAnualSeleccionado = in_array((int) date('Y'), $aniosProductosAnuales, true)
+                ? (int) date('Y')
+                : (count($aniosProductosAnuales) > 0 ? $aniosProductosAnuales[0] : (int) date('Y'));
+              ?>
+              <?php if (count($aniosProductosAnuales) === 0) { ?>
+                <option value="<?= $anioProductoAnualSeleccionado ?>"><?= $anioProductoAnualSeleccionado ?></option>
+              <?php } ?>
+              <?php foreach ($aniosProductosAnuales as $anioProductoAnualDisponible) { ?>
+                <option value="<?= $anioProductoAnualDisponible ?>" <?= $anioProductoAnualDisponible === $anioProductoAnualSeleccionado ? 'selected' : '' ?>>
+                  <?= $anioProductoAnualDisponible ?>
+                </option>
+              <?php } ?>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <?php foreach ($productosPorAnio as $anioProductoAnual => $productosAnuales) {
+        $productosAnualesOrdenados = $productosAnuales;
+        usort($productosAnualesOrdenados, function ($productoA, $productoB) {
+          return $productoB['ganancia'] <=> $productoA['ganancia'];
+        });
+        $productosAnualesLimitados = array_slice($productosAnualesOrdenados, 0, 10);
+        $maximoGananciaAnual = count($productosAnualesLimitados) > 0
+          ? max(array_column($productosAnualesLimitados, 'ganancia'))
+          : 0;
+        ?>
+        <div class="ventas-productos-vista ventas-productos-anual-vista" data-anio="<?= $anioProductoAnual ?>"
+          <?= $anioProductoAnual === $anioProductoAnualSeleccionado ? '' : 'hidden' ?>>
+          <?php foreach ($productosAnualesLimitados as $productoAnual) {
+            $anchoProductoAnual = $maximoGananciaAnual > 0
+              ? $productoAnual['ganancia'] / $maximoGananciaAnual * 100
+              : 0;
+            ?>
+            <div class="ventas-productos-fila ventas-productos-fila-ganancia"
+              title="<?= htmlspecialchars(number_format($productoAnual['unidades']) . ' unidades vendidas', ENT_QUOTES, 'UTF-8') ?>">
+              <span class="ventas-productos-nombre"><?= htmlspecialchars($productoAnual['nombre'], ENT_QUOTES, 'UTF-8') ?></span>
+              <span class="ventas-productos-barra-fondo">
+                <span class="ventas-productos-barra" style="width: <?= number_format($anchoProductoAnual, 2, '.', '') ?>%"></span>
+              </span>
+              <strong><?= number_format($productoAnual['unidades']) ?> uds.</strong>
+              <small>Ganancia: $<?= number_format($productoAnual['ganancia'], 2, '.', ',') ?></small>
+            </div>
+          <?php } ?>
+        </div>
+      <?php } ?>
+      <?php if (count($productosPorAnio) === 0) { ?>
+        <p class="ventas-semana-vacia">Aún no hay ventas de productos registradas.</p>
       <?php } ?>
     </div>
 
@@ -1497,6 +1785,67 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
     selectorAnioVentas.addEventListener('change', function () {
       vistasVentasAnuales.forEach(function (vista) {
         vista.hidden = vista.dataset.anio !== selectorAnioVentas.value;
+      });
+    });
+
+    const selectorAnioProductos = document.getElementById('ventas-productos-anio');
+    const selectorMesProductos = document.getElementById('ventas-productos-mes');
+    const vistasProductosMes = document.querySelectorAll('.ventas-productos-vista:not(.ventas-productos-anual-vista)');
+
+    function actualizarProductosMes() {
+      const periodo = selectorAnioProductos.value + '-' + selectorMesProductos.value.padStart(2, '0');
+      let vistaEncontrada = false;
+      vistasProductosMes.forEach(function (vista) {
+        const visible = vista.dataset.periodo === periodo;
+        vista.hidden = !visible;
+        vistaEncontrada = vistaEncontrada || visible;
+      });
+      if (!vistaEncontrada) {
+        const vistaMesProducto = document.querySelector('.ventas-productos-card');
+        if (vistaMesProducto) {
+          let mensaje = vistaMesProducto.querySelector('.ventas-productos-sin-periodo');
+          if (!mensaje) {
+            mensaje = document.createElement('p');
+            mensaje.className = 'ventas-semana-vacia ventas-productos-sin-periodo';
+            mensaje.textContent = 'No hay ventas de productos en este mes.';
+            vistaMesProducto.appendChild(mensaje);
+          }
+          mensaje.hidden = false;
+        }
+      } else {
+        const mensaje = document.querySelector('.ventas-productos-sin-periodo');
+        if (mensaje) {
+          mensaje.hidden = true;
+        }
+      }
+    }
+
+    selectorAnioProductos.addEventListener('change', function () {
+      Array.from(selectorMesProductos.options).forEach(function (opcion) {
+        const periodo = selectorAnioProductos.value + '-' + opcion.value.padStart(2, '0');
+        opcion.disabled = !Array.from(vistasProductosMes).some(function (vista) {
+          return vista.dataset.periodo === periodo;
+        });
+      });
+      if (selectorMesProductos.options[selectorMesProductos.selectedIndex].disabled) {
+        const primeraDisponible = Array.from(selectorMesProductos.options).find(function (opcion) {
+          return !opcion.disabled;
+        });
+        if (primeraDisponible) {
+          selectorMesProductos.value = primeraDisponible.value;
+        }
+      }
+      actualizarProductosMes();
+    });
+    selectorMesProductos.addEventListener('change', actualizarProductosMes);
+
+    selectorAnioProductos.dispatchEvent(new Event('change'));
+
+    const selectorAnioProductosAnuales = document.getElementById('ventas-productos-anual-anio');
+    const vistasProductosAnuales = document.querySelectorAll('.ventas-productos-anual-vista');
+    selectorAnioProductosAnuales.addEventListener('change', function () {
+      vistasProductosAnuales.forEach(function (vista) {
+        vista.hidden = vista.dataset.anio !== selectorAnioProductosAnuales.value;
       });
     });
 

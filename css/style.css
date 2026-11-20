@@ -871,6 +871,115 @@ table th {
     box-shadow: 0 5px 16px rgba(20, 35, 60, 0.12);
 }
 
+.ventas-productos-card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #D9E3EC;
+    border-radius: 12px;
+    background-color: #FFF;
+    box-shadow: 0 5px 16px rgba(20, 35, 60, 0.12);
+}
+
+.ventas-productos-encabezado {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin: -18px -18px 16px;
+    padding: 12px 18px;
+    border-radius: 12px 12px 0 0;
+    background-color: #145789;
+}
+
+.ventas-productos-encabezado h2 {
+    margin: 0 0 5px;
+    color: #FFF;
+    font-size: 1.3rem;
+}
+
+.ventas-productos-encabezado p {
+    margin: 0;
+    color: #E3EAF1;
+    font-size: 0.85rem;
+}
+
+.ventas-productos-filtros {
+    display: flex;
+    gap: 8px;
+}
+
+.ventas-productos-filtros label {
+    display: block;
+    margin-bottom: 3px;
+    color: #FFF;
+    font-size: 0.75rem;
+}
+
+.ventas-productos-filtros select {
+    min-width: 95px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.ventas-productos-vista {
+    display: grid;
+    gap: 8px;
+}
+
+.ventas-productos-vista[hidden] {
+    display: none;
+}
+
+.ventas-productos-fila {
+    display: grid;
+    grid-template-columns: minmax(150px, 220px) minmax(80px, 1fr) 74px minmax(90px, auto);
+    align-items: center;
+    gap: 10px;
+    min-height: 38px;
+    padding: 7px 10px;
+    border: 1px solid #EDF2F6;
+    border-radius: 8px;
+}
+
+.ventas-productos-nombre {
+    overflow-wrap: anywhere;
+    font-weight: 600;
+}
+
+.ventas-productos-barra-fondo {
+    display: block;
+    height: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background-color: #E3EAF1;
+}
+
+.ventas-productos-barra {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #3989C5, #145789);
+}
+
+.ventas-productos-fila-ganancia .ventas-productos-barra {
+    background: linear-gradient(90deg, #56A77B, #28734A);
+}
+
+.ventas-productos-fila-ganancia small {
+    color: #28734A;
+    font-weight: 700;
+}
+
+.ventas-productos-fila strong {
+    color: #145789;
+    text-align: right;
+}
+
+.ventas-productos-fila small {
+    color: #64748B;
+    text-align: right;
+}
+
 .ventas-categoria-encabezado h2 {
     margin: 0 0 5px;
     color: #FFF;
@@ -1239,6 +1348,41 @@ table th {
 
     .ventas-categoria-card {
         padding: 16px;
+    }
+
+    .ventas-productos-card {
+        padding: 16px;
+    }
+
+    .ventas-productos-encabezado {
+        flex-direction: column;
+        margin: -16px -16px 16px;
+        padding: 12px 16px;
+    }
+
+    .ventas-productos-filtros {
+        width: 100%;
+    }
+
+    .ventas-productos-filtros > div {
+        flex: 1;
+    }
+
+    .ventas-productos-filtros select {
+        width: 100%;
+    }
+
+    .ventas-productos-fila {
+        grid-template-columns: minmax(0, 1fr) max-content;
+    }
+
+    .ventas-productos-barra-fondo {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .ventas-productos-fila small {
+        grid-column: 2;
     }
 
     .ventas-anual-card {
