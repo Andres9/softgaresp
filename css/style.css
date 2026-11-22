@@ -1522,6 +1522,35 @@ table th {
     color: red;
 }
 
+.nota-eliminar {
+    display: inline;
+    margin: 0;
+}
+
+.nota-eliminar button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.nota-confirmacion {
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(20, 35, 60, .2);
+}
+
+.nota-confirmacion .modal-title {
+    color: #17324d;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.nota-confirmacion-aviso {
+    margin-bottom: 0;
+    color: #8b4242;
+}
+
 .fa-file-pdf {
     color: #B30B00;
 }

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
+require_once __DIR__ . '/ventas_db.php';
 ?>
 
       <!-- SECCION DE VENTAS -->
@@ -13,7 +14,7 @@ requerir_usuario_autenticado();
         </div>
         <strong class="reportes-resumen-valor">
           <?php
-          $ventasTotales = "SELECT COUNT(id_venta) FROM ventas WHERE YEAR(fecha_venta) = 2025";
+          $ventasTotales = "SELECT COUNT(DISTINCT id_grupo) + COALESCE(SUM(id_grupo IS NULL), 0) FROM ventas WHERE YEAR(fecha_venta) = 2025";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             echo ($mostrar[0] . "");
@@ -30,7 +31,11 @@ requerir_usuario_autenticado();
         </div>
         <strong class="reportes-resumen-valor">
           <?php
-          $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE YEAR(fecha_venta) = 2026 AND costo >= 0";
+          $ventasTotales = "SELECT SUM(v.costo) FROM ventas v
+            LEFT JOIN (SELECT id_grupo, SUM(costo) AS total_grupo FROM ventas WHERE id_grupo IS NOT NULL GROUP BY id_grupo) g
+              ON g.id_grupo = v.id_grupo
+            WHERE YEAR(v.fecha_venta) = 2026
+              AND ((v.id_grupo IS NULL AND v.costo >= 0) OR (v.id_grupo IS NOT NULL AND g.total_grupo >= 0))";
           $resultado = mysqli_query($conn, $ventasTotales);
           while ($mostrar = mysqli_fetch_array($resultado)) {
             $vt  = number_format($mostrar[0],2, '.', ',');
@@ -57,9 +62,11 @@ requerir_usuario_autenticado();
       <thead>
         <tr>
           <th>ID</th>
+          <th>Venta</th>
           <th>Cantidad</th>
           <th>Descripcion</th>
           <th>Costo</th>
+          <th>Total venta</th>
           <th>Seccion</th>
           <th>Factura</th>
           <th>fecha_venta</th>
@@ -71,9 +78,12 @@ requerir_usuario_autenticado();
 
       <tbody>
         <?php
-        $consulta = "select * from ventas v
-                            JOIN seccion s ON v.seccion  = s.id_seccion 
-                            WHERE YEAR(fecha_venta) = 2026";
+        $consulta = "SELECT v.*, s.descripcionSeccion, COALESCE(g.total_grupo, v.costo) AS total_grupo
+                            FROM ventas v
+                            JOIN seccion s ON v.seccion = s.id_seccion
+                            LEFT JOIN (SELECT id_grupo, SUM(costo) AS total_grupo FROM ventas WHERE id_grupo IS NOT NULL GROUP BY id_grupo) g
+                              ON g.id_grupo = v.id_grupo
+                            WHERE YEAR(v.fecha_venta) = 2026";
 
         $resultado = mysqli_query($conn, $consulta);
         while ($mostrar = mysqli_fetch_array($resultado)) {
@@ -82,20 +92,22 @@ requerir_usuario_autenticado();
             <td>
               <?php echo $mostrar['id_venta'] ?>
             </td>
+            <td><?= $mostrar['id_grupo'] === null ? 'Individual' : 'Grupo ' . (int) $mostrar['id_grupo'] ?></td>
             <td>
               <?php echo $mostrar['cantidad'] ?>
             </td>
             <td>
-              <?php echo $mostrar['descripcion'] ?>
+              <?= htmlspecialchars((string) $mostrar['descripcion'], ENT_QUOTES, 'UTF-8') ?>
             </td>
             <td>
               <?php echo $mostrar['costo'] ?>
             </td>
+            <td><?= number_format((float) $mostrar['total_grupo'], 2, '.', ',') ?></td>
             <td>
-              <?php echo $mostrar['descripcionSeccion'] ?>
+              <?= htmlspecialchars((string) $mostrar['descripcionSeccion'], ENT_QUOTES, 'UTF-8') ?>
             </td>
             <td>
-              <?php echo $mostrar['factura'] ?>
+              <?= htmlspecialchars((string) $mostrar['factura'], ENT_QUOTES, 'UTF-8') ?>
             </td>
             <td>
               <?php echo $mostrar['fecha_venta'] ?>

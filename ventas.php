@@ -1,6 +1,9 @@
 <?php
 $mostrarGraficosEnReportes = defined('SOFTGARESP_REPORTE_GRAFICOS_VENTAS');
 mysqli_report(MYSQLI_REPORT_OFF);
+require_once __DIR__ . '/auth.php';
+requerir_usuario_autenticado();
+require_once __DIR__ . '/ventas_db.php';
 if (!$mostrarGraficosEnReportes) {
   include_once 'encabezado.php';
 }
@@ -34,7 +37,7 @@ $totalSemanal = 0.0;
 $cantidadSemanal = 0;
 $consultaSemana = mysqli_prepare(
   $conn,
-  'SELECT DATE(fecha_venta) AS dia, COUNT(*) AS cantidad, COALESCE(SUM(costo), 0) AS total
+  'SELECT DATE(fecha_venta) AS dia, COUNT(DISTINCT id_grupo) + SUM(id_grupo IS NULL) AS cantidad, COALESCE(SUM(costo), 0) AS total
    FROM ventas
    WHERE fecha_venta >= ? AND fecha_venta < ?
    GROUP BY DATE(fecha_venta)
@@ -164,10 +167,13 @@ $totalVentasMes = 0.0;
 $cantidadVentasMes = 0;
 $consultaMes = mysqli_prepare(
   $conn,
-  'SELECT DATE_SUB(DATE(fecha_venta), INTERVAL WEEKDAY(fecha_venta) DAY) AS semana,
-          COUNT(*) AS cantidad, COALESCE(SUM(costo), 0) AS total
-   FROM ventas
-   WHERE fecha_venta >= ? AND fecha_venta < ? AND costo >= 0
+  'SELECT DATE_SUB(DATE(v.fecha_venta), INTERVAL WEEKDAY(v.fecha_venta) DAY) AS semana,
+          COUNT(DISTINCT v.id_grupo) + SUM(v.id_grupo IS NULL) AS cantidad, COALESCE(SUM(v.costo), 0) AS total
+   FROM ventas v
+   LEFT JOIN (SELECT id_grupo, SUM(costo) AS total_grupo FROM ventas WHERE id_grupo IS NOT NULL GROUP BY id_grupo) g
+     ON g.id_grupo = v.id_grupo
+   WHERE v.fecha_venta >= ? AND v.fecha_venta < ?
+     AND ((v.id_grupo IS NULL AND v.costo >= 0) OR (v.id_grupo IS NOT NULL AND g.total_grupo >= 0))
    GROUP BY semana
    ORDER BY semana'
 );
@@ -681,63 +687,93 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
       <div class="col-md-6">
         <h2>Registro Ventas</h2>
         <div id="registro" class="container">
-          <form action="functions.php" method="post">
-            <div class="row">
-              <div class="col-md-12" style="display: none">
-                <div class="row">
-                  <label for="">Fecha de venta</label>
-                  <input type="datetime" name="fechaVenta" value="<?php echo $fecha_actual ?>"
-                    class="form-control datepicker" />
+          <?php
+          $borradorVenta = isset($_SESSION['venta_borrador']) ? $_SESSION['venta_borrador'] : array();
+          $errorVenta = isset($_SESSION['venta_error']) ? $_SESSION['venta_error'] : '';
+          $mensajeVenta = isset($_SESSION['venta_exito']) ? $_SESSION['venta_exito'] : '';
+          unset($_SESSION['venta_borrador'], $_SESSION['venta_error'], $_SESSION['venta_exito']);
+          $productosVenta = isset($borradorVenta['productos']) && is_array($borradorVenta['productos']) && count($borradorVenta['productos']) > 0
+            ? $borradorVenta['productos'] : array(array('cantidad' => '1'));
+          $resultadoSecciones = mysqli_query($conn, 'SELECT id_seccion, descripcionSeccion FROM seccion ORDER BY descripcionSeccion');
+          if (!$resultadoSecciones) {
+            error_log('No se pudieron consultar las secciones de ventas: ' . mysqli_error($conn));
+            http_response_code(500);
+            exit('No se pudieron cargar las secciones de ventas.');
+          }
+          $seccionesVenta = mysqli_fetch_all($resultadoSecciones, MYSQLI_ASSOC);
+          $escaparVenta = function ($valor) { return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8'); };
+          $mostrarProductoVenta = function ($indice, $producto) use ($seccionesVenta, $escaparVenta) {
+            $valor = function ($campo, $defecto = '') use ($producto, $escaparVenta) {
+              return $escaparVenta(isset($producto[$campo]) && is_scalar($producto[$campo]) ? $producto[$campo] : $defecto);
+            };
+            ?>
+            <fieldset class="border rounded p-3 mb-3 venta-producto">
+              <legend class="float-none w-auto px-2 fs-6">Producto</legend>
+              <div class="row">
+                <div class="col-md-2 col-xs-12">
+                  <label>Cant.
+                    <input type="number" min="1" max="2147483647" step="1" required name="productos[<?= $indice ?>][cantidad]" value="<?= $valor('cantidad', '1') ?>" class="form-control venta-cantidad">
+                  </label>
+                </div>
+                <div class="col-md-10 col-xs-12">
+                  <label class="w-100">Descripción
+                    <input type="text" maxlength="50" required name="productos[<?= $indice ?>][descripcion]" value="<?= $valor('descripcion') ?>" class="form-control">
+                  </label>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                  <label class="w-100">Precio unitario
+                    <input type="number" step="0.01" required name="productos[<?= $indice ?>][precio]" value="<?= $valor('precio') ?>" class="form-control venta-precio">
+                  </label>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                  <label class="w-100">Compra total
+                    <input type="number" step="0.01" required name="productos[<?= $indice ?>][pc]" value="<?= $valor('pc') ?>" class="form-control">
+                  </label>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                  <label class="w-100">Ganancia total
+                    <input type="number" step="0.01" required name="productos[<?= $indice ?>][ganancia]" value="<?= $valor('ganancia') ?>" class="form-control">
+                  </label>
+                </div>
+                <div class="col-md-8 col-xs-12">
+                  <label>Sección</label>
+                  <select name="productos[<?= $indice ?>][seccion]" class="select">
+                    <option value="">Selecciona una opción</option>
+                    <?php foreach ($seccionesVenta as $seccionVenta) { ?>
+                      <option value="<?= $escaparVenta($seccionVenta['id_seccion']) ?>" <?= isset($producto['seccion']) && is_scalar($producto['seccion']) && (string) $producto['seccion'] === (string) $seccionVenta['id_seccion'] ? 'selected' : '' ?>><?= $escaparVenta($seccionVenta['descripcionSeccion']) ?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                  <label>Subtotal</label>
+                  <output class="form-control venta-subtotal">$0.00</output>
                 </div>
               </div>
-              <div class="col-md-2 col-xs-12">
-                <label for="">Cant.</label>
-                <input type="number" value="1" name="cantidad" class="form-control" />
-              </div>
-              <div class="col-md-10 col-xs-12">
-                <label for="">Descripción</label>
-                <input type="text" name="descripcion" class="form-control" />
-              </div>
-              <div class="col-md-4 col-xs-12">
-                <label for="">Costo</label>
-                <input type="number" name="costo" class="form-control" step="0.01" />
-              </div>
-              <div class="col-md-4 col-xs-12">
-                <label for="">Precio compra</label>
-                <input type="number" name="pc" class="form-control" step="0.01" />
-              </div>
-              <div class="col-md-4 col-xs-12">
-                <label for="">Ganancia</label>
-                <input type="number" name="g" class="form-control" step="0.01" />
-              </div>
-              <div class="col-md-8 col-xs-12">
-                <label for="">Sección</label>
-                <select name="opcionnegocio" class="select">
-                  <option value="">Selecciona una opcion</option>
-                  <?php
-                  $ventasTotales = "SELECT * FROM seccion ORDER BY descripcionSeccion";
-                  $resultado = mysqli_query($conn, $ventasTotales);
-                  while ($mostrar = mysqli_fetch_array($resultado)) {
-                    $id = $mostrar["id_seccion"];
-                    $descripcion = $mostrar["descripcionSeccion"];
-                    ?>
-                    <option value="<?php echo $id; ?>">
-                      <?php echo $descripcion ?>
-                    </option>
-                    <?php
-                  }
-                  ?>
-                </select>
-              </div>
-              <div class="col-md-3 col-xs-12">
-                <label for="">Facturar</label>
-                <select name="factura" class="select">
-                  <option value="no">No</option>
-                  <option value="factura">Si</option>
-                </select>
-              </div>
+              <button type="button" class="btn btn-outline-danger btn-sm mt-2 venta-quitar">Quitar producto</button>
+            </fieldset>
+            <?php
+          };
+          ?>
+          <?php if ($errorVenta !== '') { ?><div class="alert alert-danger" role="alert"><?= $escaparVenta($errorVenta) ?></div><?php } ?>
+          <?php if ($mensajeVenta !== '') { ?><div class="alert alert-success" role="status"><?= $escaparVenta($mensajeVenta) ?></div><?php } ?>
+          <form action="functions.php" method="post" id="formulario-venta">
+            <input type="hidden" name="token_csrf" value="<?= $escaparVenta(token_csrf()) ?>">
+            <div id="productos-venta">
+              <?php foreach (array_values($productosVenta) as $indice => $producto) { $mostrarProductoVenta($indice, is_array($producto) ? $producto : array()); } ?>
             </div>
-            <button type="submit" class="btn btn-primary">
+            <template id="plantilla-producto-venta"><?php $mostrarProductoVenta('__INDEX__', array('cantidad' => '1')); ?></template>
+            <button type="button" id="agregar-producto-venta" class="btn btn-outline-primary mb-3">Añadir producto</button>
+            <div class="row">
+              <div class="col-md-4 col-xs-12">
+                <label>Facturar</label>
+                <select name="factura" class="select">
+                  <option value="no" <?= !isset($borradorVenta['factura']) || $borradorVenta['factura'] !== 'factura' ? 'selected' : '' ?>>No</option>
+                  <option value="factura" <?= isset($borradorVenta['factura']) && $borradorVenta['factura'] === 'factura' ? 'selected' : '' ?>>Sí</option>
+                </select>
+              </div>
+              <div class="col-md-8 col-xs-12"><label>Total de la venta</label><output id="total-venta" class="form-control">$0.00</output></div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">
               <i class="fa-solid fa-floppy-disk"></i> Registrar
             </button>
           </form>
@@ -750,9 +786,11 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
           <thead>
             <tr>
               <th>ID</th>
+              <th>Venta</th>
               <th>Cantidad</th>
               <th>Descripcion</th>
               <th>Precio</th>
+              <th>Total venta</th>
               <th>Categoria</th>
               <th>Fecha</th>
               <th>Editar</th>
@@ -762,19 +800,23 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
 
           <tbody>
             <?php
-            $consulta = "SELECT * FROM ventas 
-                WHERE fecha_venta >= DATE(NOW()) 
-                ";
+            $consulta = "SELECT v.*, COALESCE(g.total_grupo, v.costo) AS total_grupo
+                FROM ventas v
+                LEFT JOIN (SELECT id_grupo, SUM(costo) AS total_grupo FROM ventas WHERE id_grupo IS NOT NULL GROUP BY id_grupo) g
+                  ON g.id_grupo = v.id_grupo
+                WHERE v.fecha_venta >= DATE(NOW())";
             $resultado = mysqli_query($conn, $consulta);
             while ($mostrar = mysqli_fetch_array($resultado)) {
               ?>
               <tr>
                 <td><?php echo $mostrar['id_venta'] ?></td>
+                <td><?= $mostrar['id_grupo'] === null ? 'Individual' : 'Grupo ' . (int) $mostrar['id_grupo'] ?></td>
                 <td><?php echo $mostrar['cantidad'] ?></td>
-                <td><?php echo $mostrar['descripcion'] ?></td>
+                <td><?= $escaparVenta($mostrar['descripcion']) ?></td>
                 <td><?php echo $mostrar['costo'] ?></td>
+                <td><?= number_format((float) $mostrar['total_grupo'], 2, '.', ',') ?></td>
                 <td><?php echo $mostrar['seccion'] ?></td>
-                <td><?php echo $mostrar['fecha'] ?></td>
+                <td><?php echo $mostrar['fecha_venta'] ?></td>
                 <td>
                   <a href="editarVentas.php?updVenta=<?= $mostrar['id_venta'] ?>"><i class="fa-solid fa-pen"></i></a>
                 </td>
@@ -1042,7 +1084,7 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
         <div class="ventas-productos-filtros">
           <div>
             <label for="ventas-productos-anio">Año</label>
-            <select id="ventas-productos-anio" class="form-control">
+            <select id="ventas-productos-anio" class="form-control selector-datos-nativo">
               <?php
               $aniosProductos = array();
               foreach (array_keys($productosPorMes) as $periodoProducto) {
@@ -1068,7 +1110,7 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
           </div>
           <div>
             <label for="ventas-productos-mes">Mes</label>
-            <select id="ventas-productos-mes" class="form-control">
+            <select id="ventas-productos-mes" class="form-control selector-datos-nativo">
               <?php
               $mesInicialProductoSeleccionado = (int) date('n');
               $claveMesInicialProducto = sprintf('%s-%02d', $anioProductoSeleccionado, $mesInicialProductoSeleccionado);
@@ -1157,7 +1199,7 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
         <div class="ventas-productos-filtros">
           <div>
             <label for="ventas-productos-anual-anio">Año</label>
-            <select id="ventas-productos-anual-anio" class="form-control">
+            <select id="ventas-productos-anual-anio" class="form-control selector-datos-nativo">
               <?php
               $aniosProductosAnuales = array_keys($productosPorAnio);
               rsort($aniosProductosAnuales);
@@ -1220,7 +1262,7 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
         </div>
         <div class="ventas-anual-filtro">
           <label for="ventas-anual-anio">Año</label>
-          <select id="ventas-anual-anio" class="form-control">
+          <select id="ventas-anual-anio" class="form-control selector-datos-nativo">
             <?php if (count($aniosDisponibles) === 0) { ?>
               <option value="<?= $anioGraficaSeleccionado ?>"><?= $anioGraficaSeleccionado ?></option>
             <?php } ?>
@@ -1573,7 +1615,7 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
         <div class="servicios-tipo-filtros">
           <div class="servicios-tipo-filtro">
             <label for="servicios-tipo-anio">Año</label>
-            <select id="servicios-tipo-anio" class="form-control" <?= count($aniosServiciosTipo) === 0 ? 'disabled' : '' ?>>
+            <select id="servicios-tipo-anio" class="form-control selector-datos-nativo" <?= count($aniosServiciosTipo) === 0 ? 'disabled' : '' ?>>
               <?php if (count($aniosServiciosTipo) === 0) { ?>
                 <option value="<?= htmlspecialchars($anioServicioSeleccionado, ENT_QUOTES, 'UTF-8') ?>"
                   data-meses="">
@@ -1591,7 +1633,7 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
           </div>
           <div class="servicios-tipo-filtro">
             <label for="servicios-tipo-mes">Mes</label>
-            <select id="servicios-tipo-mes" class="form-control" <?= count($periodosServiciosTipo) === 0 ? 'disabled' : '' ?>>
+            <select id="servicios-tipo-mes" class="form-control selector-datos-nativo" <?= count($periodosServiciosTipo) === 0 ? 'disabled' : '' ?>>
               <?php foreach ($nombresMesesGrafica as $indiceMesGrafica => $nombreMesGrafica) {
                   $valorMesGrafica = sprintf('%02d', $indiceMesGrafica + 1);
                   ?>

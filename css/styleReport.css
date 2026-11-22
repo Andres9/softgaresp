@@ -1,185 +1,289 @@
-html {
+@page {
+    margin: 18px 24px;
+}
+
+body {
     margin: 0;
-    padding: 0;
+    color: #263a52;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.2em;
-}
-
-/* CONTENEDOR */
-.container {
-    padding: 5px;
-    border: 2.5px solid #000;
-    border-radius: 10px;
-}
-
-/* NOTA DE ENTRADA */
-#title {
-    font-size: 1.5em;
-    font-weight: bold;
-    text-align: center;
-    background-color: #008DC0;
-    color: #FFF;
-    text-transform: uppercase;
-    padding: 12px 0;
-}
-
-/* LOGO,SERVICIOS Y NOTA */
-.headReport {
-    font-size: 10px;
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: bold;
-    line-height: 0.2em;
-    height: 120px;
-}
-
-.headReport>div {
-    position: relative;
-    display: inline-block;
-}
-
-.headReport img {
-    width: 100px;
-    margin-bottom: 20px;
-}
-
-#logo {
-    width: 22%;
-    line-height: 0.3em;
-    font-size: 1em;
-}
-
-#dataFecha {
-    font-size: 1.2em;
-}
-
-#fechaalta {
-    font-size: 1.3em;
-    font-weight: bold;
-    color: red;
-}
-
-#imglogo {
-    width: 150px;
-    margin: 0;
-}
-
-#servicios {
-    margin-bottom: 10px;
-    width: 60%;
-    font-size: 1.5em;
-}
-
-#notaid {
-    margin-top: 40px;
-    width: 15%;
-}
-
-.titulo {
-     background-color: #BBD2EC;
-    color: #000;
-    padding: 8px 0;
-    text-align: center;
-    font-size: 1.5em;
-    margin: 0;
-    text-transform: uppercase;
-}
-
-#idnota {
-    color: red;
-    font-size: 4.2em;
-}
-
-/* CUERPO DE LA NOTA DE ENTRADA */
-#bodyReport {
-    font-size: 10px;
-}
-
-#bodyReport>p {
-    display: inline-block;
-    font-size: 1.6em;
-}
-
-.titlehead {
-    width: 23%;
-    font-weight: bold;
-    font-size: 1.8em;
-    text-align: center;
+    font-size: 12px;
+    line-height: 1.3;
 }
 
 table {
+    border-collapse: collapse;
+    table-layout: fixed;
     width: 100%;
 }
 
-table thead {
-    font-size: 1.6em;
-    background-color: #E9ECEF;
+.icono {
+    height: 13px;
+    margin-right: 4px;
+    vertical-align: middle;
+    width: 13px;
+}
+
+.headReport {
+    display: table;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.headReport > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#logo {
+    width: 30%;
+}
+
+#imglogo {
+    width: 125px;
+}
+
+#dataFecha {
+    color: #5b6d84;
+    font-size: 10px;
+}
+
+#dataFecha p, #servicios p {
+    margin: 2px 0;
+}
+
+#servicios {
+    color: #506782;
+    font-size: 12px;
     text-align: center;
+    width: 40%;
 }
 
-table td {
-    font-size: 1.2em;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    text-align: center;
-}
-
-.info {
-    height: 75px;
-}
-
-.info>div {
-    display: inline-block;
-    width: 49%;
-}
-
-/* PAGOS */
-#cantidades {
-    height: 45px;
-    font-size: 1em;
-    text-align: center;
-    line-height: 0.8em;
-    margin-top: 15px;
-    margin-right: 15px;
-}
-
-#cantidades p {
+#servicios p:first-child {
+    color: #214e83;
+    font-size: 15px;
     font-weight: bold;
-    font-size: 1.2em;
 }
 
-#cantidades span {
-    font-weight: normal;
-    font-size: 1.5em;
+#entrada {
+    padding-left: 12px;
+    width: 30%;
 }
 
-/* PIE DE LA NOTA DE ENTRADA */
+.entrada-contenido {
+    border-left: 2px solid #9dbbe0;
+    padding: 5px 0 5px 10px;
+}
 
-#footerReport {
-    background-color: #008DC0;
-    font-size: 0.8em;
-    text-align: center;
-    color: #FFF;
+.entrada-etiqueta {
+    color: #596e8c;
+    font-size: 10px;
     font-weight: bold;
-    padding: 10px 0;
     text-transform: uppercase;
 }
 
-#footerReport p {
-    margin: 0;
+.entrada-fecha {
+    color: #214e83;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 4px;
 }
 
- #contacto{
-    font-size: 1.5em;
+.portada {
+    background: #dceafa;
+    border-left: 3px solid #4d80bd;
+}
+
+.portada-titulo {
+    padding: 8px 12px;
+    vertical-align: middle;
+}
+
+.portada-etiqueta,
+.folio-etiqueta {
+    color: #48678f;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+.portada-nombre {
+    color: #214e83;
+    font-size: 21px;
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.icono-titulo {
+    height: 19px;
+    margin-right: 5px;
+    width: 19px;
+}
+
+.portada-folio {
+    padding: 8px 12px;
+    text-align: right;
+    vertical-align: middle;
+    width: 23%;
+}
+
+#idnota {
+    color: #bf3540;
+    font-size: 32px;
     font-weight: bold;
 }
 
-
-#direccion{
-    font-size: 1em;
-    font-style: italic;
-    text-transform: capitalize;
+.titulo {
+    border-bottom: 1px solid #d3e1f1;
+    color: #315f96;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: .3px;
+    margin: 7px 0 4px;
+    padding-bottom: 3px;
+    text-transform: uppercase;
 }
 
-#compimp{
-    font-size: 1.5em;
+.cliente-nombre {
+    border: 1px solid #d9e5f2;
+    margin: 0;
+    padding: 6px 9px;
+}
+
+.cliente-nombre span,
+.datos-equipo span {
+    color: #5b708d;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.cliente-nombre span {
+    margin-right: 14px;
+}
+
+.cliente-nombre strong,
+.datos-equipo strong {
+    color: #294d77;
+    font-size: 12px;
+}
+
+.datos-equipo td {
+    background: #eef4fb;
+    border: 1px solid #d9e5f2;
+    padding: 5px 9px;
+    vertical-align: top;
+    overflow-wrap: break-word;
+}
+
+.datos-equipo span,
+.datos-equipo strong {
+    display: block;
+}
+
+.datos-equipo strong {
+    margin-top: 2px;
+}
+
+.descripcion-servicio {
+    border: 1px solid #d9e5f2;
+    overflow-wrap: break-word;
+    padding: 6px 9px;
+}
+
+.recepcion-pdf {
+    border: 1px solid #d9e5f2;
+}
+
+.recepcion-pdf td {
+    overflow-wrap: break-word;
+    padding: 3px 9px;
+    vertical-align: top;
+}
+
+.recepcion-pdf strong {
+    color: #315f96;
+}
+
+.nota-con-recepcion .titulo {
+    margin: 3px 0 2px;
+    padding-bottom: 1px;
+}
+
+.nota-con-recepcion .headReport {
+    margin-bottom: 3px;
+}
+
+.nota-con-recepcion .portada-titulo,
+.nota-con-recepcion .portada-folio {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.nota-con-recepcion .cliente-nombre,
+.nota-con-recepcion .descripcion-servicio {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.nota-con-recepcion .datos-equipo td,
+.nota-con-recepcion #cantidades td {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.nota-con-recepcion #footerReport {
+    margin-top: 4px;
+    padding-top: 3px;
+}
+
+#cantidades td {
+    background: #eef4fb;
+    border: 1px solid #d9e5f2;
+    padding: 6px 10px;
+}
+
+#cantidades td.total-pago {
+    background: #dceafa;
+}
+
+#cantidades td.sin-pago {
+    background: transparent;
+    border: 0;
+}
+
+#cantidades span,
+#cantidades strong {
+    display: block;
+}
+
+#cantidades span {
+    color: #5b708d;
+    font-size: 10px;
+}
+
+#cantidades strong {
+    color: #214e83;
+    font-size: 18px;
+    margin-top: 2px;
+    text-align: right;
+}
+
+#footerReport {
+    border-top: 1px solid #d3e1f1;
+    color: #5b6d84;
+    font-size: 10px;
+    margin-top: 8px;
+    padding-top: 6px;
+    text-align: center;
+}
+
+#footerReport p, #footerReport div {
+    display: inline;
+    margin: 0 5px;
+}
+
+.icono-pie {
+    height: 11px;
+    width: 11px;
 }

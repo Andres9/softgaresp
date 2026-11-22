@@ -357,6 +357,7 @@
 
 .cotizacion-intro h1 {
     margin: 8px 0 5px;
+    color: #fff;
     font-size: 32px;
     letter-spacing: -.5px;
 }
@@ -518,6 +519,74 @@
 
 .cotizacion-image-current {
     color: #17818a;
+}
+
+.cotizacion-conversion {
+    margin-bottom: 20px;
+    padding: 18px 22px;
+    border: 1px solid #cce5e8;
+    border-left: 4px solid #087f8b;
+    border-radius: 8px;
+    background: #f2fbfb;
+}
+
+.cotizacion-conversion h2 {
+    margin: 0 0 8px;
+    color: #153651;
+    font-size: 18px;
+}
+
+.cotizacion-conversion form {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.cotizacion-conversion label {
+    display: grid;
+    gap: 5px;
+    margin: 0;
+    color: #41536a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.cotizacion-conversion input {
+    min-height: 40px;
+    padding: 7px 10px;
+    border: 1px solid #d3dee7;
+    border-radius: 6px;
+}
+
+.cotizacion-actions form {
+    display: inline;
+}
+
+.cotizacion-payment-form {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px !important;
+}
+
+.cotizacion-payment-form input {
+    width: 90px;
+    min-height: 30px;
+    padding: 3px 6px;
+    font-size: 12px;
+}
+
+.cotizacion-payment-form button,
+.cotizacion-sale-link {
+    padding: 4px 7px;
+    border: 0;
+    border-radius: 4px;
+    color: #fff;
+    background: #087f8b;
+    font-size: 11px;
+    text-decoration: none;
+    white-space: nowrap;
     font-size: 11px;
 }
 

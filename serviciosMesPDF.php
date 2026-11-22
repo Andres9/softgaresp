@@ -137,10 +137,10 @@ ob_start();
         }
 
         .report-header {
-            background: #173c66;
-            color: #fff;
+            border-bottom: 2px solid #333;
+            color: #222;
             margin-bottom: 18px;
-            padding: 16px;
+            padding: 8px 0 12px;
         }
 
         .header-layout {
@@ -163,13 +163,13 @@ ob_start();
         }
 
         .report-title {
-            color: #fff;
+            color: #222;
             font-size: 17px;
             margin: 0 0 5px;
         }
 
         .report-period {
-            color: #d7e3ef;
+            color: #555;
             font-size: 10px;
         }
 
@@ -181,9 +181,8 @@ ob_start();
         }
 
         .summary td {
-            background: #f4f8fc;
-            border: 1px solid #e1e9f2;
-            border-top: 3px solid #3980b8;
+            border: 1px solid #ccc;
+            border-top: 2px solid #555;
             padding: 10px 12px;
             width: 33.33%;
         }
@@ -203,11 +202,11 @@ ob_start();
         }
 
         h2 {
-            border-left: 3px solid #3980b8;
+            border-bottom: 1px solid #777;
             color: #29415e;
             font-size: 11px;
             margin: 16px 0 8px;
-            padding-left: 8px;
+            padding: 0 0 5px;
         }
 
         .services {
@@ -217,8 +216,8 @@ ob_start();
         }
 
         .services th {
-            background: #214f79;
-            color: #fff;
+            border-bottom: 1px solid #555;
+            color: #222;
             font-size: 8px;
             padding: 7px 5px;
             text-align: left;
@@ -230,10 +229,6 @@ ob_start();
             padding: 6px 5px;
             vertical-align: top;
             word-wrap: break-word;
-        }
-
-        .services tr:nth-child(even) td {
-            background: #f7f9fc;
         }
 
         .amount {

@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
-require_once 'conexion.php';
+mysqli_report(MYSQLI_REPORT_OFF);
+require_once __DIR__ . '/ventas_db.php';
 require_once 'dompdf/autoload.inc.php';
 
 use Dompdf\Dompdf;
@@ -14,11 +15,14 @@ $inicio = $mesInicio->format('Y-m-d H:i:s');
 $fin = $mesSiguiente->format('Y-m-d H:i:s');
 
 $consulta = $conn->prepare(
-    'SELECT v.id_venta, v.cantidad, v.descripcion, v.costo, v.factura, v.fecha_venta,
+    'SELECT v.id_venta, v.id_grupo, v.cantidad, v.descripcion, v.costo, v.factura, v.fecha_venta,
             s.descripcionSeccion
      FROM ventas v
      LEFT JOIN seccion s ON v.seccion = s.id_seccion
-     WHERE v.fecha_venta >= ? AND v.fecha_venta < ? AND v.costo >= 0
+     LEFT JOIN (SELECT id_grupo, SUM(costo) AS total_grupo FROM ventas WHERE id_grupo IS NOT NULL GROUP BY id_grupo) g
+       ON g.id_grupo = v.id_grupo
+     WHERE v.fecha_venta >= ? AND v.fecha_venta < ?
+       AND ((v.id_grupo IS NULL AND v.costo >= 0) OR (v.id_grupo IS NOT NULL AND g.total_grupo >= 0))
      ORDER BY v.fecha_venta ASC, v.id_venta ASC'
 );
 
@@ -72,16 +76,20 @@ $ventasFacturadas = 0;
 $totalFacturado = 0;
 $ventasSinFactura = 0;
 $totalSinFactura = 0;
+$operacionesVistas = array();
 
 foreach ($ventas as $venta) {
     $importe = (float) $venta['costo'];
     $totalVentas += $importe;
 
+    $claveOperacion = $venta['id_grupo'] === null ? 'i' . $venta['id_venta'] : 'g' . $venta['id_grupo'];
+    $esNuevaOperacion = !isset($operacionesVistas[$claveOperacion]);
+    $operacionesVistas[$claveOperacion] = true;
     if (strtolower(trim((string) $venta['factura'])) === 'factura') {
-        $ventasFacturadas++;
+        if ($esNuevaOperacion) $ventasFacturadas++;
         $totalFacturado += $importe;
     } else {
-        $ventasSinFactura++;
+        if ($esNuevaOperacion) $ventasSinFactura++;
         $totalSinFactura += $importe;
     }
 }
@@ -106,9 +114,9 @@ ob_start();
         }
 
         .report-header {
-            background: #173c66;
+            border-bottom: 2px solid #333;
             margin-bottom: 20px;
-            padding: 17px;
+            padding: 8px 0 12px;
         }
 
         .header-layout {
@@ -131,14 +139,14 @@ ob_start();
         }
 
         .brand {
-            color: #fff;
+            color: #222;
             font-size: 18px;
             font-weight: bold;
             letter-spacing: 1.8px;
         }
 
         .brand-subtitle {
-            color: #c9d8e8;
+            color: #555;
             font-size: 8px;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -149,13 +157,13 @@ ob_start();
         }
 
         h1 {
-            color: #fff;
+            color: #222;
             font-size: 16px;
             margin: 0 0 5px;
         }
 
         .eyebrow {
-            color: #9dc9ed;
+            color: #555;
             font-size: 7px;
             font-weight: bold;
             letter-spacing: 1.4px;
@@ -164,13 +172,13 @@ ob_start();
         }
 
         .period {
-            color: #d7e3ef;
+            color: #555;
             font-size: 9px;
         }
 
         .header-tag {
-            border: 1px solid #6686a6;
-            color: #d7e3ef;
+            border: 1px solid #aaa;
+            color: #444;
             font-size: 7px;
             letter-spacing: 1px;
             padding: 6px 8px;
@@ -187,9 +195,8 @@ ob_start();
         }
 
         .summary td {
-            background: #f4f8fc;
-            border: 1px solid #e1e9f2;
-            border-top: 3px solid #3980b8;
+            border: 1px solid #ccc;
+            border-top: 2px solid #555;
             padding: 11px 12px;
             width: 33.33%;
         }
@@ -210,11 +217,11 @@ ob_start();
         }
 
         h2 {
-            border-left: 3px solid #3980b8;
+            border-bottom: 1px solid #777;
             color: #29415e;
             font-size: 10px;
             margin: 19px 0 8px;
-            padding: 2px 0 2px 8px;
+            padding: 2px 0 5px;
         }
 
         .sales {
@@ -224,8 +231,8 @@ ob_start();
         }
 
         .sales th {
-            background: #214f79;
-            color: #fff;
+            border-bottom: 1px solid #555;
+            color: #222;
             font-size: 8px;
             padding: 8px 6px;
             text-align: left;
@@ -239,10 +246,6 @@ ob_start();
             word-wrap: break-word;
         }
 
-        .sales tr:nth-child(even) td {
-            background: #f7f9fc;
-        }
-
         .sales .number,
         .sales .amount {
             text-align: right;
@@ -253,20 +256,17 @@ ob_start();
         }
 
         .empty {
-            background: #f7f9fc;
             color: #718096;
             padding: 20px;
             text-align: center;
         }
 
         .invoice-yes {
-            background: #e8f5ee;
             color: #26734d;
             font-weight: bold;
         }
 
         .invoice-no {
-            background: #f1f3f6;
             color: #67778a;
         }
 
@@ -283,13 +283,12 @@ ob_start();
         }
 
         .invoice-summary th {
-            background: #edf3f8;
             color: #40536b;
         }
 
         .invoice-summary .total-row th {
-            background: #173c66;
-            color: #fff;
+            border-top: 2px solid #555;
+            color: #222;
         }
 
         .invoice-summary .amount {
@@ -332,7 +331,7 @@ ob_start();
         <tr>
             <td>
                 <div class="summary-label">Operaciones</div>
-                <div class="summary-value"><?php echo count($ventas); ?></div>
+                <div class="summary-value"><?php echo count($operacionesVistas); ?></div>
             </td>
             <td>
                 <div class="summary-label">Total vendido</div>
@@ -346,10 +345,11 @@ ob_start();
     </table>
 
     <h2>Detalle de ventas</h2>
+    <p>Los productos con el mismo identificador G pertenecen a una venta.</p>
     <table class="sales">
         <thead>
             <tr>
-                <th style="width: 7%">ID</th>
+                <th style="width: 7%">Venta</th>
                 <th style="width: 15%">Fecha</th>
                 <th class="number" style="width: 8%">Cant.</th>
                 <th style="width: 29%">Descripción</th>
@@ -369,7 +369,7 @@ ob_start();
                 $importe = (float) $venta['costo'];
                 ?>
                 <tr>
-                    <td><?php echo escaparVentaPdf($venta['id_venta']); ?></td>
+                    <td><?php echo $venta['id_grupo'] === null ? escaparVentaPdf($venta['id_venta']) : 'G' . escaparVentaPdf($venta['id_grupo']); ?></td>
                     <td><?php echo escaparVentaPdf($venta['fecha_venta']); ?></td>
                     <td class="number"><?php echo escaparVentaPdf($venta['cantidad']); ?></td>
                     <td><?php echo nl2br(escaparVentaPdf($venta['descripcion'])); ?></td>
@@ -405,7 +405,7 @@ ob_start();
             </tr>
             <tr class="total-row">
                 <th>Total</th>
-                <th><?php echo count($ventas); ?></th>
+                <th><?php echo count($operacionesVistas); ?></th>
                 <th class="amount">$<?php echo number_format($totalVentas, 2, '.', ','); ?></th>
             </tr>
         </tbody>

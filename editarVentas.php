@@ -1,14 +1,33 @@
 <?php
 require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
-include('conexion.php');
+mysqli_report(MYSQLI_REPORT_OFF);
+require_once __DIR__ . '/ventas_db.php';
 
-if (isset($_GET['updVenta']))
-  $idVenta = $_GET['updVenta'];
-
-$sqlSearchVenta = ("SELECT * FROM ventas WHERE id_venta='" . $idVenta . "' LIMIT 1 ");
-$queryVenta = mysqli_query($conn, $sqlSearchVenta);
-$dataVenta = mysqli_fetch_array($queryVenta);
+$idVenta = filter_input(INPUT_GET, 'updVenta', FILTER_VALIDATE_INT, array('options' => array('min_range' => 1)));
+if (!$idVenta) {
+  http_response_code(400);
+  exit('La venta solicitada no es válida.');
+}
+$consultaVenta = mysqli_prepare($conn, 'SELECT * FROM ventas WHERE id_venta = ?');
+if (!$consultaVenta) {
+  error_log('No se pudo preparar la edición de venta: ' . mysqli_error($conn));
+  http_response_code(500);
+  exit('No se pudo cargar la venta.');
+}
+$consultaVenta->bind_param('i', $idVenta);
+if (!$consultaVenta->execute() || !($queryVenta = $consultaVenta->get_result())) {
+  error_log('No se pudo consultar la venta: ' . $consultaVenta->error);
+  http_response_code(500);
+  exit('No se pudo cargar la venta.');
+}
+$dataVenta = $queryVenta->fetch_assoc();
+$consultaVenta->close();
+if (!$dataVenta) {
+  http_response_code(404);
+  exit('No se encontró la venta.');
+}
+$escapar = function ($valor) { return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8'); };
 
 ?>
 
@@ -30,8 +49,11 @@ $dataVenta = mysqli_fetch_array($queryVenta);
   <link rel="stylesheet" href="css/responsive.dataTables.min.css" />
 
 
-  <!-- SELECT2 -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/select2.min.css" />
+  <link rel="stylesheet" href="css/selectores.css" />
+  <script src="js/jquery-3.7.1.js" defer></script>
+  <script src="js/select2.min.js" defer></script>
+  <script src="js/selectores.js" defer></script>
 
 
   <!-- FUENTES -->
@@ -42,43 +64,45 @@ $dataVenta = mysqli_fetch_array($queryVenta);
   <h2 style="  text-align: center;">Editar Ventas</h2>
   <div id="registro" class="container">
     <form action="actualizarVentas.php" method="post">
+      <input type="hidden" name="token_csrf" value="<?= $escapar(token_csrf()) ?>">
       <div class="row">
         <div class="col-12">
           <fieldset>
             <legend>ID Venta</legend>
             <label for="">ID Venta</label>
-            <input class="form-control" type="text" name="id" value="<?php echo $dataVenta['id_venta'] ?>" />
+            <input class="form-control" type="text" name="id" value="<?= $escapar($dataVenta['id_venta']) ?>" readonly />
+            <?php if ($dataVenta['id_grupo'] !== null) { ?><small>Grupo <?= (int) $dataVenta['id_grupo'] ?>. La factura y la fecha se comparten con todos sus productos.</small><?php } ?>
           </fieldset>
         </div>
         <div class="col-12" style="display:none">
           <div class="row">
             <label for="">Fecha de venta</label>
-            <input type="datetime" name="fechaVenta" value="<?php echo $dataVenta['fecha_venta'] ?>"
+            <input type="text" name="fechaVenta" value="<?= $escapar($dataVenta['fecha_venta']) ?>"
               class="form-control datepicker">
           </div>
         </div>
         <div class="col-2">
 
           <label for="">Cantidad</label>
-          <input type="number" value="<?php echo $dataVenta['cantidad'] ?>" name="cantidad" class="form-control">
+          <input type="number" min="1" step="1" required value="<?= $escapar($dataVenta['cantidad']) ?>" name="cantidad" class="form-control">
         </div>
         <div class="col-10">
 
           <label for="">Descripcion</label>
-          <input type="text" name="descripcion" class="form-control" value="<?php echo $dataVenta['descripcion'] ?>">
+          <input type="text" name="descripcion" maxlength="50" required class="form-control" value="<?= $escapar($dataVenta['descripcion']) ?>">
         </div>
         <div class="col-6">
 
-          <label for="">Costo</label>
-          <input type="number" name="costo" class="form-control" step="0.01" value="<?php echo $dataVenta['costo'] ?>">
+          <label for="">Importe total del producto</label>
+          <input type="number" name="costo" required class="form-control" step="0.01" value="<?= $escapar($dataVenta['costo']) ?>">
         </div>
         <div class="col-md-4 col-xs-12">
           <label for="">Precio compra</label>
-          <input type="number" name="pc" class="form-control" step="0.01" value="<?php echo $dataVenta['preciocosto'] ?>">
+          <input type="number" name="pc" class="form-control" step="0.01" value="<?= $escapar($dataVenta['preciocosto']) ?>">
         </div>
         <div class="col-md-4 col-xs-12">
           <label for="">Ganancia</label>
-          <input type="number" name="g" class="form-control" step="0.01" value="<?php echo $dataVenta['ganancia'] ?>">
+          <input type="number" name="g" class="form-control" step="0.01" value="<?= $escapar($dataVenta['ganancia']) ?>">
         </div>
         <div class="col-4">
           <label for="">Seccion</label>
@@ -94,11 +118,11 @@ $dataVenta = mysqli_fetch_array($queryVenta);
               if ($id == $dataVenta['seccion']) {
             ?>
                 <option value="<?php echo $id; ?>" selected>
-                  <?php echo $profesion ?>
+                  <?= $escapar($profesion) ?>
                 </option>
               <?php } else { ?>
                 <option value="<?php echo $id; ?>">
-                  <?php echo $profesion ?>
+                  <?= $escapar($profesion) ?>
                 </option>
 
             <?php
@@ -111,7 +135,7 @@ $dataVenta = mysqli_fetch_array($queryVenta);
              <div class="col-4">
 
           <label for="">Factura</label>
-          <input type="text" value="<?php echo $dataVenta['factura'] ?>" name="factura" class="form-control">
+          <input type="text" value="<?= $escapar($dataVenta['factura']) ?>" name="factura" class="form-control">
         </div>
 
 

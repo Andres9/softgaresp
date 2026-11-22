@@ -68,7 +68,7 @@ if (isset($_POST['id_cotizacion'])) {
         cotizacionFallida('La cotización seleccionada no es válida.');
     }
 
-    $consultaExistente = mysqli_prepare($conn, 'SELECT id_cotizacion FROM cotizaciones WHERE id_cotizacion = ? LIMIT 1');
+    $consultaExistente = mysqli_prepare($conn, 'SELECT id_cotizacion, estado FROM cotizaciones WHERE id_cotizacion = ? LIMIT 1');
     if ($consultaExistente === false) {
         error_log('No fue posible preparar la validación de cotización existente: ' . mysqli_error($conn));
         cotizacionFallida('No se pudo cargar la cotización para editarla.');
@@ -84,6 +84,9 @@ if (isset($_POST['id_cotizacion'])) {
     if (!$cotizacionExistente) {
         $idCotizacionEdicion = null;
         cotizacionFallida('La cotización que intentas editar ya no existe.');
+    }
+    if ($cotizacionExistente['estado'] === 'Vendida') {
+        cotizacionFallida('Una cotización convertida en venta ya no se puede modificar.');
     }
 }
 
@@ -325,6 +328,27 @@ if (!$conn->begin_transaction()) {
 }
 $transaccionIniciada = true;
 $archivosGuardados = array();
+if ($idCotizacionEdicion !== null) {
+    $bloquearCotizacion = mysqli_prepare(
+        $conn,
+        'SELECT estado FROM cotizaciones WHERE id_cotizacion = ? FOR UPDATE'
+    );
+    if ($bloquearCotizacion === false) {
+        error_log('No fue posible bloquear la cotización para edición: ' . mysqli_error($conn));
+        cotizacionFallida('No se pudo actualizar la cotización.');
+    }
+    $bloquearCotizacion->bind_param('i', $idCotizacionEdicion);
+    if (!$bloquearCotizacion->execute()) {
+        error_log('No fue posible validar la cotización durante la edición: ' . $bloquearCotizacion->error);
+        $bloquearCotizacion->close();
+        cotizacionFallida('No se pudo actualizar la cotización.');
+    }
+    $estadoCotizacionBloqueada = $bloquearCotizacion->get_result()->fetch_assoc();
+    $bloquearCotizacion->close();
+    if (!$estadoCotizacionBloqueada || $estadoCotizacionBloqueada['estado'] === 'Vendida') {
+        cotizacionFallida('Una cotización convertida en venta ya no se puede modificar.');
+    }
+}
 if ($idCotizacionEdicion === null) {
     $folioTemporal = 'PEND-' . bin2hex(random_bytes(8));
     $estado = 'Emitida';

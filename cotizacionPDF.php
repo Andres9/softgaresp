@@ -91,55 +91,54 @@ ob_start();
     <meta charset="UTF-8">
     <title>Cotización <?= escaparCotizacionPdf($cotizacion['folio']) ?></title>
     <style>
-        @page { margin: 30px 34px 54px; }
+        @page { margin: 25px 30px 50px; }
         body { color: #24384d; font-family: DejaVu Sans, Arial, sans-serif; font-size: 9px; line-height: 1.5; }
-        .header { background: #102b45; border-bottom: 4px solid #21b6c7; margin-bottom: 18px; padding: 17px 20px; color: #fff; }
+        .header { border-bottom: 2px solid #333; margin-bottom: 12px; padding: 8px 0 12px; color: #222; }
         .header-layout { border-collapse: collapse; width: 100%; }
         .header-layout td { vertical-align: middle; }
         .logo-cell { width: 27%; }
-        .logo { background: #fff; border-radius: 3px; padding: 5px; width: 135px; }
-        .brand { color: #fff; font-size: 19px; font-weight: bold; letter-spacing: 2px; }
-        .brand-subtitle { color: #c9d8e8; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; }
+        .logo { background: #fff; border-radius: 3px; padding: 4px; width: 118px; }
+        .brand { color: #222; font-size: 17px; font-weight: bold; letter-spacing: 2px; }
+        .brand-subtitle { color: #555; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; }
         .header-copy { padding-left: 12px; }
-        .eyebrow { color: #72e0df; font-size: 8px; font-weight: bold; letter-spacing: 1.5px; }
-        h1 { color: #fff; font-size: 20px; margin: 5px 0; }
-        .folio { color: #dce8f1; font-size: 10px; letter-spacing: .5px; }
-        .header-label { background: #087f8b; border: 1px solid #4bc7c9; color: #fff; font-size: 8px; font-weight: bold; letter-spacing: 1px; padding: 8px 10px; text-align: center; text-transform: uppercase; }
-        .columns { border-collapse: separate; border-spacing: 8px 0; margin: 0 -8px 16px; width: 100%; }
+        .eyebrow { color: #555; font-size: 8px; font-weight: bold; letter-spacing: 1.5px; }
+        h1 { color: #222; font-size: 20px; margin: 5px 0; }
+        .folio { color: #555; font-size: 10px; letter-spacing: .5px; }
+        .header-label { border: 1px solid #aaa; color: #333; font-size: 8px; font-weight: bold; letter-spacing: 1px; padding: 8px 10px; text-align: center; text-transform: uppercase; }
+        .columns { border-collapse: separate; border-spacing: 6px 0; margin: 0 -6px 8px; width: 100%; }
         .columns td { vertical-align: top; width: 50%; }
-        .info-card { background: #f4f8fb; border: 1px solid #d8e3ec; padding: 12px 14px; }
-        .section-label { color: #087f8b; font-size: 8px; font-weight: bold; letter-spacing: 1px; margin-bottom: 7px; text-transform: uppercase; }
-        .client-name { color: #173c66; font-size: 12px; font-weight: bold; margin-bottom: 4px; }
+        .info-card { border: 1px solid #ccc; padding: 7px 10px; }
+        .section-label { color: #087f8b; font-size: 8px; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+        .client-name { color: #173c66; font-size: 11px; font-weight: bold; margin-bottom: 2px; }
         .muted { color: #53677c; font-size: 8px; }
-        .metadata { margin-top: 10px; width: 100%; }
-        .metadata td { border-bottom: 1px solid #dfe7ee; padding: 5px 3px; }
+        .metadata { margin-top: 3px; width: 100%; }
+        .metadata td { border-bottom: 1px solid #dfe7ee; padding: 2px 3px; }
         .metadata .label { color: #4c6278; font-weight: bold; width: 36%; }
-        h2 { background: #173c66; border-left: 4px solid #21b6c7; color: #fff; font-size: 10px; margin: 18px 0 9px; padding: 6px 9px; }
+        h2 { border-bottom: 1px solid #777; color: #222; font-size: 10px; margin: 10px 0 6px; padding: 5px 0; }
         .items { border-collapse: collapse; table-layout: fixed; width: 100%; }
         .items thead { display: table-header-group; }
         .items tr { page-break-inside: avoid; }
-        .items th { background: #102b45; border-bottom: 2px solid #21b6c7; color: #fff; font-size: 8px; padding: 8px 5px; text-align: left; }
-        .items td { border-bottom: 1px solid #dfe7ee; color: #334b61; font-size: 8px; padding: 8px 5px; vertical-align: top; word-wrap: break-word; }
-        .items tr:nth-child(even) td { background: #f5f8fb; }
+        .items th { border-bottom: 1px solid #555; color: #222; font-size: 8px; padding: 6px 4px; text-align: left; }
+        .items td { border-bottom: 1px solid #dfe7ee; color: #334b61; font-size: 8px; padding: 5px 4px; vertical-align: top; word-wrap: break-word; }
         .items .right { text-align: right; }
-        .product-image { background: #fff; border: 1px solid #d9e3eb; height: 48px; object-fit: contain; padding: 2px; width: 48px; }
+        .product-image { background: #fff; border: 1px solid #d9e3eb; height: 42px; object-fit: contain; padding: 2px; width: 42px; }
         .product-title { color: #173c66; font-weight: bold; }
         .product-detail { color: #52677d; font-size: 8px; margin-top: 3px; }
-        .summary-wrap { margin-top: 12px; text-align: right; }
+        .summary-wrap { margin-top: 7px; text-align: right; }
         .summary { border-collapse: collapse; margin-left: auto; width: 48%; }
-        .summary td { border-bottom: 1px solid #dfe7ee; padding: 7px 9px; }
+        .summary td { border-bottom: 1px solid #dfe7ee; padding: 4px 8px; }
         .summary .label { color: #4c6278; text-align: left; }
         .summary .amount { color: #263f56; font-weight: bold; text-align: right; }
-        .summary .total td { background: #087f8b; border: 0; color: #fff; font-size: 12px; font-weight: bold; }
-        .conditions { background: #f4f8fb; border: 1px solid #d8e3ec; padding: 12px 14px; }
+        .summary .total td { border-top: 1px solid #555; color: #222; font-size: 12px; font-weight: bold; }
+        .conditions { border: 1px solid #ccc; padding: 7px 10px; }
         .conditions-grid { border-collapse: collapse; width: 100%; }
-        .conditions-grid td { padding: 5px 8px 5px 0; vertical-align: top; width: 50%; }
+        .conditions-grid td { padding: 3px 6px 3px 0; vertical-align: top; width: 50%; }
         .condition-label { color: #087f8b; font-size: 8px; font-weight: bold; text-transform: uppercase; }
         .condition-value { color: #334b61; font-size: 9px; }
         .notes { margin-top: 9px; }
-        .acceptance { margin-top: 34px; page-break-inside: avoid; width: 100%; }
-        .acceptance td { color: #52677d; padding-top: 22px; text-align: center; width: 50%; }
-        .signature { border-top: 1px solid #8da1b3; display: inline-block; padding-top: 7px; width: 72%; }
+        .acceptance { margin-top: 20px; page-break-inside: avoid; width: 100%; }
+        .acceptance td { color: #52677d; padding-top: 13px; text-align: center; width: 50%; }
+        .signature { border-top: 1px solid #8da1b3; display: inline-block; padding-top: 5px; width: 72%; }
         .footer { position: fixed; right: 0; bottom: -34px; left: 0; border-top: 1px solid #cbd7e1; color: #53677c; font-size: 8px; padding-top: 7px; text-align: right; }
     </style>
 </head>
@@ -195,9 +194,9 @@ ob_start();
     <table class="items">
         <thead>
             <tr>
-                <th style="width:9%">Imagen</th>
-                <th style="width:34%">Concepto</th>
                 <th class="right" style="width:7%">Cant.</th>
+                <th style="width:9%">Imagen</th>
+                <th style="width:32%">Concepto</th>
                 <th class="right" style="width:13%">P. unitario</th>
                 <th class="right" style="width:9%">Desc.</th>
                 <th class="right" style="width:9%">Impuesto</th>
@@ -210,6 +209,7 @@ ob_start();
                 $identificadores = array_filter(array($detalle['tipo_producto'], $detalle['marca'], $detalle['modelo'], $detalle['sku']));
                 ?>
                 <tr>
+                    <td class="right"><?= number_format((float) $detalle['cantidad'], 2) ?></td>
                     <td><?php if ($imagenProducto !== '') { ?><img class="product-image" src="<?= $imagenProducto ?>" alt="Producto"><?php } else { ?>—<?php } ?></td>
                     <td>
                         <div class="product-title"><?= escaparCotizacionPdf($detalle['descripcion']) ?></div>
@@ -217,7 +217,6 @@ ob_start();
                         <?php if ($detalle['especificaciones'] !== '') { ?><div class="product-detail"><?= nl2br(escaparCotizacionPdf($detalle['especificaciones'])) ?></div><?php } ?>
                         <?php if ($detalle['garantia'] !== '') { ?><div class="product-detail">Garantía: <?= escaparCotizacionPdf($detalle['garantia']) ?></div><?php } ?>
                     </td>
-                    <td class="right"><?= number_format((float) $detalle['cantidad'], 2) ?></td>
                     <td class="right"><?= $moneda ?> $<?= number_format((float) $detalle['precio_unitario'], 2) ?></td>
                     <td class="right"><?= number_format((float) $detalle['descuento_porcentaje'], 2) ?>%</td>
                     <td class="right"><?= number_format((float) $detalle['impuesto_porcentaje'], 2) ?>%</td>

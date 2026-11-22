@@ -5,13 +5,20 @@ require_once __DIR__ . '/cotizaciones_db.php';
 
 $errorCotizacion = isset($_SESSION['cotizacion_error']) ? $_SESSION['cotizacion_error'] : '';
 unset($_SESSION['cotizacion_error']);
+$errorVenta = isset($_SESSION['venta_error']) ? $_SESSION['venta_error'] : '';
+unset($_SESSION['venta_error']);
 $creada = isset($_GET['creada']) ? filter_var($_GET['creada'], FILTER_VALIDATE_INT) : false;
 $actualizada = isset($_GET['actualizada']) ? filter_var($_GET['actualizada'], FILTER_VALIDATE_INT) : false;
+$ventaCreada = isset($_GET['venta_creada']) ? filter_var($_GET['venta_creada'], FILTER_VALIDATE_INT) : false;
 $cotizaciones = array();
 $resultadoCotizaciones = mysqli_query(
     $conn,
-    'SELECT id_cotizacion, folio, cliente_nombre, fecha_cotizacion, vigencia_hasta, moneda, total, estado
-     FROM cotizaciones ORDER BY id_cotizacion DESC LIMIT 50'
+    'SELECT c.id_cotizacion, c.folio, c.cliente_nombre, c.fecha_cotizacion, c.vigencia_hasta,
+            c.moneda, c.total, c.estado, v.id_venta, v.folio AS folio_venta,
+            v.total_abonado, v.saldo
+     FROM cotizaciones c
+     LEFT JOIN cotizacion_ventas v ON v.id_cotizacion = c.id_cotizacion
+     ORDER BY c.id_cotizacion DESC LIMIT 50'
 );
 
 if ($resultadoCotizaciones === false) {
@@ -22,6 +29,39 @@ if ($resultadoCotizaciones === false) {
 
 while ($cotizacion = mysqli_fetch_assoc($resultadoCotizaciones)) {
     $cotizaciones[] = $cotizacion;
+}
+
+$cotizacionParaVenta = null;
+if (isset($_GET['venta'])) {
+    $idCotizacionVenta = filter_var($_GET['venta'], FILTER_VALIDATE_INT);
+    if ($idCotizacionVenta === false || $idCotizacionVenta < 1) {
+        http_response_code(400);
+        exit('La cotización seleccionada para venta no es válida.');
+    }
+    $consultaVenta = mysqli_prepare(
+        $conn,
+        'SELECT c.id_cotizacion, c.folio, c.cliente_nombre, c.moneda, c.total, c.estado, v.id_venta
+         FROM cotizaciones c LEFT JOIN cotizacion_ventas v ON v.id_cotizacion = c.id_cotizacion
+         WHERE c.id_cotizacion = ? LIMIT 1'
+    );
+    if ($consultaVenta === false) {
+        error_log('No fue posible preparar la cotización para venta: ' . mysqli_error($conn));
+        http_response_code(500);
+        exit('No se pudo cargar la cotización para venta.');
+    }
+    $consultaVenta->bind_param('i', $idCotizacionVenta);
+    if (!$consultaVenta->execute()) {
+        error_log('No fue posible cargar la cotización para venta: ' . $consultaVenta->error);
+        $consultaVenta->close();
+        http_response_code(500);
+        exit('No se pudo cargar la cotización para venta.');
+    }
+    $cotizacionParaVenta = $consultaVenta->get_result()->fetch_assoc();
+    $consultaVenta->close();
+    if (!$cotizacionParaVenta) {
+        http_response_code(404);
+        exit('No se encontró la cotización seleccionada.');
+    }
 }
 
 $editarCotizacion = false;
@@ -80,6 +120,10 @@ if (isset($_GET['editar'])) {
         http_response_code(404);
         exit('No se encontró la cotización seleccionada.');
     }
+    if ($datosEdicion['estado'] === 'Vendida') {
+        http_response_code(409);
+        exit('Una cotización convertida en venta ya no se puede modificar.');
+    }
 
     $consultaDetallesEdicion = mysqli_prepare(
         $conn,
@@ -130,6 +174,9 @@ include __DIR__ . '/encabezado.php';
   <?php if ($errorCotizacion !== '') { ?>
     <div class="alert alert-danger" role="alert"><?= escaparCotizacion($errorCotizacion) ?></div>
   <?php } ?>
+  <?php if ($errorVenta !== '') { ?>
+    <div class="alert alert-danger" role="alert"><?= escaparCotizacion($errorVenta) ?></div>
+  <?php } ?>
   <?php if ($creada !== false && $creada > 0) { ?>
     <div class="alert alert-success cotizacion-success" role="status">
       Cotización guardada correctamente.
@@ -142,6 +189,28 @@ include __DIR__ . '/encabezado.php';
       <a class="btn btn-success btn-sm" href="cotizacionPDF.php?id=<?= (int) $actualizada ?>" target="_blank" rel="noopener">Ver reporte PDF actualizado</a>
     </div>
   <?php } ?>
+  <?php if ($ventaCreada !== false && $ventaCreada > 0) { ?>
+    <div class="alert alert-success cotizacion-success" role="status">
+      Venta creada correctamente. El saldo por cobrar se actualizará con cada abono.
+      <a class="btn btn-success btn-sm" href="ventaPDF.php?id=<?= (int) $ventaCreada ?>" target="_blank" rel="noopener">Ver PDF de venta</a>
+    </div>
+  <?php } ?>
+
+  <?php if ($cotizacionParaVenta && !$cotizacionParaVenta['id_venta'] && $cotizacionParaVenta['estado'] !== 'Vendida') { ?>
+    <section class="cotizacion-conversion">
+      <h2>Convertir <?= escaparCotizacion($cotizacionParaVenta['folio']) ?> en venta</h2>
+      <p>Cliente: <?= escaparCotizacion($cotizacionParaVenta['cliente_nombre']) ?> · Total: <?= escaparCotizacion($cotizacionParaVenta['moneda']) ?> $<?= number_format((float) $cotizacionParaVenta['total'], 2) ?></p>
+      <form action="guardarVentaCotizacion.php" method="post">
+        <input type="hidden" name="token_csrf" value="<?= escaparCotizacion(token_csrf()) ?>">
+        <input type="hidden" name="id_cotizacion" value="<?= (int) $cotizacionParaVenta['id_cotizacion'] ?>">
+        <label>Anticipo inicial
+          <input type="number" name="anticipo" min="0" max="<?= escaparCotizacion($cotizacionParaVenta['total']) ?>" step="0.01" value="0" required>
+        </label>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cash-register"></i> Crear venta</button>
+        <a href="cotizacion.php" class="btn btn-outline-secondary">Cancelar</a>
+      </form>
+    </section>
+  <?php } ?>
 
   <?php include __DIR__ . '/cotizacion_formulario.php'; ?>
 
@@ -152,10 +221,10 @@ include __DIR__ . '/encabezado.php';
     </div>
     <div class="table-responsive">
       <table class="table table-hover cotizacion-table">
-        <thead><tr><th>Folio</th><th>Cliente</th><th>Fecha</th><th>Vigencia</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <thead><tr><th>Folio</th><th>Cliente</th><th>Fecha</th><th>Vigencia</th><th>Total</th><th>Saldo por cobrar</th><th>Estado</th><th>Acciones</th></tr></thead>
         <tbody>
           <?php if (count($cotizaciones) === 0) { ?>
-            <tr><td colspan="7" class="cotizacion-empty">Aún no hay cotizaciones registradas.</td></tr>
+            <tr><td colspan="8" class="cotizacion-empty">Aún no hay cotizaciones registradas.</td></tr>
           <?php } ?>
           <?php foreach ($cotizaciones as $fila) { ?>
             <tr>
@@ -164,10 +233,26 @@ include __DIR__ . '/encabezado.php';
               <td><?= escaparCotizacion(date('d/m/Y', strtotime($fila['fecha_cotizacion']))) ?></td>
               <td><?= escaparCotizacion(date('d/m/Y', strtotime($fila['vigencia_hasta']))) ?></td>
               <td><?= escaparCotizacion($fila['moneda']) ?> $<?= number_format((float) $fila['total'], 2) ?></td>
-              <td><span class="cotizacion-status"><?= escaparCotizacion($fila['estado']) ?></span></td>
+              <td><?= $fila['id_venta'] ? escaparCotizacion($fila['moneda']) . ' $' . number_format((float) $fila['saldo'], 2) : '—' ?></td>
+              <td><span class="cotizacion-status"><?= escaparCotizacion($fila['id_venta'] ? ($fila['saldo'] > 0 ? 'Venta con saldo' : 'Venta pagada') : $fila['estado']) ?></span></td>
               <td class="cotizacion-actions">
+                <?php if (!$fila['id_venta']) { ?>
                 <a class="cotizacion-edit-link" href="cotizacion.php?editar=<?= (int) $fila['id_cotizacion'] ?>" aria-label="Editar cotización <?= escaparCotizacion($fila['folio']) ?>"><i class="fa-solid fa-pen-to-square"></i> Editar</a>
+                <?php } ?>
                 <a class="cotizacion-pdf-link" href="cotizacionPDF.php?id=<?= (int) $fila['id_cotizacion'] ?>" target="_blank" rel="noopener" aria-label="Abrir PDF <?= escaparCotizacion($fila['folio']) ?>"><i class="fa-solid fa-file-pdf"></i> PDF</a>
+                <?php if ($fila['id_venta']) { ?>
+                  <a class="cotizacion-sale-link" href="ventaPDF.php?id=<?= (int) $fila['id_venta'] ?>" target="_blank" rel="noopener">PDF venta</a>
+                  <?php if ((float) $fila['saldo'] > 0) { ?>
+                  <form class="cotizacion-payment-form" action="guardarAbonoVenta.php" method="post">
+                    <input type="hidden" name="token_csrf" value="<?= escaparCotizacion(token_csrf()) ?>">
+                    <input type="hidden" name="id_venta" value="<?= (int) $fila['id_venta'] ?>">
+                    <input type="number" name="abono" min="0.01" max="<?= escaparCotizacion($fila['saldo']) ?>" step="0.01" placeholder="Abono" required aria-label="Abono a la venta <?= escaparCotizacion($fila['folio_venta']) ?>">
+                    <button type="submit">Registrar</button>
+                  </form>
+                  <?php } ?>
+                <?php } else { ?>
+                  <a class="cotizacion-edit-link" href="cotizacion.php?venta=<?= (int) $fila['id_cotizacion'] ?>"><i class="fa-solid fa-arrow-right-arrow-left"></i> Convertir</a>
+                <?php } ?>
               </td>
             </tr>
           <?php } ?>

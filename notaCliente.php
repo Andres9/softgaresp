@@ -1,6 +1,17 @@
-<?php include_once 'encabezado.php' ?>
+<?php
+header('Cache-Control: no-store, private');
+include_once 'encabezado.php';
+require_once __DIR__ . '/notas_recepcion.php';
+prepararRecepcionNotas($conn);
+$notaMensaje = $_SESSION['nota_mensaje'] ?? '';
+unset($_SESSION['nota_mensaje']);
+?>
 
 <section>
+
+  <?php if ($notaMensaje !== '') { ?>
+    <div class="alert alert-success" role="status"><?= escaparRecepcionHtml($notaMensaje) ?></div>
+  <?php } ?>
 
   <div class="seccion reportes-resumen">
     <article class="reportes-resumen-card">
@@ -96,7 +107,8 @@
       <div class="col-md-8">
         <h2>Registro Notas</h2>
         <div id="registro2" class="container">
-          <form action="registroNotas.php" method="post">
+          <form action="registroNotas.php" method="post" class="nota-formulario">
+            <input type="hidden" name="token_csrf" value="<?= htmlspecialchars(token_csrf(), ENT_QUOTES, 'UTF-8') ?>">
             <div class="row" style="display: none">
               <div class="col-12">
                 <fieldset>
@@ -111,8 +123,8 @@
               <div class="col-12">
                 <fieldset>
                   <legend>Datos del cliente</legend>
-                  <label for="">Nombre cliente</label>
-                  <select name="cliente" class="select">
+                  <label for="nota-cliente">Nombre cliente</label>
+                  <select id="nota-cliente" name="cliente" class="select">
                     <option value="">Selecciona a un cliente</option>
                     <?php
                     $totalClientes = "SELECT * FROM clientes";
@@ -122,8 +134,8 @@
                       $nombre = $mostrarCliente["nombre"];
                       $apellidos = $mostrarCliente["apellidos"];
                       ?>
-                      <option value="<?php echo $id; ?>">
-                        <?php echo $nombre . " " . $apellidos; ?>
+                      <option value="<?= (int) $id ?>">
+                        <?= escaparRecepcionHtml($nombre . ' ' . $apellidos) ?>
                       </option>
                       <?php
                     }
@@ -137,7 +149,7 @@
               <legend>Datos del equipo</legend>
               <div class="col-md-12 col-xs-12">
                 <label for="">Equipo</label>
-                <select name="equipo" class="select">
+                <select id="nota-equipo" name="equipo" class="select">
                   <option value="">Selecciona un equipo</option>
                   <?php
                   $datosEquipo = "SELECT * FROM equipo";
@@ -147,8 +159,8 @@
                     $id = $mostrarEquipo["id_equipo"];
                     $descripcion = $mostrarEquipo["descripcionEquipo"];
                     ?>
-                    <option value="<?php echo $id; ?>">
-                      <?php echo $descripcion ?>
+                    <option value="<?= (int) $id ?>" data-patron="<?= equipoAdmitePatron($descripcion) ? '1' : '0' ?>">
+                      <?= htmlspecialchars($descripcion, ENT_QUOTES, 'UTF-8') ?>
                     </option>
                     <?php
                   }
@@ -167,6 +179,8 @@
               </div>
             </fieldset>
 
+            <?php include __DIR__ . '/nota_recepcion_formulario.php'; ?>
+
             <fieldset>
               <legend>Servicio</legend>
               <label for="">Servicio</label>
@@ -179,8 +193,8 @@
                   $id = $mostrar['id_servicio'];
                   $descripcion = $mostrar["tipoServicio"];
                   ?>
-                  <option value="<?php echo $id; ?>">
-                    <?php echo $descripcion ?>
+                  <option value="<?= (int) $id ?>">
+                    <?= escaparRecepcionHtml($descripcion) ?>
                   </option>
                   <?php
                 }
@@ -192,7 +206,7 @@
 
             <fieldset>
               <legend>Estado del equipo</legend>
-              <select name="estado" class="select">
+              <select id="nota-estado" name="estado" class="select">
                 <option value="">Seleccione una opcion</option>
                 <?php
                 $ventasTotales = "SELECT * FROM estadoservicio";
@@ -201,8 +215,8 @@
                   $id = $mostrar['id_estado'];
                   $descripcion = $mostrar["estadoServicio"];
                   ?>
-                  <option value="<?php echo $id; ?>">
-                    <?php echo $descripcion ?>
+                  <option value="<?= (int) $id ?>">
+                    <?= escaparRecepcionHtml($descripcion) ?>
                   </option>
                   <?php
                 }
@@ -249,6 +263,7 @@
 
       <div class="col-md-4">
         <h2>Movimientos</h2>
+        <noscript><p class="alert alert-warning">Activa JavaScript para confirmar la eliminación de notas.</p></noscript>
         <table id="myTable" class="display responsive nowrap" style="width: 100%">
           <thead>
             <tr>
@@ -286,30 +301,35 @@
             while ($mostrar = mysqli_fetch_array($resultado)) {
               ?>
               <tr>
-                <td><?php echo $mostrar['id_nota'] ?></td>
-                <td><?php echo $mostrar['nombre'] . " " . $mostrar["apellidos"] ?></td>
-                <td><?php echo $mostrar['fecha_alta'] ?></td>
-                <td><?php echo $mostrar['descripcionEquipo'] ?></td>
-                <td><?php echo $mostrar['marca'] ?></td>
-                <td><?php echo $mostrar['modelo'] ?></td>
-                <td><?php echo $mostrar['tipoServicio'] ?></td>
-                <td><?php echo $mostrar['costoServicio'] ?></td>
-                <td><?php echo $mostrar['descripcionServicio'] ?></td>
-                <td><?php echo $mostrar['notas'] ?></td>
-                <td><?php echo $mostrar['estadoServicio'] ?></td>
-                <td><?php echo $mostrar['anticipo'] ?></td>
-                <td><?php echo $mostrar['ganancia'] ?></td>
-                <td><?php echo $mostrar['restante'] ?></td>
-                <td><?php echo $mostrar['pagado'] ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['id_nota']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['nombre'] . ' ' . $mostrar['apellidos']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['fecha_alta']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['descripcionEquipo']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['marca']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['modelo']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['tipoServicio']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['costoServicio']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['descripcionServicio']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['notas']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['estadoServicio']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['anticipo']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['ganancia']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['restante']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['pagado']) ?></td>
                 <td>
-                  <a href="reportes.php?idNota=<?= $mostrar['id_nota'] ?>" target="_blank"><i
+                  <a href="reportes.php?idNota=<?= (int) $mostrar['id_nota'] ?>" target="_blank"><i
                       class="fa-solid fa-file-pdf"></i></a>
                 </td>
                 <td>
-                  <a href="editarNotas.php?updNotas=<?= $mostrar['id_nota'] ?>"><i class="fa-solid fa-pen"></i></a>
+                  <a href="editarNotas.php?updNotas=<?= (int) $mostrar['id_nota'] ?>"><i class="fa-solid fa-pen"></i></a>
                 </td>
                 <td>
-                  <a href="#"><i class="fa-solid fa-trash"></i></a>
+                  <form action="eliminarNota.php" method="post" class="nota-eliminar">
+                    <input type="hidden" name="token_csrf" value="<?= escaparRecepcionHtml(token_csrf()) ?>">
+                    <input type="hidden" name="id_nota" value="<?= (int) $mostrar['id_nota'] ?>">
+                    <input type="hidden" name="origen" value="notaCliente">
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#confirmar-eliminar-nota" title="Eliminar nota" aria-label="Eliminar nota <?= (int) $mostrar['id_nota'] ?>"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
+                  </form>
                 </td>
               </tr>
               <?php

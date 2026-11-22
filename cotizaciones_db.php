@@ -74,6 +74,37 @@ $tablasCotizaciones = array(
         CONSTRAINT fk_cotizacion_detalles_cotizacion
             FOREIGN KEY (id_cotizacion) REFERENCES cotizaciones (id_cotizacion)
             ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+    "CREATE TABLE IF NOT EXISTS cotizacion_ventas (
+        id_venta INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        id_cotizacion INT UNSIGNED NOT NULL,
+        folio VARCHAR(32) NOT NULL,
+        fecha_venta DATE NOT NULL,
+        total DECIMAL(13,2) NOT NULL,
+        total_abonado DECIMAL(13,2) NOT NULL DEFAULT 0,
+        saldo DECIMAL(13,2) NOT NULL,
+        estado VARCHAR(20) NOT NULL DEFAULT 'Pendiente',
+        creado_por VARCHAR(150) NOT NULL,
+        creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id_venta),
+        UNIQUE KEY uq_cotizacion_ventas_cotizacion (id_cotizacion),
+        UNIQUE KEY uq_cotizacion_ventas_folio (folio),
+        CONSTRAINT fk_cotizacion_ventas_cotizacion
+            FOREIGN KEY (id_cotizacion) REFERENCES cotizaciones (id_cotizacion)
+            ON DELETE RESTRICT
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+    "CREATE TABLE IF NOT EXISTS cotizacion_venta_abonos (
+        id_abono INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        id_venta INT UNSIGNED NOT NULL,
+        fecha_abono DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        monto DECIMAL(13,2) NOT NULL,
+        recibido_por VARCHAR(150) NOT NULL,
+        notas VARCHAR(255) NOT NULL DEFAULT '',
+        PRIMARY KEY (id_abono),
+        KEY idx_cotizacion_venta_abonos_venta (id_venta),
+        CONSTRAINT fk_cotizacion_venta_abonos_venta
+            FOREIGN KEY (id_venta) REFERENCES cotizacion_ventas (id_venta)
+            ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
 );
 

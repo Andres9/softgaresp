@@ -1,9 +1,18 @@
 <?php
 require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
+$notaMensaje = $_SESSION['nota_mensaje'] ?? '';
+unset($_SESSION['nota_mensaje']);
+$escaparNotaReporte = static function ($valor) {
+    return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
+};
 ?>
 
 <section>
+
+    <?php if ($notaMensaje !== '') { ?>
+      <div class="alert alert-success" role="status"><?= $escaparNotaReporte($notaMensaje) ?></div>
+    <?php } ?>
 
     <!-- SECCION DE NOTAS -->
     <div class="seccion reportes-resumen">
@@ -55,6 +64,7 @@ requerir_usuario_autenticado();
 
     
     <h2>Notas</h2>
+    <noscript><p class="alert alert-warning">Activa JavaScript para confirmar la eliminación de notas.</p></noscript>
   
     <table id="myTable2" class="display responsive nowrap" style="width: 100%">
       <thead>
@@ -94,30 +104,35 @@ requerir_usuario_autenticado();
         while ($mostrar = mysqli_fetch_array($resultado)) {
           ?>
           <tr>
-            <td><?php echo $mostrar['id_nota'] ?></td>
-            <td><?php echo $mostrar['nombre'] . " " . $mostrar["apellidos"] ?></td>
-            <td><?php echo $mostrar['fecha_alta'] ?></td>
-            <td><?php echo $mostrar['descripcionEquipo'] ?></td>
-            <td><?php echo $mostrar['marca'] ?></td>
-            <td><?php echo $mostrar['modelo'] ?></td>
-            <td><?php echo $mostrar['tipoServicio'] ?></td>
-            <td><?php echo $mostrar['costoServicio'] ?></td>
-            <td><?php echo $mostrar['descripcionServicio'] ?></td>
-            <td><?php echo $mostrar['notas'] ?></td>
-            <td><?php echo $mostrar['estadoServicio'] ?></td>
-            <td><?php echo $mostrar['anticipo'] ?></td>
-            <td><?php echo $mostrar['ganancia'] ?></td>
-            <td><?php echo $mostrar['restante'] ?></td>
-            <td><?php echo $mostrar['pagado'] ?></td>
+            <td><?= $escaparNotaReporte($mostrar['id_nota']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['nombre'] . ' ' . $mostrar['apellidos']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['fecha_alta']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['descripcionEquipo']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['marca']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['modelo']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['tipoServicio']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['costoServicio']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['descripcionServicio']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['notas']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['estadoServicio']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['anticipo']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['ganancia']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['restante']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['pagado']) ?></td>
             <td>
-              <a href="reportes.php?idNota=<?= $mostrar['id_nota'] ?>" target="_blank"><i
+              <a href="reportes.php?idNota=<?= (int) $mostrar['id_nota'] ?>" target="_blank"><i
                   class="fa-solid fa-file-pdf"></i></a>
             </td>
             <td>
-              <a href="editarNotas.php?updNotas=<?= $mostrar['id_nota'] ?>"><i class="fa-solid fa-pen"></i></a>
+              <a href="editarNotas.php?updNotas=<?= (int) $mostrar['id_nota'] ?>"><i class="fa-solid fa-pen"></i></a>
             </td>
             <td>
-              <a href="#"><i class="fa-solid fa-trash"></i></a>
+              <form action="eliminarNota.php" method="post" class="nota-eliminar">
+                <input type="hidden" name="token_csrf" value="<?= $escaparNotaReporte(token_csrf()) ?>">
+                <input type="hidden" name="id_nota" value="<?= (int) $mostrar['id_nota'] ?>">
+                <input type="hidden" name="origen" value="reportesnotas">
+                <button type="button" data-bs-toggle="modal" data-bs-target="#confirmar-eliminar-nota" title="Eliminar nota" aria-label="Eliminar nota <?= (int) $mostrar['id_nota'] ?>"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
+              </form>
             </td>
           </tr>
           <?php

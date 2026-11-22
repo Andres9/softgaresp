@@ -28,8 +28,11 @@ $dataCliente     = mysqli_fetch_array($queryCliente);
   <link rel="stylesheet" href="css/responsive.dataTables.min.css" />
 
 
-  <!-- SELECT2 -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/select2.min.css" />
+  <link rel="stylesheet" href="css/selectores.css" />
+  <script src="js/jquery-3.7.1.js" defer></script>
+  <script src="js/select2.min.js" defer></script>
+  <script src="js/selectores.js" defer></script>
 
 
   <!-- FUENTES -->

@@ -27,10 +27,17 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
   <?php if ($pagina_actual === 'cotizacion.php') { ?>
   <link rel="stylesheet" href="css/cotizacion.css" />
   <?php } ?>
+  <?php if (in_array($pagina_actual, array('pedido.php', 'catalogoPixal.php'), true)) { ?>
+  <link rel="stylesheet" href="css/pedido.css" />
+  <?php } ?>
+  <?php if ($pagina_actual === 'notaCliente.php') { ?>
+  <link rel="stylesheet" href="css/nota.css" />
+  <script src="js/nota.js" defer></script>
+  <?php } ?>
 
 
-  <!-- SELECT2 -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/select2.min.css" />
+  <link rel="stylesheet" href="css/selectores.css" />
 
 
   <!-- FUENTES -->
@@ -66,6 +73,10 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
         <li>
           <a href="ventas.php" class="<?= $pagina_actual === 'ventas.php' ? 'active' : '' ?>" aria-current="<?= $pagina_actual === 'ventas.php' ? 'page' : 'false' ?>">
             <i class="fa-solid fa-cash-register" aria-hidden="true"></i><span>Ventas</span></a>
+        </li>
+        <li>
+          <a href="pedido.php" class="<?= in_array($pagina_actual, array('pedido.php', 'guardarPedido.php'), true) ? 'active' : '' ?>" aria-current="<?= in_array($pagina_actual, array('pedido.php', 'guardarPedido.php'), true) ? 'page' : 'false' ?>">
+            <i class="fa-solid fa-box-open" aria-hidden="true"></i><span>Pedido</span></a>
         </li>
         <?php } ?>
         <li>
