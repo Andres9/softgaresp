@@ -5,7 +5,8 @@ require_once __DIR__ . '/pedidos_db.php';
 
 header('Content-Type: application/json; charset=utf-8');
 $proveedor = isset($_GET['proveedor']) && is_string($_GET['proveedor']) ? trim($_GET['proveedor']) : '';
-if ($proveedor !== 'Pixal Center') {
+$catalogo = catalogoPedidoPorProveedor($proveedor);
+if ($catalogo === null) {
     echo json_encode(array());
     exit;
 }
@@ -13,10 +14,10 @@ if ($proveedor !== 'Pixal Center') {
 $resultado = mysqli_query(
     $conn,
     'SELECT codigo, descripcion, imagen, marca, precio
-     FROM productos_pixal_center ORDER BY codigo LIMIT 5000'
+     FROM `' . $catalogo['tabla'] . '` ORDER BY codigo LIMIT 5000'
 );
 if ($resultado === false) {
-    error_log('No fue posible consultar el catálogo de Pixal Center: ' . mysqli_error($conn));
+    error_log('No fue posible consultar el catálogo de ' . $proveedor . ': ' . mysqli_error($conn));
     http_response_code(500);
     echo json_encode(array('error' => 'No se pudo cargar el catálogo.'));
     exit;
@@ -24,11 +25,11 @@ if ($resultado === false) {
 
 $productos = array();
 while ($producto = mysqli_fetch_assoc($resultado)) {
-    $imagen = imagenCatalogoPedidoDisponible($producto['imagen']);
+    $imagen = imagenCatalogoPedidoDisponible($producto['imagen'], $proveedor);
     $productos[] = array(
         'codigo' => (string) $producto['codigo'],
         'descripcion' => (string) $producto['descripcion'],
-        'imagen' => $imagen === '' ? '' : 'uploads/catalogo_pixal/' . $imagen,
+        'imagen' => $imagen === '' ? '' : $catalogo['directorio'] . '/' . $imagen,
         'marca' => (string) $producto['marca'],
         'precio' => (float) $producto['precio']
     );

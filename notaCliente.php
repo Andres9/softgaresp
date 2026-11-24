@@ -9,6 +9,8 @@ unset($_SESSION['nota_mensaje']);
 
 <section>
 
+  <?php include __DIR__ . '/app/Views/notas_subnav.php'; ?>
+
   <?php if ($notaMensaje !== '') { ?>
     <div class="alert alert-success" role="status"><?= escaparRecepcionHtml($notaMensaje) ?></div>
   <?php } ?>

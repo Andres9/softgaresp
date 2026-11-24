@@ -171,6 +171,8 @@ include __DIR__ . '/encabezado.php';
     </div>
   </section>
 
+  <?php include __DIR__ . '/app/Views/comercial_subnav.php'; ?>
+
   <?php if ($errorCotizacion !== '') { ?>
     <div class="alert alert-danger" role="alert"><?= escaparCotizacion($errorCotizacion) ?></div>
   <?php } ?>

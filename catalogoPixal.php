@@ -9,7 +9,7 @@ require_once __DIR__ . '/pedidos_db.php';
 
 $errorCatalogo = isset($_SESSION['catalogo_pixal_error']) ? $_SESSION['catalogo_pixal_error'] : '';
 unset($_SESSION['catalogo_pixal_error']);
-$importados = isset($_GET['importados']) ? filter_var($_GET['importados'], FILTER_VALIDATE_INT) : false;
+$guardado = isset($_GET['guardado']) && $_GET['guardado'] === '1';
 $resultado = mysqli_query($conn, 'SELECT COUNT(*) AS cantidad FROM productos_pixal_center');
 if ($resultado === false) {
     error_log('No fue posible consultar el tamaño del catálogo Pixal: ' . mysqli_error($conn));
@@ -35,27 +35,40 @@ include __DIR__ . '/encabezado.php';
     <a class="btn btn-outline-light" href="pedido.php"><i class="fa-solid fa-arrow-left"></i> Volver a pedidos</a>
   </section>
 
+  <?php include __DIR__ . '/app/Views/comercial_subnav.php'; ?>
+
   <?php if ($errorCatalogo !== '') { ?><div class="alert alert-danger" role="alert"><?= escaparCatalogoPixal($errorCatalogo) ?></div><?php } ?>
-  <?php if ($importados !== false && $importados > 0) { ?><div class="alert alert-success" role="status">Se importaron <?= (int) $importados ?> productos correctamente.</div><?php } ?>
+  <?php if ($guardado) { ?><div class="alert alert-success" role="status">El producto se guardó correctamente.</div><?php } ?>
 
   <section class="pedido-panel">
     <div class="pedido-panel-heading">
-      <div><span class="pedido-step">01</span><h2>Importar productos</h2></div>
-      <p>Los códigos existentes se actualizan sin duplicarse.</p>
+      <div><span class="pedido-step">01</span><h2>Agregar producto</h2></div>
+      <p>Si el código ya existe, se actualizarán sus datos.</p>
     </div>
-    <p>Guarda la hoja de cálculo como CSV UTF-8. El archivo debe incluir estos encabezados: <code>codigo, descripcion, imagen, marca, precio</code>. El precio debe ser numérico con punto decimal. En <code>imagen</code> indica el nombre del archivo y adjunta las fotos en el mismo formulario.</p>
-    <form action="importarPixalCSV.php" method="post" enctype="multipart/form-data" class="pedido-data-grid">
+    <form action="guardarProductoPixal.php" method="post" enctype="multipart/form-data" class="pedido-data-grid">
       <input type="hidden" name="token_csrf" value="<?= escaparCatalogoPixal(token_csrf()) ?>">
       <label class="pedido-field">
-        <span>Archivo CSV UTF-8 <b>*</b></span>
-        <input type="file" name="catalogo_csv" accept=".csv,text/csv" required>
+        <span>Código <b>*</b></span>
+        <input type="text" name="codigo" maxlength="80" required>
       </label>
       <label class="pedido-field">
-        <span>Imágenes de productos (JPG o PNG; máximo 5 MB c/u)</span>
-        <input type="file" name="imagenes[]" accept="image/jpeg,image/png" multiple>
+        <span>Descripción <b>*</b></span>
+        <textarea name="descripcion" maxlength="65535" required></textarea>
+      </label>
+      <label class="pedido-field">
+        <span>Marca</span>
+        <input type="text" name="marca" maxlength="120">
+      </label>
+      <label class="pedido-field">
+        <span>Precio <b>*</b></span>
+        <input type="number" name="precio" min="0" max="99999999999.99" step="0.01" required>
+      </label>
+      <label class="pedido-field">
+        <span>Imagen del producto (JPG o PNG; máximo 5 MB)</span>
+        <input type="file" name="imagen" accept="image/jpeg,image/png">
       </label>
       <div class="pedido-field-wide">
-        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-file-import"></i> Importar catálogo</button>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Guardar producto</button>
       </div>
     </form>
   </section>

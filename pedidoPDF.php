@@ -11,11 +11,11 @@ function escaparPedidoPdf($valor)
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 }
 
-function imagenPedidoPdf($nombre)
+function imagenPedidoPdf($nombre, $proveedor)
 {
-    $nombre = imagenCatalogoPedidoDisponible($nombre);
+    $nombre = imagenCatalogoPedidoDisponible($nombre, $proveedor);
     if ($nombre === '') return '';
-    $ruta = __DIR__ . '/uploads/catalogo_pixal/' . $nombre;
+    $ruta = __DIR__ . '/' . directorioImagenesPedido($proveedor) . '/' . $nombre;
     $contenido = file_get_contents($ruta);
     if ($contenido === false) {
         return '';
@@ -134,7 +134,7 @@ ob_start();
         <td class="model"><?= escaparPedidoPdf($detalle['modelo']) ?></td>
         <td class="quantity"><?= escaparPedidoPdf(number_format((float) $detalle['cantidad'], 2)) ?></td>
         <td style="text-align:left;">
-          <?php $imagen = imagenPedidoPdf($detalle['imagen']); if ($imagen !== '') { ?>
+          <?php $imagen = imagenPedidoPdf($detalle['imagen'], $pedido['proveedor']); if ($imagen !== '') { ?>
             <img class="product-image" src="<?= $imagen ?>" alt="Producto" style="margin-right:6px;vertical-align:middle;">
           <?php } ?>
           <span style="vertical-align:middle"><?= escaparPedidoPdf($detalle['descripcion']) ?></span>

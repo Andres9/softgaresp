@@ -2,6 +2,8 @@
 
   <section>
 
+    <?php include __DIR__ . '/app/Views/notas_subnav.php'; ?>
+
     <h2>REPORTES DE NOTAS</h2>
 
 

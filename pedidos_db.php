@@ -23,10 +23,39 @@ function nombreImagenCatalogoPedido($imagen)
     return $nombre;
 }
 
-function imagenCatalogoPedidoDisponible($imagen)
+function proveedoresPedido()
 {
+    return array('Pixal Center', 'Seven Accesorios', 'Dipath', 'Tony Superpapelerías', 'CT Internacional', 'CVA', 'Grupo Loma');
+}
+
+function catalogoPedidoPorProveedor($proveedor)
+{
+    $catalogos = array(
+        'Pixal Center' => array('tabla' => 'productos_pixal_center', 'directorio' => 'uploads/catalogo_pixal'),
+        'Seven Accesorios' => array('tabla' => 'productos_seven_accesorios', 'directorio' => 'uploads/catalogo_seven')
+    );
+    return isset($catalogos[$proveedor]) ? $catalogos[$proveedor] : null;
+}
+
+function directorioImagenesPedido($proveedor)
+{
+    $catalogo = catalogoPedidoPorProveedor($proveedor);
+    return $catalogo ? $catalogo['directorio'] : 'uploads/catalogo_pixal';
+}
+
+function imagenCatalogoPedidoDisponible($imagen, $proveedor = 'Pixal Center')
+{
+    if ($proveedor === 'Seven Accesorios' && is_string($imagen)) {
+        $ruta = str_replace('\\', '/', trim($imagen));
+        foreach (array('img/productos/', 'uploads/catalogo_seven/') as $prefijo) {
+            if (strpos($ruta, $prefijo) === 0) {
+                $imagen = substr($ruta, strlen($prefijo));
+                break;
+            }
+        }
+    }
     $nombre = nombreImagenCatalogoPedido($imagen);
-    if ($nombre === '' || !is_file(__DIR__ . '/uploads/catalogo_pixal/' . $nombre)) {
+    if ($nombre === '' || !is_file(__DIR__ . '/' . directorioImagenesPedido($proveedor) . '/' . $nombre)) {
         return '';
     }
     return $nombre;
@@ -94,7 +123,8 @@ $tablasPedidos = array(
         PRIMARY KEY (id_producto),
         UNIQUE KEY uq_productos_pixal_codigo (codigo),
         KEY idx_productos_pixal_descripcion (descripcion(120))
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+    "CREATE TABLE IF NOT EXISTS productos_seven_accesorios LIKE productos_pixal_center"
 );
 
 foreach ($tablasPedidos as $sqlTabla) {

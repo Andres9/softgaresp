@@ -74,14 +74,7 @@ if (!$fechaValidada || $fechaValidada->format('Y-m-d') !== $fechaPedido) {
     pedidoFallido('La fecha del pedido no es válida.');
 }
 $fechaPedido = $fechaValidada->format('Y-m-d');
-$proveedoresPermitidos = array(
-    'Pixal Center',
-    'Dipath',
-    'Tony Superpapelerías',
-    'CT Internacional',
-    'CVA',
-    'Grupo Loma'
-);
+$proveedoresPermitidos = proveedoresPedido();
 if ($proveedor !== '' && !in_array($proveedor, $proveedoresPermitidos, true)) {
     pedidoFallido('Selecciona un proveedor de la lista.');
 }
@@ -94,6 +87,7 @@ if ($envio === null || $envio < 0 || $envio > 99999999999.99) {
 
 $itemsEntrada = isset($_POST['items']) && is_array($_POST['items']) ? $_POST['items'] : array();
 $itemsValidos = array();
+$catalogoProveedor = catalogoPedidoPorProveedor($proveedor);
 
 foreach ($itemsEntrada as $item) {
     if (
@@ -125,26 +119,26 @@ foreach ($itemsEntrada as $item) {
         continue;
     }
 
-    if ($proveedor === 'Pixal Center' && !$idPedidoEditar) {
+    if ($catalogoProveedor !== null && !$idPedidoEditar) {
         $consultaCatalogo = mysqli_prepare(
             $conn,
-            'SELECT descripcion, imagen FROM productos_pixal_center WHERE codigo = ? LIMIT 1'
+            'SELECT descripcion, imagen FROM `' . $catalogoProveedor['tabla'] . '` WHERE codigo = ? LIMIT 1'
         );
         if (!$consultaCatalogo) {
-            error_log('No fue posible preparar la consulta del catálogo Pixal Center: ' . mysqli_error($conn));
-            pedidoFallido('No se pudo validar el producto en el catálogo Pixal Center.');
+            error_log('No fue posible preparar la consulta del catálogo ' . $proveedor . ': ' . mysqli_error($conn));
+            pedidoFallido('No se pudo validar el producto en el catálogo seleccionado.');
         }
         $consultaCatalogo->bind_param('s', $modelo);
         if (!$consultaCatalogo->execute()) {
-            error_log('No fue posible consultar el catálogo Pixal Center: ' . $consultaCatalogo->error);
+            error_log('No fue posible consultar el catálogo ' . $proveedor . ': ' . $consultaCatalogo->error);
             $consultaCatalogo->close();
-            pedidoFallido('No se pudo validar el producto en el catálogo Pixal Center.');
+            pedidoFallido('No se pudo validar el producto en el catálogo seleccionado.');
         }
         $productoCatalogo = $consultaCatalogo->get_result()->fetch_assoc();
         $consultaCatalogo->close();
         if ($productoCatalogo) {
             $descripcion = (string) $productoCatalogo['descripcion'];
-            $imagen = imagenCatalogoPedidoDisponible($productoCatalogo['imagen']);
+            $imagen = imagenCatalogoPedidoDisponible($productoCatalogo['imagen'], $proveedor);
         }
     }
 

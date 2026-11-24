@@ -43,6 +43,12 @@
 <?php if ($pagina_actual === 'ventas.php') { ?>
 <script src="js/ventas.js"></script>
 <?php } ?>
+<?php if ($pagina_actual === 'movimiento.php') { ?>
+<script src="js/movimiento.js"></script>
+<?php } ?>
+<?php if ($pagina_actual === 'cierre_mensual.php') { ?>
+<script src="js/cierre-mensual.js"></script>
+<?php } ?>
 <?php if (in_array($pagina_actual, array('notaCliente.php', 'reportesnotas.php', 'consultas.php'), true)) { ?>
 <script src="js/nota-eliminar.js"></script>
 <?php } ?>

@@ -16,6 +16,15 @@
   var storageKey = draftBaseKey + (editingId && editingId !== '0' ? '.edit.' + editingId : '');
   var products = [];
   var catalogRequest = 0;
+  var previousProvider;
+
+  function hasCatalog(value) {
+    return value === 'Pixal Center' || value === 'Seven Accesorios';
+  }
+
+  function imageDirectory(value) {
+    return value === 'Seven Accesorios' ? 'uploads/catalogo_seven/' : 'uploads/catalogo_pixal/';
+  }
 
   function number(value) {
     var parsed = parseFloat(String(value).replace(',', '.'));
@@ -91,7 +100,7 @@
     var image = row.querySelector('.pedido-product-image');
     var imageName = values.imagen || '';
     if (/^[A-Za-z0-9][A-Za-z0-9._-]{0,249}\.(jpg|jpeg|png)$/i.test(imageName)) {
-      image.src = 'uploads/catalogo_pixal/' + encodeURIComponent(imageName);
+      image.src = imageDirectory(provider.value) + encodeURIComponent(imageName);
       image.alt = values.descripcion || '';
       image.hidden = false;
       image.onload = function () { image.parentElement.classList.add('has-image'); };
@@ -262,12 +271,13 @@
     var list = row.querySelector('.pedido-suggestions');
     var query = input.value.trim().toLowerCase();
     closeSuggestions(row);
-    if (provider.value !== 'Pixal Center' || !query) {
+    if (!hasCatalog(provider.value) || (!query && provider.value !== 'Seven Accesorios')) {
       return;
     }
 
     var matches = products.filter(function (product) {
-      return product.codigo.toLowerCase().indexOf(query) !== -1;
+      return product.codigo.toLowerCase().indexOf(query) !== -1 ||
+        (provider.value === 'Seven Accesorios' && product.descripcion.toLowerCase().indexOf(query) !== -1);
     });
     matches.sort(function (a, b) {
       return (a.codigo.toLowerCase().indexOf(query) === 0 ? 0 : 1) -
@@ -317,7 +327,7 @@
     input.value = option.dataset.code;
     input.focus();
     closeSuggestions(row);
-    applyProduct(row);
+    applyProduct(row, false, true);
     saveDraft();
   }
 
@@ -328,12 +338,13 @@
     });
   }
 
-  function applyProduct(row, preservePrice) {
+  function applyProduct(row, preservePrice, refreshImage) {
     var code = row.querySelector('[name$="[modelo]"]').value;
     var product = productForCode(code);
     if (!product) {
+      var hadAppliedProduct = !!row.dataset.appliedCode;
       row.dataset.appliedCode = '';
-      if (provider.value === 'Pixal Center') {
+      if (provider.value === 'Pixal Center' || (provider.value === 'Seven Accesorios' && hadAppliedProduct)) {
         row.querySelector('[name$="[descripcion]"]').value = '';
         row.querySelector('[name$="[imagen]"]').value = '';
         var clearedPurchase = row.querySelector('[name$="[precio_compra]"]');
@@ -349,17 +360,20 @@
       return;
     }
     var normalizedCode = String(product.codigo).trim().toLowerCase();
-    if (row.dataset.appliedCode === normalizedCode) {
+    var alreadyApplied = row.dataset.appliedCode === normalizedCode;
+    if (alreadyApplied && !refreshImage) {
       return;
     }
-    row.dataset.appliedCode = normalizedCode;
-    row.querySelector('[name$="[descripcion]"]').value =
-      product.descripcion;
-    var purchaseInput = row.querySelector('[name$="[precio_compra]"]');
-    if (!preservePrice || purchaseInput.dataset.manual !== 'true') {
-      purchaseInput.value =
-        roundMoney(number(product.precio) * (isOneHourProduct(product) ? 1.08 : 1)).toFixed(2);
-      purchaseInput.dataset.manual = '';
+    if (!alreadyApplied) {
+      row.dataset.appliedCode = normalizedCode;
+      row.querySelector('[name$="[descripcion]"]').value =
+        product.descripcion;
+      var purchaseInput = row.querySelector('[name$="[precio_compra]"]');
+      if (!preservePrice || purchaseInput.dataset.manual !== 'true') {
+        purchaseInput.value =
+          roundMoney(number(product.precio) * (provider.value === 'Pixal Center' && isOneHourProduct(product) ? 1.08 : 1)).toFixed(2);
+        purchaseInput.dataset.manual = '';
+      }
     }
     row.querySelector('[name$="[imagen]"]').value = product.imagen ? product.imagen.split('/').pop() : '';
     var image = row.querySelector('.pedido-product-image');
@@ -389,7 +403,7 @@
       showCatalogMessage('Este modelo no tiene una imagen cargada en el catálogo.', true);
     }
     var finalInput = row.querySelector('[name$="[precio_final]"]');
-    if (!preservePrice) {
+    if (!alreadyApplied && !preservePrice) {
       finalInput.dataset.manual = '';
     }
     calculateRow(row);
@@ -398,14 +412,15 @@
 
   function loadCatalog(preserveRows) {
     var request = ++catalogRequest;
+    var selectedProvider = provider.value;
     products = [];
     tableBody.querySelectorAll('.pedido-row').forEach(closeSuggestions);
-    if (provider.value !== 'Pixal Center') {
+    if (!hasCatalog(selectedProvider)) {
       showCatalogMessage('El catálogo de este proveedor aún no está cargado. Puedes ingresar los productos manualmente.', false);
       return Promise.resolve();
     }
-    showCatalogMessage('Cargando catálogo de Pixal Center…', false);
-    return fetch('productosPedido.php?proveedor=' + encodeURIComponent(provider.value), {
+    showCatalogMessage('Cargando catálogo de ' + selectedProvider + '…', false);
+    return fetch('productosPedido.php?proveedor=' + encodeURIComponent(selectedProvider), {
       credentials: 'same-origin',
       headers: { 'Accept': 'application/json' }
     }).then(function (response) {
@@ -422,8 +437,8 @@
       }
       products = data;
       showCatalogMessage(data.length ?
-        'Catálogo Pixal Center: ' + data.length + ' modelos disponibles.' :
-        'El catálogo Pixal Center aún no tiene productos cargados.', data.length === 0);
+        'Catálogo ' + selectedProvider + ': ' + data.length + ' modelos disponibles.' :
+        'El catálogo ' + selectedProvider + ' aún no tiene productos cargados.', data.length === 0);
       tableBody.querySelectorAll('.pedido-row').forEach(function (row) {
         if (preserveRows) {
           calculateRow(row);
@@ -439,7 +454,7 @@
       if (request !== catalogRequest) {
         return;
       }
-      showCatalogMessage('No se pudo cargar el catálogo de Pixal Center. ' + error.message, true);
+      showCatalogMessage('No se pudo cargar el catálogo de ' + selectedProvider + '. ' + error.message, true);
     });
   }
 
@@ -567,6 +582,18 @@
   form.addEventListener('change', saveDraft);
   form.elements.envio.addEventListener('input', updateTotals);
   provider.addEventListener('change', function () {
+    if (previousProvider !== provider.value &&
+        (previousProvider === 'Seven Accesorios' || provider.value === 'Seven Accesorios')) {
+      tableBody.querySelectorAll('.pedido-row').forEach(function (row) {
+        row.dataset.appliedCode = '';
+        row.querySelector('[name$="[imagen]"]').value = '';
+        var image = row.querySelector('.pedido-product-image');
+        image.removeAttribute('src');
+        image.hidden = true;
+        image.parentElement.classList.remove('has-image');
+      });
+    }
+    previousProvider = provider.value;
     tableBody.querySelectorAll('.pedido-row').forEach(calculateRow);
     loadCatalog().then(function () {
       tableBody.querySelectorAll('.pedido-row').forEach(calculateRow);
@@ -576,6 +603,7 @@
   });
 
   var restoredDraft = loadDraft();
+  previousProvider = provider.value;
   if (editingId && editingId !== '0') {
     if (!restoredDraft) {
       if (!Array.isArray(window.pedidoEditItems) || !window.pedidoEditItems.length) {

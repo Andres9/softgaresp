@@ -84,11 +84,11 @@ function escaparPedido($valor)
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 }
 
-function imagenDetallePedido($nombre)
+function imagenDetallePedido($nombre, $proveedor)
 {
-    $nombre = imagenCatalogoPedidoDisponible($nombre);
+    $nombre = imagenCatalogoPedidoDisponible($nombre, $proveedor);
     if ($nombre === '') return '';
-    $ruta = __DIR__ . '/uploads/catalogo_pixal/' . $nombre;
+    $ruta = __DIR__ . '/' . directorioImagenesPedido($proveedor) . '/' . $nombre;
     $contenido = @file_get_contents($ruta);
     if ($contenido === false) {
         return '';
@@ -114,6 +114,8 @@ include __DIR__ . '/encabezado.php';
       <i class="fa-solid fa-box-open pedido-hero-icon" aria-hidden="true"></i>
     </div>
   </section>
+
+  <?php include __DIR__ . '/app/Views/comercial_subnav.php'; ?>
 
   <?php if ($errorPedido !== '') { ?>
     <div class="alert alert-danger"><?= escaparPedido($errorPedido) ?></div>
@@ -146,7 +148,7 @@ include __DIR__ . '/encabezado.php';
           <span>Proveedor</span>
           <select name="proveedor" id="pedido-proveedor">
             <option value="">Selecciona proveedor</option>
-            <?php foreach (array('Pixal Center', 'Dipath', 'Tony Superpapelerías', 'CT Internacional', 'CVA', 'Grupo Loma') as $proveedorOpcion) { ?>
+            <?php foreach (proveedoresPedido() as $proveedorOpcion) { ?>
               <option value="<?= escaparPedido($proveedorOpcion) ?>" <?= $editando && $pedidoActual['proveedor'] === $proveedorOpcion ? 'selected' : '' ?>><?= escaparPedido($proveedorOpcion) ?></option>
             <?php } ?>
           </select>
@@ -167,7 +169,7 @@ include __DIR__ . '/encabezado.php';
           <h3>Productos del pedido</h3>
           <p>Ingresa el modelo y completa los precios. Los importes se calculan automáticamente.</p>
         </div>
-        <span class="pedido-items-hint"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Pixal Center completa los datos al elegir un código.</span>
+        <span class="pedido-items-hint"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Pixal Center y Seven Accesorios completan los datos al elegir un producto. En Seven también puedes buscar por descripción.</span>
       </div>
       <div class="pedido-product-list" id="pedido-items" role="list">
         <article class="pedido-row" role="listitem">
@@ -178,7 +180,7 @@ include __DIR__ . '/encabezado.php';
               <label for="pedido-modelo-0">Modelo o código <b>*</b></label>
               <div class="pedido-model-search">
                 <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                <input id="pedido-modelo-0" type="text" name="items[0][modelo]" maxlength="120" required autocomplete="off" placeholder="Busca por código" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="pedido-sugerencias-0">
+                <input id="pedido-modelo-0" type="text" name="items[0][modelo]" maxlength="120" required autocomplete="off" placeholder="Busca un producto" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="pedido-sugerencias-0">
                 <div class="pedido-suggestions" id="pedido-sugerencias-0" role="listbox" aria-label="Sugerencias de productos" hidden></div>
               </div>
             </div>
@@ -310,7 +312,7 @@ include __DIR__ . '/encabezado.php';
             <td><?= escaparPedido($detalle['modelo']) ?></td>
             <td><?= escaparPedido(number_format((float) $detalle['cantidad'], 2)) ?></td>
             <td>
-              <?php $imagenDetalle = imagenDetallePedido($detalle['imagen']); ?>
+              <?php $imagenDetalle = imagenDetallePedido($detalle['imagen'], $pedidoActual['proveedor']); ?>
               <?php if ($imagenDetalle !== '') { ?>
                 <img class="pedido-detail-image" src="<?= escaparPedido($imagenDetalle) ?>" alt="<?= escaparPedido($detalle['descripcion']) ?>">
               <?php } ?>

@@ -18,12 +18,18 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
   <link rel="icon" href="img/logotipo.png" />
   <!-- ARCHIVOS PERSONALIZADOS -->
   <link rel="stylesheet" href="css/style.css" />
+  <?php if (in_array($pagina_actual, array('movimiento.php', 'cierre_mensual.php', 'recargas.php'), true)) { ?>
+  <link rel="stylesheet" href="css/movimiento.css" />
+  <?php } ?>
   <!-- BOOTSTRAP -->
   <link href="css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- DATATABLES -->
   <link rel="stylesheet" href="css/datatables.min.css" />
   <link rel="stylesheet" href="css/responsive.dataTables.min.css" />
+  <?php if (in_array($pagina_actual, array('comercial.php', 'pedido.php', 'cotizacion.php', 'catalogoPixal.php', 'servicios_notas.php', 'notaCliente.php', 'reportesnotas.php'), true)) { ?>
+  <link rel="stylesheet" href="css/comercial.css" />
+  <?php } ?>
   <?php if ($pagina_actual === 'cotizacion.php') { ?>
   <link rel="stylesheet" href="css/cotizacion.css" />
   <?php } ?>
@@ -67,6 +73,14 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
             <i class="fa-solid fa-calculator" aria-hidden="true"></i><span>Contabilidad</span></a>
         </li>
         <li>
+          <a href="movimiento.php" class="<?= in_array($pagina_actual, array('movimiento.php', 'cierre_mensual.php'), true) ? 'active' : '' ?>" aria-current="<?= in_array($pagina_actual, array('movimiento.php', 'cierre_mensual.php'), true) ? 'page' : 'false' ?>">
+            <i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i><span>Movimiento</span></a>
+        </li>
+        <li>
+          <a href="recargas.php" class="<?= $pagina_actual === 'recargas.php' ? 'active' : '' ?>" <?= $pagina_actual === 'recargas.php' ? 'aria-current="page"' : '' ?>>
+            <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i><span>Recargas</span></a>
+        </li>
+        <li>
           <a href="impresion.php" class="<?= $pagina_actual === 'impresion.php' ? 'active' : '' ?>" aria-current="<?= $pagina_actual === 'impresion.php' ? 'page' : 'false' ?>">
             <i class="fa-solid fa-print" aria-hidden="true"></i><span>Impresión</span></a>
         </li>
@@ -74,22 +88,18 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
           <a href="ventas.php" class="<?= $pagina_actual === 'ventas.php' ? 'active' : '' ?>" aria-current="<?= $pagina_actual === 'ventas.php' ? 'page' : 'false' ?>">
             <i class="fa-solid fa-cash-register" aria-hidden="true"></i><span>Ventas</span></a>
         </li>
-        <li>
-          <a href="pedido.php" class="<?= in_array($pagina_actual, array('pedido.php', 'guardarPedido.php'), true) ? 'active' : '' ?>" aria-current="<?= in_array($pagina_actual, array('pedido.php', 'guardarPedido.php'), true) ? 'page' : 'false' ?>">
-            <i class="fa-solid fa-box-open" aria-hidden="true"></i><span>Pedido</span></a>
-        </li>
         <?php } ?>
         <li>
           <a href="clientes.php" class="<?= $pagina_actual === 'clientes.php' ? 'active' : '' ?>" aria-current="<?= $pagina_actual === 'clientes.php' ? 'page' : 'false' ?>">
             <i class="fa-solid fa-users" aria-hidden="true"></i><span>Clientes</span></a>
         </li>
         <li>
-          <a href="notaCliente.php" class="<?= $pagina_actual === 'notaCliente.php' ? 'active' : '' ?>" aria-current="<?= $pagina_actual === 'notaCliente.php' ? 'page' : 'false' ?>">
-            <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i><span>Nota</span></a>
+          <a href="servicios_notas.php" class="<?= in_array($pagina_actual, array('servicios_notas.php', 'notaCliente.php', 'reportesnotas.php'), true) ? 'active' : '' ?>" <?= $pagina_actual === 'servicios_notas.php' ? 'aria-current="page"' : '' ?>>
+            <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i><span>Notas de servicio</span></a>
         </li>
         <li>
-          <a href="cotizacion.php" class="<?= in_array($pagina_actual, array('cotizacion.php', 'guardarCotizacion.php', 'cotizacionPDF.php'), true) ? 'active' : '' ?>" aria-current="<?= in_array($pagina_actual, array('cotizacion.php', 'guardarCotizacion.php', 'cotizacionPDF.php'), true) ? 'page' : 'false' ?>">
-            <i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i><span>Cotización</span></a>
+          <a href="comercial.php" class="<?= in_array($pagina_actual, array('comercial.php', 'pedido.php', 'catalogoPixal.php', 'guardarPedido.php', 'cotizacion.php', 'guardarCotizacion.php', 'cotizacionPDF.php'), true) ? 'active' : '' ?>" <?= $pagina_actual === 'comercial.php' ? 'aria-current="page"' : '' ?>>
+            <i class="fa-solid fa-briefcase" aria-hidden="true"></i><span>Comercial</span></a>
         </li>
         <?php if (usuario_es_administrador()) { ?>
         <li>
@@ -97,10 +107,6 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
             <i class="fa-solid fa-chart-pie" aria-hidden="true"></i><span>Reportes</span></a>
         </li>
         <?php } ?>
-        <li>
-          <a href="reportesnotas.php" class="<?= $pagina_actual === 'reportesnotas.php' ? 'active' : '' ?>" aria-current="<?= $pagina_actual === 'reportesnotas.php' ? 'page' : 'false' ?>">
-            <i class="fa-solid fa-note-sticky" aria-hidden="true"></i><span>R. notas</span></a>
-        </li>
         <?php if (usuario_es_administrador()) { ?>
         <li>
           <a href="reportesventas.php" class="<?= $pagina_actual === 'reportesventas.php' ? 'active' : '' ?>" aria-current="<?= $pagina_actual === 'reportesventas.php' ? 'page' : 'false' ?>">

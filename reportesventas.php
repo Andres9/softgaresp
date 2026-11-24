@@ -5,7 +5,6 @@
     <h2>REPORTES DE VENTAS</h2>
 
 
-
     <?php include_once 'ventasReportes.php'; ?>
 
 

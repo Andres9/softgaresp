@@ -671,8 +671,15 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
         </div>
         <strong class="reportes-resumen-valor">
             <?php
-            $ventasTotales = "SELECT SUM(costo) FROM ventas WHERE fecha_venta >= DATE(NOW()) ";
+            $ventasTotales = "SELECT COALESCE(SUM(costo), 0) FROM ventas
+              WHERE fecha_venta >= CURDATE() AND fecha_venta < CURDATE() + INTERVAL 1 DAY
+                AND costo >= 0";
             $resultado = mysqli_query($conn, $ventasTotales);
+            if (!$resultado) {
+              error_log('No fue posible consultar las ventas de hoy: ' . mysqli_error($conn));
+              http_response_code(500);
+              exit('No se pudo consultar el total de ventas de hoy.');
+            }
             while ($mostrar = mysqli_fetch_array($resultado)) {
               $vt = number_format($mostrar[0], 2, '.', ',');
               echo ("$" . $vt . PHP_EOL . "");
