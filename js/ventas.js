@@ -16,9 +16,12 @@
         productos.forEach(function (producto) {
             var cantidad = Number(producto.querySelector('.venta-cantidad').value) || 0;
             var precio = Number(producto.querySelector('.venta-precio').value) || 0;
+            var compra = Number(producto.querySelector('.venta-compra').value) || 0;
             var subtotal = cantidad * Math.round(precio * 100);
             suma += subtotal;
             producto.querySelector('.venta-subtotal').textContent = formato.format(subtotal / 100);
+            producto.querySelector('.venta-ganancia').value =
+                (compra !== 0 ? (subtotal - Math.round(compra * 100)) / 100 : 0).toFixed(2);
             producto.querySelector('.venta-quitar').disabled = productos.length === 1;
         });
         total.textContent = formato.format(suma / 100);

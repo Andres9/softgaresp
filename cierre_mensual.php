@@ -143,7 +143,7 @@ include_once __DIR__ . '/encabezado.php';
           <span class="cierre-panel-icono"><i class="fa-solid fa-building-columns" aria-hidden="true"></i></span>
           <div>
             <h2>Cuentas bancarias</h2>
-            <p>Captura el saldo y la fecha de cada cuenta. El total es independiente de los demás saldos.</p>
+            <p>Captura el saldo y la fecha de cada cuenta. El total se incluye automáticamente en el fondo actual.</p>
           </div>
         </div>
       </div>
@@ -178,10 +178,21 @@ include_once __DIR__ . '/encabezado.php';
             }, $plantillas[$seccion]);
         $etiquetas = array(
             'local' => array('Local del mes', 'Rentas, servicios y referencia de ganancia o adeudo', 'fa-store'),
-            'fondo' => array('Fondo actual', 'Desglose del efectivo disponible', 'fa-wallet'),
+            'fondo' => array('Fondo actual', 'Cuentas y otros recursos disponibles', 'fa-wallet'),
             'deuda' => array('Deuda actual', 'Detalle de compromisos pendientes', 'fa-file-invoice-dollar')
         );
         $totalSeccion = $sumarDetalles($detallesCierre, $seccion);
+        $fondoAnterior = null;
+        if ($seccion === 'fondo') {
+            foreach ($filas as $indice => $fila) {
+                if (strcasecmp(trim($fila['concepto']), 'Fondo') === 0) {
+                    $fondoAnterior = $fila['importe'];
+                    unset($filas[$indice]);
+                    break;
+                }
+            }
+            $totalSeccion += $totalCuentas - (float) $fondoAnterior;
+        }
     ?>
     <section class="movimiento-panel cierre-panel" data-cierre-seccion="<?= $escaparCierre($seccion) ?>">
       <div class="cierre-panel-cabecera">
@@ -194,7 +205,16 @@ include_once __DIR__ . '/encabezado.php';
         </div>
         <strong class="cierre-total" data-total="<?= $escaparCierre($seccion) ?>"><?= $formatearImporte($totalSeccion) ?></strong>
       </div>
+      <?php if ($seccion === 'fondo' && $fondoAnterior !== null && (float) $fondoAnterior !== $totalCuentas) { ?>
+      <p class="cierre-aviso-fondo">El fondo guardado era <?= $formatearImporte($fondoAnterior) ?>. Al guardar se actualizará con el total de cuentas.</p>
+      <?php } ?>
       <div class="cierre-renglones" data-renglones="<?= $escaparCierre($seccion) ?>">
+        <?php if ($seccion === 'fondo') { ?>
+        <div class="cierre-renglon cierre-renglon-fondo" data-fondo-cuentas>
+          <label><span>Concepto</span><input class="form-control" type="text" name="items[fondo][concepto][]" value="Fondo" readonly></label>
+          <label><span>Total de cuentas</span><div class="cierre-importe-input"><span>$</span><input class="form-control" type="number" name="items[fondo][importe][]" step="0.01" value="<?= $escaparCierre(number_format($totalCuentas, 2, '.', '')) ?>" readonly></div></label>
+        </div>
+        <?php } ?>
         <?php foreach ($filas as $fila) { ?>
         <div class="cierre-renglon">
           <label>

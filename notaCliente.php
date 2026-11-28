@@ -3,6 +3,8 @@ header('Cache-Control: no-store, private');
 include_once 'encabezado.php';
 require_once __DIR__ . '/notas_recepcion.php';
 prepararRecepcionNotas($conn);
+require_once __DIR__ . '/notas_servicios.php';
+prepararResumenServiciosNota($conn);
 $notaMensaje = $_SESSION['nota_mensaje'] ?? '';
 unset($_SESSION['nota_mensaje']);
 ?>
@@ -126,7 +128,7 @@ unset($_SESSION['nota_mensaje']);
                 <fieldset>
                   <legend>Datos del cliente</legend>
                   <label for="nota-cliente">Nombre cliente</label>
-                  <select id="nota-cliente" name="cliente" class="select">
+                  <select id="nota-cliente" name="cliente" class="select" required>
                     <option value="">Selecciona a un cliente</option>
                     <?php
                     $totalClientes = "SELECT * FROM clientes";
@@ -147,68 +149,15 @@ unset($_SESSION['nota_mensaje']);
               </div>
             </div>
 
-            <fieldset>
-              <legend>Datos del equipo</legend>
-              <div class="col-md-12 col-xs-12">
-                <label for="">Equipo</label>
-                <select id="nota-equipo" name="equipo" class="select">
-                  <option value="">Selecciona un equipo</option>
-                  <?php
-                  $datosEquipo = "SELECT * FROM equipo";
-                  $resultado = mysqli_query($conn, $datosEquipo);
-
-                  while ($mostrarEquipo = mysqli_fetch_array($resultado)) {
-                    $id = $mostrarEquipo["id_equipo"];
-                    $descripcion = $mostrarEquipo["descripcionEquipo"];
-                    ?>
-                    <option value="<?= (int) $id ?>" data-patron="<?= equipoAdmitePatron($descripcion) ? '1' : '0' ?>">
-                      <?= htmlspecialchars($descripcion, ENT_QUOTES, 'UTF-8') ?>
-                    </option>
-                    <?php
-                  }
-                  ?>
-                </select>
-              </div>
-              <div class="row">
-                <div class="col-md-6 col-xs-12">
-                  <label for="marca">Marca</label>
-                  <input type="text" name="marca" class="form-control" />
-                </div>
-                <div class="col-md-6 col-xs-12">
-                  <label for="modelo">Modelo</label>
-                  <input type="text" name="modelo" class="form-control" />
-                </div>
-              </div>
-            </fieldset>
+            <?php include __DIR__ . '/nota_equipos_formulario.php'; ?>
 
             <?php include __DIR__ . '/nota_recepcion_formulario.php'; ?>
 
-            <fieldset>
-              <legend>Servicio</legend>
-              <label for="">Servicio</label>
-              <select name="servicio" class="select">
-                <option value="">Seleccione una opcion</option>
-                <?php
-                $ventasTotales = "SELECT * FROM servicio";
-                $resultado = mysqli_query($conn, $ventasTotales);
-                while ($mostrar = mysqli_fetch_array($resultado)) {
-                  $id = $mostrar['id_servicio'];
-                  $descripcion = $mostrar["tipoServicio"];
-                  ?>
-                  <option value="<?= (int) $id ?>">
-                    <?= escaparRecepcionHtml($descripcion) ?>
-                  </option>
-                  <?php
-                }
-                ?>
-              </select>
-              <label for="">Descripcion</label>
-              <textarea id="" cols="45" rows="3" name="descripcion" class="form-control"></textarea>
-            </fieldset>
+            <?php include __DIR__ . '/nota_servicios_formulario.php'; ?>
 
             <fieldset>
               <legend>Estado del equipo</legend>
-              <select id="nota-estado" name="estado" class="select">
+              <select id="nota-estado" name="estado" class="select" required>
                 <option value="">Seleccione una opcion</option>
                 <?php
                 $ventasTotales = "SELECT * FROM estadoservicio";
@@ -229,24 +178,24 @@ unset($_SESSION['nota_mensaje']);
               <legend>Costo</legend>
               <div class="row">
                 <div class="col-md-4 col-xs-12">
-                  <label for="">Costo</label>
-                  <input type="number" name="costoServicio" value="0" class="form-control" />
+                  <label for="">Total de servicios</label>
+                  <input type="number" name="costoServicio" value="0" class="form-control" readonly />
                 </div>
                 <div class="col-md-4 col-xs-12">
                   <label for="">Ganancia</label>
-                  <input type="number" name="ganancia" value="0" class="form-control" />
+                  <input type="number" name="ganancia" value="0" step="1" class="form-control" />
                 </div>
                 <div class="col-md-4 col-xs-12">
                   <label for="">Anticipo</label>
-                  <input type="number" name="anticipo" value="0" class="form-control" />
+                  <input type="number" name="anticipo" value="0" min="0" max="2147483647" step="1" class="form-control" required />
                 </div>
                 <div class="col-md-4 col-xs-12">
                   <label for="">Restante</label>
-                  <input type="number" name="restante" value="0" class="form-control" />
+                  <input type="number" name="restante" value="0" class="form-control" readonly />
                 </div>
                 <div class="col-md-4 col-xs-12">
-                  <label for="">Pagado</label>
-                  <input type="number" name="pagado" value="0" class="form-control" />
+                  <label for="">Pago adicional (sin anticipo)</label>
+                  <input type="number" name="pagado" value="0" min="0" max="2147483647" step="1" class="form-control" required />
                 </div>
               </div>
             </fieldset>
@@ -292,10 +241,12 @@ unset($_SESSION['nota_mensaje']);
 
           <tbody>
             <?php
-            $consulta = "select * from notas n 
+            $consulta = "select n.*, c.*, e.*, es.*, COALESCE(ds.nombres, s.tipoServicio) AS servicios_nombres, COALESCE(de.equipos, e.descripcionEquipo) AS equipos_nombres, COALESCE(de.marcas, n.marca) AS marcas_nombres, COALESCE(de.modelos, n.modelo) AS modelos_nombres from notas n
                             JOIN clientes c ON n.id_cliente  = c.id_CLIENTE 
                             JOIN equipo e ON n.equipo =  e.id_equipo 
                             JOIN servicio s ON n.servicio =  s.id_servicio
+                            LEFT JOIN (SELECT id_nota, GROUP_CONCAT(nombre ORDER BY id_detalle SEPARATOR ', ') AS nombres FROM nota_servicio GROUP BY id_nota) ds ON ds.id_nota = n.id_nota
+                            LEFT JOIN (SELECT id_nota, GROUP_CONCAT(descripcion ORDER BY id_detalle SEPARATOR ', ') AS equipos, GROUP_CONCAT(NULLIF(marca, '') ORDER BY id_detalle SEPARATOR ', ') AS marcas, GROUP_CONCAT(NULLIF(modelo, '') ORDER BY id_detalle SEPARATOR ', ') AS modelos FROM nota_equipo GROUP BY id_nota) de ON de.id_nota = n.id_nota
                             JOIN estadoservicio es ON n.estado =  es.id_estado 
                             WHERE fecha_alta >= DATE(NOW())";
             /* WHERE fecha_alta >= DATE(NOW()) */
@@ -306,10 +257,10 @@ unset($_SESSION['nota_mensaje']);
                 <td><?= escaparRecepcionHtml($mostrar['id_nota']) ?></td>
                 <td><?= escaparRecepcionHtml($mostrar['nombre'] . ' ' . $mostrar['apellidos']) ?></td>
                 <td><?= escaparRecepcionHtml($mostrar['fecha_alta']) ?></td>
-                <td><?= escaparRecepcionHtml($mostrar['descripcionEquipo']) ?></td>
-                <td><?= escaparRecepcionHtml($mostrar['marca']) ?></td>
-                <td><?= escaparRecepcionHtml($mostrar['modelo']) ?></td>
-                <td><?= escaparRecepcionHtml($mostrar['tipoServicio']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['equipos_nombres']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['marcas_nombres']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['modelos_nombres']) ?></td>
+                <td><?= escaparRecepcionHtml($mostrar['servicios_nombres']) ?></td>
                 <td><?= escaparRecepcionHtml($mostrar['costoServicio']) ?></td>
                 <td><?= escaparRecepcionHtml($mostrar['descripcionServicio']) ?></td>
                 <td><?= escaparRecepcionHtml($mostrar['notas']) ?></td>

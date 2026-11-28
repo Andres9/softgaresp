@@ -22,10 +22,6 @@ $valorRecepcion = static function ($campo) use ($recepcion) {
       </select>
     </div>
     <div>
-      <label for="nota-serie">Número de serie o IMEI</label>
-      <input id="nota-serie" name="numero_serie" type="text" maxlength="100" class="form-control" value="<?= $valorRecepcion('numero_serie') ?>">
-    </div>
-    <div>
       <label for="nota-accesorios">Otros accesorios entregados</label>
       <input id="nota-accesorios" name="accesorios" type="text" maxlength="255" class="form-control" value="<?= $valorRecepcion('accesorios') ?>" placeholder="Ej. funda, cable, memoria">
     </div>

@@ -15,6 +15,8 @@ if (!$conn) {
 }
 
 if ($mostrarGraficosEnReportes) {
+require_once __DIR__ . '/notas_servicios.php';
+prepararResumenServiciosNota($conn);
 $inicioSemana = (new DateTimeImmutable('today'))->modify('monday this week');
 $finSemana = $inicioSemana->modify('+7 days');
 $fechaInicioSemana = $inicioSemana->format('Y-m-d H:i:s');
@@ -280,13 +282,14 @@ $serviciosPorMesTipo = array();
 $consultaServiciosPorTipoMes = mysqli_prepare(
   $conn,
   'SELECT YEAR(n.fecha_alta) AS anio, MONTH(n.fecha_alta) AS mes,
-          COALESCE(s.tipoServicio, ?) AS tipoServicio, COUNT(*) AS cantidad,
+          COALESCE(ds.nombres, s.tipoServicio, ?) AS tipoServicio, COUNT(*) AS cantidad,
           COALESCE(SUM(CASE WHEN n.costoServicio > 0 THEN n.costoServicio ELSE 0 END), 0) AS monto,
           COALESCE(SUM(CASE WHEN n.ganancia > 0 THEN n.ganancia ELSE 0 END), 0) AS ganancia
    FROM notas n
    LEFT JOIN servicio s ON n.servicio = s.id_servicio
+   LEFT JOIN (SELECT id_nota, GROUP_CONCAT(nombre ORDER BY id_detalle SEPARATOR \', \') AS nombres FROM nota_servicio GROUP BY id_nota) ds ON ds.id_nota = n.id_nota
    WHERE n.fecha_alta IS NOT NULL
-   GROUP BY YEAR(n.fecha_alta), MONTH(n.fecha_alta), n.servicio, s.tipoServicio
+   GROUP BY YEAR(n.fecha_alta), MONTH(n.fecha_alta), COALESCE(ds.nombres, s.tipoServicio, ?)
    ORDER BY anio DESC, mes DESC, monto DESC'
 );
 
@@ -298,7 +301,7 @@ if ($consultaServiciosPorTipoMes === false) {
 
 $tipoServicioSinNombre = 'Sin tipo';
 if (
-  !mysqli_stmt_bind_param($consultaServiciosPorTipoMes, 's', $tipoServicioSinNombre) ||
+  !mysqli_stmt_bind_param($consultaServiciosPorTipoMes, 'ss', $tipoServicioSinNombre, $tipoServicioSinNombre) ||
   !mysqli_stmt_execute($consultaServiciosPorTipoMes) ||
   !mysqli_stmt_bind_result($consultaServiciosPorTipoMes, $anioServicioTipo, $mesServicioTipo, $tipoServicio, $cantidadServicioTipo, $montoServicioTipo, $gananciaServicioTipo)
 ) {
@@ -734,12 +737,12 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
                 </div>
                 <div class="col-md-4 col-xs-12">
                   <label class="w-100">Compra total
-                    <input type="number" step="0.01" required name="productos[<?= $indice ?>][pc]" value="<?= $valor('pc') ?>" class="form-control">
+                    <input type="number" step="0.01" required name="productos[<?= $indice ?>][pc]" value="<?= $valor('pc') ?>" class="form-control venta-compra">
                   </label>
                 </div>
                 <div class="col-md-4 col-xs-12">
                   <label class="w-100">Ganancia total
-                    <input type="number" step="0.01" required name="productos[<?= $indice ?>][ganancia]" value="<?= $valor('ganancia') ?>" class="form-control">
+                    <input type="number" step="0.01" name="productos[<?= $indice ?>][ganancia]" value="<?= $valor('ganancia') ?>" class="form-control venta-ganancia" readonly>
                   </label>
                 </div>
                 <div class="col-md-8 col-xs-12">
@@ -1616,8 +1619,8 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
     <div class="servicios-semana-card servicios-tipo-mes-card">
       <div class="servicios-semana-encabezado servicios-tipo-encabezado">
         <div>
-          <h2>Monto y ganancia por tipo de servicio</h2>
-          <p>Selecciona un año y un mes para consultar sus tipos de servicio.</p>
+          <h2>Monto y ganancia por servicios de la nota</h2>
+          <p>Las notas con varios servicios se agrupan por la lista registrada; su ganancia se cuenta una sola vez.</p>
         </div>
         <div class="servicios-tipo-filtros">
           <div class="servicios-tipo-filtro">
@@ -1674,11 +1677,11 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
 
             <div class="ventas-categoria-resumen servicios-tipo-detalle" aria-live="polite">
               <div>
-                <span>Tipo de servicio</span>
+                <span>Servicios de la nota</span>
                 <strong><?= htmlspecialchars($tipoServicioPrincipal['nombre'], ENT_QUOTES, 'UTF-8') ?></strong>
               </div>
               <div>
-                <span>Servicios</span>
+                <span>Notas</span>
                 <strong><?= number_format($tipoServicioPrincipal['cantidad']) ?></strong>
               </div>
               <div>
@@ -1692,13 +1695,13 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
             </div>
 
             <div class="ventas-categoria-grafica" role="group"
-              aria-label="Tipos de servicio de <?= htmlspecialchars($datosMesServicio['nombre'], ENT_QUOTES, 'UTF-8') ?>">
+              aria-label="Servicios registrados en notas de <?= htmlspecialchars($datosMesServicio['nombre'], ENT_QUOTES, 'UTF-8') ?>">
               <?php foreach ($datosMesServicio['tipos'] as $indiceTipoServicio => $datosTipoServicio) {
                   $anchoBarraTipoServicio = $maximoMontoTipoServicio > 0
                       ? $datosTipoServicio['monto'] / $maximoMontoTipoServicio * 100
                       : 0;
                   $etiquetaTipoServicio = $datosTipoServicio['nombre'] . ': ' .
-                      number_format($datosTipoServicio['cantidad']) . ' servicios, monto $' .
+                      number_format($datosTipoServicio['cantidad']) . ' notas, monto $' .
                       number_format($datosTipoServicio['monto'], 2, '.', ',') . ', ganancia $' .
                       number_format($datosTipoServicio['ganancia'], 2, '.', ',');
                   ?>
@@ -1721,7 +1724,7 @@ $anchoBarraMes = min(48, $anchoSemanaMes * 0.55);
           </div>
         <?php } ?>
       <?php } else { ?>
-        <p class="ventas-semana-vacia">Aún no hay servicios registrados por tipo y mes.</p>
+        <p class="ventas-semana-vacia">Aún no hay servicios registrados por mes.</p>
       <?php } ?>
     </div>
   </section>

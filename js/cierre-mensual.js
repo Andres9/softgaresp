@@ -27,7 +27,25 @@ document.addEventListener('DOMContentLoaded', function () {
     );
   };
 
+  const sumarCuentas = function () {
+    return Array.prototype.reduce.call(
+      document.querySelectorAll('[data-cuenta-saldo]'),
+      function (total, input) { return total + Math.round(obtenerImporte(input) * 100); },
+      0
+    ) / 100;
+  };
+
   const actualizarTotales = function () {
+    const totalCuentas = sumarCuentas();
+    const saldoCuentas = document.querySelector('[data-saldo="cuentas"]');
+    const fondoCuentas = document.querySelector('[data-fondo-cuentas] input[type="number"]');
+    if (saldoCuentas) {
+      saldoCuentas.textContent = formatearMoneda(totalCuentas);
+    }
+    if (fondoCuentas) {
+      fondoCuentas.value = totalCuentas.toFixed(2);
+    }
+
     Array.prototype.forEach.call(document.querySelectorAll('[data-total]'), function (total) {
       total.textContent = formatearMoneda(sumarSeccion(total.dataset.total));
     });
@@ -40,16 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const saldo = obtenerImporte(inventarioActual) - obtenerImporte(inventarioDeuda);
       saldoInventario.textContent = formatearMoneda(saldo);
       totalInventario.textContent = formatearMoneda(saldo);
-    }
-
-    const saldoCuentas = document.querySelector('[data-saldo="cuentas"]');
-    if (saldoCuentas) {
-      const totalCuentas = Array.prototype.reduce.call(
-        document.querySelectorAll('[data-cuenta-saldo]'),
-        function (total, input) { return total + obtenerImporte(input); },
-        0
-      );
-      saldoCuentas.textContent = formatearMoneda(totalCuentas);
     }
   };
 
@@ -153,9 +161,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const restaurarBorrador = function (borrador) {
     const secciones = formulario.querySelectorAll('[data-renglones]');
+    let fondoAnterior = null;
+    let contenedorFondo = null;
     Array.prototype.forEach.call(secciones, function (contenedor) {
       const filas = borrador.secciones[contenedor.dataset.renglones];
-      if (!Array.isArray(filas) || filas.length > 30 || filas.some(function (fila) {
+      const limite = contenedor.dataset.renglones === 'fondo' ? 31 : 30;
+      if (!Array.isArray(filas) || filas.length > limite || filas.some(function (fila) {
         return !fila || typeof fila.concepto !== 'string' || typeof fila.importe !== 'string';
       })) {
         throw new Error('El borrador contiene conceptos inválidos.');
@@ -163,8 +174,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     Array.prototype.forEach.call(secciones, function (contenedor) {
       const seccion = contenedor.dataset.renglones;
+      const fondoCuentas = contenedor.querySelector('[data-fondo-cuentas]');
+      if (fondoCuentas) {
+        contenedorFondo = contenedor;
+      }
       contenedor.textContent = '';
+      if (fondoCuentas) {
+        contenedor.appendChild(fondoCuentas);
+      }
+      let fondoRestaurado = false;
       borrador.secciones[seccion].forEach(function (fila) {
+        if (fondoCuentas && !fondoRestaurado && fila.concepto.trim().toLowerCase() === 'fondo') {
+          fondoRestaurado = true;
+          fondoAnterior = fila.importe;
+          return;
+        }
         const renglon = crearRenglon(seccion);
         renglon.querySelector('input[type="text"]').value = fila.concepto;
         renglon.querySelector('input[type="number"]').value = fila.importe;
@@ -176,6 +200,14 @@ document.addEventListener('DOMContentLoaded', function () {
         input.value = borrador.campos[input.name];
       }
     });
+    if (contenedorFondo && fondoAnterior !== null && fondoAnterior !== '' &&
+        Number(fondoAnterior) !== sumarCuentas()) {
+      const aviso = document.createElement('p');
+      aviso.className = 'cierre-aviso-fondo';
+      aviso.textContent = 'El fondo del borrador era ' + fondoAnterior +
+        '. Se actualizará con el total de cuentas.';
+      contenedorFondo.parentNode.insertBefore(aviso, contenedorFondo);
+    }
   };
 
   const guardarBorrador = function () {
@@ -298,7 +330,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (agregar) {
       const seccion = agregar.dataset.agregar;
       const contenedor = document.querySelector('[data-renglones="' + seccion + '"]');
-      if (contenedor && contenedor.children.length < 30) {
+      const limite = seccion === 'fondo' ? 31 : 30;
+      if (contenedor && contenedor.children.length < limite) {
         const renglon = crearRenglon(seccion);
         contenedor.appendChild(renglon);
         renglon.querySelector('input[type="text"]').focus();

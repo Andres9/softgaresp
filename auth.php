@@ -59,6 +59,7 @@ function requerir_usuario_autenticado()
         'actualizarClientes.php',
         'registroClientes.php',
         'servicios_notas.php',
+        'catalogo_servicios.php',
         'notaCliente.php',
         'editarNotas.php',
         'actualizarNotas.php',

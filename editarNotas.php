@@ -5,6 +5,8 @@ header('Cache-Control: no-store, private');
 include('conexion.php');
 require_once __DIR__ . '/notas_recepcion.php';
 prepararRecepcionNotas($conn);
+require_once __DIR__ . '/notas_servicios.php';
+prepararServiciosNota($conn);
 
 $idNota = isset($_GET['updNotas']) ? filter_var($_GET['updNotas'], FILTER_VALIDATE_INT) : false;
 if ($idNota === false || $idNota < 1) {
@@ -65,6 +67,8 @@ if (canalSeguroNota()) {
   <script src="js/select2.min.js" defer></script>
   <script src="js/selectores.js" defer></script>
   <script src="js/nota.js" defer></script>
+  <script src="js/nota-servicios.js" defer></script>
+  <script src="js/nota-equipos.js" defer></script>
 
 
   <!-- FUENTES -->
@@ -112,7 +116,7 @@ if (canalSeguroNota()) {
         <fieldset>
           <legend>Datos del cliente</legend>
           <label for="">Nombre cliente</label>
-          <select name="cliente" class="select">
+          <select name="cliente" class="select" required>
             <option value="">Selecciona a un cliente</option>
             <?php
               $ventasTotales = "SELECT * FROM clientes";  
@@ -140,86 +144,17 @@ if (canalSeguroNota()) {
       </div>
     </div>
 
-    <fieldset>
-      <legend>Datos del equipo</legend>
-     <div class="col-12  col-sm-12">
-     <label for="">Equipo</label>
-      <select id="nota-equipo" name="equipo" class="select">
-        <option value="">Selecciona un equipo</option>
-        <?php
-              $ventasTotales = "SELECT * FROM equipo";  
-                  $resultado = mysqli_query($conn,$ventasTotales);
-                  while($mostrar = mysqli_fetch_array($resultado)){
-                    $id=$mostrar["id_equipo"];
-                    $descripcion = $mostrar["descripcionEquipo"];
-
-                    if ($id==$dataNota['equipo']) {
-            ?>
-            <option value="<?= (int) $id ?>" data-patron="<?= equipoAdmitePatron($descripcion) ? '1' : '0' ?>" selected>
-              <?= htmlspecialchars($descripcion, ENT_QUOTES, 'UTF-8') ?>
-            </option>
-      <?php }else{?>
-<option value="<?= (int) $id ?>" data-patron="<?= equipoAdmitePatron($descripcion) ? '1' : '0' ?>">
-<?= htmlspecialchars($descripcion, ENT_QUOTES, 'UTF-8') ?>
-            </option>
-
-            <?php
-                  } }
-              ?>
-      </select>
-     </div>
-     <div class="row">
-     <div class="col-6  col-sm-12">
-      <label for="marca">Marca</label>
-      <input type="text" name="marca" class="form-control" value="<?= escaparRecepcionHtml($dataNota['marca']) ?>"/>
-      </div>
-      <div class="col-6  col-sm-12">
-      <label for="modelo">Modelo</label>
-      <input type="text" name="modelo" class="form-control" value="<?= escaparRecepcionHtml($dataNota['modelo']) ?>"/>
-      </div>
-     </div>
-    
-     
-     
-    </fieldset>
+    <?php include __DIR__ . '/nota_equipos_formulario.php'; ?>
 
     <?php include __DIR__ . '/nota_recepcion_formulario.php'; ?>
 
-    <fieldset>
-      <legend>Servicio</legend>
-      <label for="">Servicio</label>
-      <select name="servicio" class="select">
-        <option value="">Seleccione una servicio</option>
-        <?php
-              $ventasTotales = "SELECT * FROM servicio";  
-                  $resultado = mysqli_query($conn,$ventasTotales);
-                  while($mostrar = mysqli_fetch_array($resultado)){
-                    $id=$mostrar["id_servicio"];
-                    $descripcion = $mostrar["tipoServicio"];
-                    if ($id==$dataNota['servicio']) {
-            ?>
-            <option value="<?= (int) $id ?>" selected>
-              <?= escaparRecepcionHtml($descripcion) ?>
-            </option>
-      <?php }else{?>
-<option value="<?= (int) $id ?>">
-              <?= escaparRecepcionHtml($descripcion) ?>
-            </option>
-
-            <?php
-                  } }
-              ?>
-      </select>
-
-      <label for="">Descripcion</label>
-        <textarea id="" cols="45" rows="3" name="descripcionServicio" class="form-control"><?= escaparRecepcionHtml($dataNota['descripcionServicio']) ?></textarea>
-    </fieldset>
+    <?php include __DIR__ . '/nota_servicios_formulario.php'; ?>
 
     <fieldset>
       <legend>Estado del equipo</legend>
       <label for="">Estado del equipo</label>
     
-      <select id="nota-estado" name="estado" class="select">
+      <select id="nota-estado" name="estado" class="select" required>
         <option value="">Seleccione un estado</option>
         <?php
               $ventasTotales = "SELECT * FROM estadoservicio";  
@@ -245,10 +180,11 @@ if (canalSeguroNota()) {
     </fieldset>
     <fieldset>
       <legend>Costo</legend>
+      <p>Al guardar, el restante se recalcula como total menos anticipo y pago adicional. Revisa los importes de notas anteriores.</p>
       <div class="row">
         <div class="col-md-4  col-sm-12">
-          <label for="">Costo del servicio</label>
-          <input type="number" name="costoServicio" value="<?= escaparRecepcionHtml($dataNota['costoServicio']) ?>" class="form-control"/>
+          <label for="">Total de servicios</label>
+          <input type="number" name="costoServicio" value="<?= escaparRecepcionHtml($dataNota['costoServicio']) ?>" class="form-control" readonly/>
         </div>
         <div class="col-md-4  col-sm-12">
           <label for="">Ganancia</label>
@@ -256,15 +192,15 @@ if (canalSeguroNota()) {
         </div>
         <div class="col-md-4  col-sm-12">
           <label for="">Anticipo</label>
-          <input type="number" name="anticipo" value="<?= escaparRecepcionHtml($dataNota['anticipo']) ?>" class="form-control"/>
+          <input type="number" name="anticipo" value="<?= escaparRecepcionHtml($dataNota['anticipo'] ?? 0) ?>" min="0" max="2147483647" step="1" class="form-control" required/>
         </div>
         <div class="col-md-4  col-sm-12">
           <label for="">Restante</label>
-          <input type="number" name="restante" value="<?= escaparRecepcionHtml($dataNota['restante']) ?>" class="form-control"/>
+          <input type="number" name="restante" value="<?= escaparRecepcionHtml($dataNota['restante']) ?>" class="form-control" readonly/>
         </div>
         <div class="col-md-4  col-sm-12">
-          <label for="">Pagado</label>
-          <input type="number" name="pagado" value="<?= escaparRecepcionHtml($dataNota['pagado']) ?>" class="form-control"/>
+          <label for="">Pago adicional (sin anticipo)</label>
+          <input type="number" name="pagado" value="<?= escaparRecepcionHtml($dataNota['pagado'] ?? 0) ?>" min="0" max="2147483647" step="1" class="form-control" required/>
         </div>
       </div>
     </fieldset>

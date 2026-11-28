@@ -2,6 +2,65 @@
     text-align: left;
 }
 
+.nota-servicios {
+    text-align: left;
+}
+
+.nota-equipos {
+    text-align: left;
+}
+
+.nota-equipos label {
+    display: block;
+    width: 100%;
+}
+
+.nota-equipo-linea {
+    margin-bottom: 14px;
+    padding: 12px;
+    border: 1px solid #d9e1ec;
+    border-radius: 8px;
+}
+
+.nota-equipo-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+#registro .nota-equipo-agregar,
+#registro2 .nota-equipo-agregar,
+#registro .nota-equipo-quitar,
+#registro2 .nota-equipo-quitar {
+    width: auto;
+    height: auto;
+    margin: 4px 0 10px;
+    padding: 7px 12px;
+    text-transform: none;
+}
+
+.nota-servicios-linea {
+    align-items: end;
+    margin-bottom: 10px;
+}
+
+.nota-servicios label {
+    display: block;
+    width: 100%;
+}
+
+#registro .nota-servicio-agregar,
+#registro2 .nota-servicio-agregar,
+#registro .nota-servicio-quitar,
+#registro2 .nota-servicio-quitar {
+    width: auto;
+    height: auto;
+    margin: 4px 0 10px;
+    padding: 7px 12px;
+    text-transform: none;
+}
+
 .nota-recepcion-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

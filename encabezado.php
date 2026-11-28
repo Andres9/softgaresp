@@ -27,18 +27,23 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
   <!-- DATATABLES -->
   <link rel="stylesheet" href="css/datatables.min.css" />
   <link rel="stylesheet" href="css/responsive.dataTables.min.css" />
-  <?php if (in_array($pagina_actual, array('comercial.php', 'pedido.php', 'cotizacion.php', 'catalogoPixal.php', 'servicios_notas.php', 'notaCliente.php', 'reportesnotas.php'), true)) { ?>
+  <?php if (in_array($pagina_actual, array('comercial.php', 'pedido.php', 'cotizacion.php', 'catalogoPixal.php', 'servicios_notas.php', 'catalogo_servicios.php', 'notaCliente.php', 'reportesnotas.php'), true)) { ?>
   <link rel="stylesheet" href="css/comercial.css" />
   <?php } ?>
   <?php if ($pagina_actual === 'cotizacion.php') { ?>
   <link rel="stylesheet" href="css/cotizacion.css" />
   <?php } ?>
-  <?php if (in_array($pagina_actual, array('pedido.php', 'catalogoPixal.php'), true)) { ?>
+  <?php if (in_array($pagina_actual, array('pedido.php', 'catalogoPixal.php', 'catalogo_servicios.php'), true)) { ?>
   <link rel="stylesheet" href="css/pedido.css" />
+  <?php } ?>
+  <?php if ($pagina_actual === 'catalogo_servicios.php') { ?>
+  <link rel="stylesheet" href="css/catalogo_servicios.css" />
   <?php } ?>
   <?php if ($pagina_actual === 'notaCliente.php') { ?>
   <link rel="stylesheet" href="css/nota.css" />
   <script src="js/nota.js" defer></script>
+  <script src="js/nota-servicios.js" defer></script>
+  <script src="js/nota-equipos.js" defer></script>
   <?php } ?>
 
 
@@ -94,7 +99,7 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
             <i class="fa-solid fa-users" aria-hidden="true"></i><span>Clientes</span></a>
         </li>
         <li>
-          <a href="servicios_notas.php" class="<?= in_array($pagina_actual, array('servicios_notas.php', 'notaCliente.php', 'reportesnotas.php'), true) ? 'active' : '' ?>" <?= $pagina_actual === 'servicios_notas.php' ? 'aria-current="page"' : '' ?>>
+          <a href="servicios_notas.php" class="<?= in_array($pagina_actual, array('servicios_notas.php', 'catalogo_servicios.php', 'notaCliente.php', 'reportesnotas.php'), true) ? 'active' : '' ?>" <?= $pagina_actual === 'servicios_notas.php' ? 'aria-current="page"' : '' ?>>
             <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i><span>Notas de servicio</span></a>
         </li>
         <li>

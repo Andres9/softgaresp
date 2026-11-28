@@ -44,11 +44,14 @@ foreach ($productos as $producto) {
     $descripcion = isset($producto['descripcion']) && is_string($producto['descripcion']) ? trim($producto['descripcion']) : '';
     $precio = centavosVenta(isset($producto['precio']) ? $producto['precio'] : null);
     $compra = centavosVenta(isset($producto['pc']) ? $producto['pc'] : null);
-    $ganancia = centavosVenta(isset($producto['ganancia']) ? $producto['ganancia'] : null);
     if ($cantidad === false || $seccion === false || $descripcion === '' || !mb_check_encoding($descripcion, 'UTF-8') ||
-        mb_strlen($descripcion, 'UTF-8') > 50 || $precio === null || $compra === null || $ganancia === null ||
+        mb_strlen($descripcion, 'UTF-8') > 50 || $precio === null || $compra === null ||
         abs($precio) > intdiv(9999999999999, $cantidad)) {
         rechazarVenta('Revisa cada producto: cantidad y sección válidas, descripción de hasta 50 caracteres e importes con hasta dos decimales dentro del límite permitido.');
+    }
+    $ganancia = $compra !== 0 ? $precio * $cantidad - $compra : 0;
+    if (abs($ganancia) > 9999999999999) {
+        rechazarVenta('La ganancia del producto supera el límite permitido.');
     }
     $lineas[] = array($cantidad, $descripcion, importeVenta($precio * $cantidad), importeVenta($compra), importeVenta($ganancia), $seccion);
 }

@@ -4,6 +4,7 @@ require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
 mysqli_report(MYSQLI_REPORT_OFF);
 require_once __DIR__ . '/conexion.php';
+require_once __DIR__ . '/notas_servicios.php';
 require_once __DIR__ . '/dompdf/autoload.inc.php';
 
 use Dompdf\Dompdf;
@@ -15,6 +16,7 @@ if (!$conn) {
     http_response_code(500);
     exit('No se pudo generar el reporte de servicios.');
 }
+prepararResumenServiciosNota($conn);
 
 $inicioMes = new DateTimeImmutable('first day of this month 00:00:00');
 $finMes = $inicioMes->modify('+1 month');
@@ -24,11 +26,13 @@ $fin = $finMes->format('Y-m-d H:i:s');
 $consulta = mysqli_prepare(
     $conn,
     'SELECT n.id_nota, n.fecha_alta, n.costoServicio, n.ganancia, n.descripcionServicio,
-            c.nombre, c.apellidos, e.descripcionEquipo, s.tipoServicio, es.estadoServicio
+            c.nombre, c.apellidos, COALESCE(de.equipos, e.descripcionEquipo) AS descripcionEquipo, COALESCE(ds.nombres, s.tipoServicio) AS tipoServicio, es.estadoServicio
      FROM notas n
      LEFT JOIN clientes c ON n.id_cliente = c.id_cliente
      LEFT JOIN equipo e ON n.equipo = e.id_equipo
      LEFT JOIN servicio s ON n.servicio = s.id_servicio
+     LEFT JOIN (SELECT id_nota, GROUP_CONCAT(nombre ORDER BY id_detalle SEPARATOR \', \') AS nombres FROM nota_servicio GROUP BY id_nota) ds ON ds.id_nota = n.id_nota
+     LEFT JOIN (SELECT id_nota, GROUP_CONCAT(descripcion ORDER BY id_detalle SEPARATOR \', \') AS equipos FROM nota_equipo GROUP BY id_nota) de ON de.id_nota = n.id_nota
      LEFT JOIN estadoservicio es ON n.estado = es.id_estado
      WHERE n.fecha_alta >= ? AND n.fecha_alta < ?
      ORDER BY n.fecha_alta ASC, n.id_nota ASC'

@@ -3,6 +3,7 @@ require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
 require_once __DIR__ . '/cotizaciones_db.php';
 require_once __DIR__ . '/dompdf/autoload.inc.php';
+require_once __DIR__ . '/comercial_pdf.php';
 
 use Dompdf\Dompdf;
 
@@ -13,24 +14,10 @@ function escaparCotizacionPdf($valor)
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 }
 
-function imagenCotizacionPdf($nombre)
+function fechaCotizacionPdf($valor)
 {
-    if (!is_string($nombre) || !preg_match('/^[a-f0-9]{32}\.(jpg|png)$/', $nombre)) {
-        return '';
-    }
-
-    $rutaImagen = __DIR__ . '/uploads/cotizaciones/' . $nombre;
-    if (!is_file($rutaImagen)) {
-        return '';
-    }
-
-    $contenido = file_get_contents($rutaImagen);
-    if ($contenido === false) {
-        return '';
-    }
-
-    $tipo = substr($nombre, -3) === 'png' ? 'image/png' : 'image/jpeg';
-    return 'data:' . $tipo . ';base64,' . base64_encode($contenido);
+    $fecha = strtotime((string) $valor);
+    return $fecha === false ? escaparCotizacionPdf($valor) : date('d/m/Y', $fecha);
 }
 
 $idCotizacion = isset($_GET['id']) ? filter_var($_GET['id'], FILTER_VALIDATE_INT) : false;
@@ -79,9 +66,36 @@ if (!$consultaDetalles->execute()) {
 $detalles = $consultaDetalles->get_result()->fetch_all(MYSQLI_ASSOC);
 $consultaDetalles->close();
 
-$contenidoLogo = is_file(__DIR__ . '/img/logos2.jpg') ? file_get_contents(__DIR__ . '/img/logos2.jpg') : false;
-$logoData = $contenidoLogo === false ? '' : 'data:image/jpeg;base64,' . base64_encode($contenidoLogo);
+if (!function_exists('imagecreatefrompng')) {
+    error_log('La extensión GD de PHP es necesaria para mostrar imágenes PNG en el PDF de cotización.');
+    http_response_code(500);
+    exit('No se pudo generar el PDF: falta la extensión GD de PHP.');
+}
+$contenidoLogo = @file_get_contents(__DIR__ . '/img/logosinfondo.png');
+if ($contenidoLogo === false) {
+    error_log('No fue posible leer el logotipo para la cotización PDF.');
+    http_response_code(500);
+    exit('No se pudo generar el PDF.');
+}
+$logoData = 'data:image/png;base64,' . base64_encode($contenidoLogo);
+$estilosPdf = @file_get_contents(__DIR__ . '/css/comercial_pdf.css');
+if ($estilosPdf === false) {
+    error_log('No fue posible leer los estilos del PDF comercial.');
+    http_response_code(500);
+    exit('No se pudo generar el PDF.');
+}
 $moneda = escaparCotizacionPdf($cotizacion['moneda']);
+$clienteNombre = trim((string) $cotizacion['cliente_nombre']);
+$clienteEmpresa = trim((string) $cotizacion['cliente_empresa']);
+$clienteEmail = trim((string) $cotizacion['cliente_email']);
+$clienteTelefono = trim((string) $cotizacion['cliente_telefono']);
+$clienteRfc = trim((string) $cotizacion['cliente_rfc']);
+$clienteDireccion = trim((string) $cotizacion['cliente_direccion']);
+$atendio = trim((string) $cotizacion['creado_por']);
+$observaciones = trim((string) $cotizacion['notas']);
+$condicionesPago = trim((string) $cotizacion['condiciones_pago']);
+$tiempoEntrega = trim((string) $cotizacion['tiempo_entrega']);
+$garantia = trim((string) $cotizacion['garantia']);
 
 ob_start();
 ?>
@@ -91,174 +105,157 @@ ob_start();
     <meta charset="UTF-8">
     <title>Cotización <?= escaparCotizacionPdf($cotizacion['folio']) ?></title>
     <style>
-        @page { margin: 25px 30px 50px; }
-        body { color: #24384d; font-family: DejaVu Sans, Arial, sans-serif; font-size: 9px; line-height: 1.5; }
-        .header { border-bottom: 2px solid #333; margin-bottom: 12px; padding: 8px 0 12px; color: #222; }
-        .header-layout { border-collapse: collapse; width: 100%; }
-        .header-layout td { vertical-align: middle; }
-        .logo-cell { width: 27%; }
-        .logo { background: #fff; border-radius: 3px; padding: 4px; width: 118px; }
-        .brand { color: #222; font-size: 17px; font-weight: bold; letter-spacing: 2px; }
-        .brand-subtitle { color: #555; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; }
-        .header-copy { padding-left: 12px; }
-        .eyebrow { color: #555; font-size: 8px; font-weight: bold; letter-spacing: 1.5px; }
-        h1 { color: #222; font-size: 20px; margin: 5px 0; }
-        .folio { color: #555; font-size: 10px; letter-spacing: .5px; }
-        .header-label { border: 1px solid #aaa; color: #333; font-size: 8px; font-weight: bold; letter-spacing: 1px; padding: 8px 10px; text-align: center; text-transform: uppercase; }
-        .columns { border-collapse: separate; border-spacing: 6px 0; margin: 0 -6px 8px; width: 100%; }
-        .columns td { vertical-align: top; width: 50%; }
-        .info-card { border: 1px solid #ccc; padding: 7px 10px; }
-        .section-label { color: #087f8b; font-size: 8px; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
-        .client-name { color: #173c66; font-size: 11px; font-weight: bold; margin-bottom: 2px; }
-        .muted { color: #53677c; font-size: 8px; }
-        .metadata { margin-top: 3px; width: 100%; }
-        .metadata td { border-bottom: 1px solid #dfe7ee; padding: 2px 3px; }
-        .metadata .label { color: #4c6278; font-weight: bold; width: 36%; }
-        h2 { border-bottom: 1px solid #777; color: #222; font-size: 10px; margin: 10px 0 6px; padding: 5px 0; }
-        .items { border-collapse: collapse; table-layout: fixed; width: 100%; }
-        .items thead { display: table-header-group; }
-        .items tr { page-break-inside: avoid; }
-        .items th { border-bottom: 1px solid #555; color: #222; font-size: 8px; padding: 6px 4px; text-align: left; }
-        .items td { border-bottom: 1px solid #dfe7ee; color: #334b61; font-size: 8px; padding: 5px 4px; vertical-align: top; word-wrap: break-word; }
-        .items .right { text-align: right; }
-        .product-image { background: #fff; border: 1px solid #d9e3eb; height: 42px; object-fit: contain; padding: 2px; width: 42px; }
-        .product-title { color: #173c66; font-weight: bold; }
-        .product-detail { color: #52677d; font-size: 8px; margin-top: 3px; }
-        .summary-wrap { margin-top: 7px; text-align: right; }
-        .summary { border-collapse: collapse; margin-left: auto; width: 48%; }
-        .summary td { border-bottom: 1px solid #dfe7ee; padding: 4px 8px; }
-        .summary .label { color: #4c6278; text-align: left; }
-        .summary .amount { color: #263f56; font-weight: bold; text-align: right; }
-        .summary .total td { border-top: 1px solid #555; color: #222; font-size: 12px; font-weight: bold; }
-        .conditions { border: 1px solid #ccc; padding: 7px 10px; }
-        .conditions-grid { border-collapse: collapse; width: 100%; }
-        .conditions-grid td { padding: 3px 6px 3px 0; vertical-align: top; width: 50%; }
-        .condition-label { color: #087f8b; font-size: 8px; font-weight: bold; text-transform: uppercase; }
-        .condition-value { color: #334b61; font-size: 9px; }
-        .notes { margin-top: 9px; }
-        .acceptance { margin-top: 20px; page-break-inside: avoid; width: 100%; }
-        .acceptance td { color: #52677d; padding-top: 13px; text-align: center; width: 50%; }
-        .signature { border-top: 1px solid #8da1b3; display: inline-block; padding-top: 5px; width: 72%; }
-        .footer { position: fixed; right: 0; bottom: -34px; left: 0; border-top: 1px solid #cbd7e1; color: #53677c; font-size: 8px; padding-top: 7px; text-align: right; }
-    </style>
+<?= $estilosPdf ?>    </style>
 </head>
 <body>
-    <div class="header">
-        <table class="header-layout">
+    <div class="top-stripe"></div>
+    <div class="top-accent"></div>
+    <div class="footer">Garesp Servicio Informático &middot; Cotización <?= escaparCotizacionPdf($cotizacion['folio']) ?> &middot; Generada el <?= date('d/m/Y H:i') ?></div>
+    <div class="page-container">
+      <table class="header-table">
             <tr>
-                <td class="logo-cell">
-                    <?php if ($logoData !== '') { ?>
-                        <img class="logo" src="<?= $logoData ?>" alt="Garesp">
-                    <?php } else { ?>
-                        <div class="brand">GARESP</div><div class="brand-subtitle">Servicio Informático</div>
-                    <?php } ?>
+                <td>
+                    <img class="brand-logo" src="<?= $logoData ?>" alt="GARESP Servicio Informático">
+                    <div class="brand-tagline">Soluciones tecnológicas, equipamiento y soporte especializado</div>
                 </td>
-                <td class="header-copy">
-                    <div class="eyebrow">PROPUESTA COMERCIAL</div>
-                    <h1>Cotización</h1>
-                    <div class="folio"><?= escaparCotizacionPdf($cotizacion['folio']) ?></div>
+                <td class="doc-box">
+                    <div class="badge">Propuesta Comercial</div>
+                    <div class="doc-title">Cotización</div>
+                    <div class="doc-folio">Folio: <?= escaparCotizacionPdf($cotizacion['folio']) ?></div>
                 </td>
-                <td class="header-label">Propuesta<br>para cliente</td>
             </tr>
         </table>
-    </div>
 
-    <table class="columns">
+    <table class="cards-table">
         <tr>
-            <td style="padding-right:7px">
-                <div class="info-card">
-                    <div class="section-label">Preparada para</div>
-                    <div class="client-name"><?= escaparCotizacionPdf($cotizacion['cliente_nombre']) ?></div>
-                    <?php if ($cotizacion['cliente_empresa'] !== '') { ?><div><?= escaparCotizacionPdf($cotizacion['cliente_empresa']) ?></div><?php } ?>
-                    <?php if ($cotizacion['cliente_email'] !== '') { ?><div class="muted"><?= escaparCotizacionPdf($cotizacion['cliente_email']) ?></div><?php } ?>
-                    <?php if ($cotizacion['cliente_telefono'] !== '') { ?><div class="muted"><?= escaparCotizacionPdf($cotizacion['cliente_telefono']) ?></div><?php } ?>
-                    <?php if ($cotizacion['cliente_rfc'] !== '') { ?><div class="muted">RFC: <?= escaparCotizacionPdf($cotizacion['cliente_rfc']) ?></div><?php } ?>
-                    <?php if ($cotizacion['cliente_direccion'] !== '') { ?><div class="muted"><?= nl2br(escaparCotizacionPdf($cotizacion['cliente_direccion'])) ?></div><?php } ?>
-                </div>
+            <td class="card-cell card-client">
+                <div class="card-label">Preparada para</div>
+                <div class="client-name"><?= escaparCotizacionPdf($clienteNombre) ?></div>
+                <?php if ($clienteEmpresa !== '') { ?><div class="client-detail"><?= escaparCotizacionPdf($clienteEmpresa) ?></div><?php } ?>
+                <?php if ($clienteEmail !== '') { ?><div class="client-detail"><?= escaparCotizacionPdf($clienteEmail) ?></div><?php } ?>
+                <?php if ($clienteTelefono !== '') { ?><div class="client-detail"><?= escaparCotizacionPdf($clienteTelefono) ?></div><?php } ?>
+                <?php if ($clienteRfc !== '') { ?><div class="client-detail">RFC: <?= escaparCotizacionPdf($clienteRfc) ?></div><?php } ?>
+                <?php if ($clienteDireccion !== '') { ?><div class="client-detail"><?= nl2br(escaparCotizacionPdf($clienteDireccion)) ?></div><?php } ?>
             </td>
-            <td style="padding-left:7px">
-                <div class="info-card">
-                    <div class="section-label">Datos de la propuesta</div>
-                    <table class="metadata">
-                        <tr><td class="label">Fecha</td><td><?= escaparCotizacionPdf(date('d/m/Y', strtotime($cotizacion['fecha_cotizacion']))) ?></td></tr>
-                        <tr><td class="label">Vigencia</td><td><?= escaparCotizacionPdf(date('d/m/Y', strtotime($cotizacion['vigencia_hasta']))) ?></td></tr>
-                        <tr><td class="label">Moneda</td><td><?= $moneda ?></td></tr>
-                        <tr><td class="label">Atendió</td><td><?= escaparCotizacionPdf($cotizacion['creado_por']) ?></td></tr>
-                    </table>
-                </div>
+            <td class="card-spacer"></td>
+            <td class="card-cell card-meta">
+                <div class="card-label">Datos de la propuesta</div>
+                <table class="meta-inner">
+                    <tr><td class="lbl">Fecha de emisión:</td><td class="val"><?= fechaCotizacionPdf($cotizacion['fecha_cotizacion']) ?></td></tr>
+                    <tr><td class="lbl">Vigencia:</td><td class="val"><?= fechaCotizacionPdf($cotizacion['vigencia_hasta']) ?></td></tr>
+                    <tr><td class="lbl">Moneda:</td><td class="val"><?= $moneda ?></td></tr>
+                    <tr><td class="lbl">Atendió:</td><td class="val"><?= escaparCotizacionPdf($atendio) ?></td></tr>
+                </table>
             </td>
         </tr>
     </table>
 
-    <h2>Detalle de productos y servicios</h2>
-    <table class="items">
+    <div class="section-heading">Detalle de productos y servicios</div>
+    <table class="items-table">
         <thead>
             <tr>
-                <th class="right" style="width:7%">Cant.</th>
-                <th style="width:9%">Imagen</th>
+                <th class="center" style="width:7%">Cant.</th>
+                <th class="center" style="width:13%">Modelo</th>
                 <th style="width:32%">Concepto</th>
-                <th class="right" style="width:13%">P. unitario</th>
-                <th class="right" style="width:9%">Desc.</th>
-                <th class="right" style="width:9%">Impuesto</th>
-                <th class="right" style="width:19%">Importe</th>
+                <th class="right" style="width:16%">P. Unitario</th>
+                <th class="right" style="width:8%">Desc.</th>
+                <th class="right" style="width:8%">Imp.</th>
+                <th class="right" style="width:16%">Importe</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($detalles as $detalle) {
-                $imagenProducto = imagenCotizacionPdf($detalle['imagen']);
-                $identificadores = array_filter(array($detalle['tipo_producto'], $detalle['marca'], $detalle['modelo'], $detalle['sku']));
+                $imagenProducto = imagenComercialPdf($detalle['imagen']);
+                $identificadores = array_filter(
+                    array($detalle['tipo_producto'], $detalle['marca'], $detalle['modelo'], $detalle['sku']),
+                    function ($valor) {
+                        return trim((string) $valor) !== '';
+                    }
+                );
                 ?>
                 <tr>
-                    <td class="right"><?= number_format((float) $detalle['cantidad'], 2) ?></td>
-                    <td><?php if ($imagenProducto !== '') { ?><img class="product-image" src="<?= $imagenProducto ?>" alt="Producto"><?php } else { ?>—<?php } ?></td>
+                    <td class="center"><strong><?= number_format((float) $detalle['cantidad'], 2) ?></strong></td>
+                    <td class="center">
+                        <?php if ($imagenProducto !== '') { ?><img class="product-image" src="<?= $imagenProducto ?>" alt="Producto"><?php } ?>
+                        <?php if ($imagenProducto === '' && $detalle['imagen'] !== '') { ?><div class="item-sub">Imagen no disponible</div><?php } ?>
+                        <span class="model-pill"><?= escaparCotizacionPdf(trim((string) $detalle['modelo']) !== '' ? $detalle['modelo'] : '—') ?></span>
+                    </td>
                     <td>
-                        <div class="product-title"><?= escaparCotizacionPdf($detalle['descripcion']) ?></div>
-                        <?php if (count($identificadores) > 0) { ?><div class="product-detail"><?= escaparCotizacionPdf(implode(' · ', $identificadores)) ?></div><?php } ?>
-                        <?php if ($detalle['especificaciones'] !== '') { ?><div class="product-detail"><?= nl2br(escaparCotizacionPdf($detalle['especificaciones'])) ?></div><?php } ?>
-                        <?php if ($detalle['garantia'] !== '') { ?><div class="product-detail">Garantía: <?= escaparCotizacionPdf($detalle['garantia']) ?></div><?php } ?>
+                        <span class="item-title"><?= escaparCotizacionPdf($detalle['descripcion']) ?></span>
+                        <?php if (count($identificadores) > 0) { ?><span class="item-sub"><?= escaparCotizacionPdf(implode(' · ', $identificadores)) ?></span><?php } ?>
+                        <?php if (trim((string) $detalle['especificaciones']) !== '') { ?><div class="item-sub"><?= nl2br(escaparCotizacionPdf($detalle['especificaciones'])) ?></div><?php } ?>
+                        <?php if (trim((string) $detalle['garantia']) !== '') { ?><div class="item-sub">Garantía: <?= escaparCotizacionPdf($detalle['garantia']) ?></div><?php } ?>
                     </td>
                     <td class="right"><?= $moneda ?> $<?= number_format((float) $detalle['precio_unitario'], 2) ?></td>
                     <td class="right"><?= number_format((float) $detalle['descuento_porcentaje'], 2) ?>%</td>
                     <td class="right"><?= number_format((float) $detalle['impuesto_porcentaje'], 2) ?>%</td>
-                    <td class="right"><?= $moneda ?> $<?= number_format((float) $detalle['total'], 2) ?></td>
+                    <td class="right"><strong><?= $moneda ?> $<?= number_format((float) $detalle['total'], 2) ?></strong></td>
                 </tr>
             <?php } ?>
         </tbody>
     </table>
 
-    <div class="summary-wrap">
-        <table class="summary">
-            <tr><td class="label">Subtotal</td><td class="amount"><?= $moneda ?> $<?= number_format((float) $cotizacion['subtotal'], 2) ?></td></tr>
-            <tr><td class="label">Descuentos</td><td class="amount">− <?= $moneda ?> $<?= number_format((float) $cotizacion['descuento_total'], 2) ?></td></tr>
-            <tr><td class="label">Impuestos</td><td class="amount"><?= $moneda ?> $<?= number_format((float) $cotizacion['impuestos_total'], 2) ?></td></tr>
-            <tr class="total"><td>Total</td><td class="amount"><?= $moneda ?> $<?= number_format((float) $cotizacion['total'], 2) ?></td></tr>
-        </table>
-    </div>
-
-    <h2>Condiciones comerciales</h2>
-    <div class="conditions">
-        <table class="conditions-grid">
-            <tr>
-                <td><div class="condition-label">Condiciones de pago</div><div class="condition-value"><?= $cotizacion['condiciones_pago'] !== '' ? escaparCotizacionPdf($cotizacion['condiciones_pago']) : 'Por definir' ?></div></td>
-                <td><div class="condition-label">Tiempo de entrega</div><div class="condition-value"><?= $cotizacion['tiempo_entrega'] !== '' ? escaparCotizacionPdf($cotizacion['tiempo_entrega']) : 'Por definir' ?></div></td>
-            </tr>
-            <tr>
-                <td><div class="condition-label">Garantía general</div><div class="condition-value"><?= $cotizacion['garantia'] !== '' ? escaparCotizacionPdf($cotizacion['garantia']) : 'Según garantía indicada para cada concepto' ?></div></td>
-                <td><div class="condition-label">Vigencia de la oferta</div><div class="condition-value">Hasta el <?= escaparCotizacionPdf(date('d/m/Y', strtotime($cotizacion['vigencia_hasta']))) ?></div></td>
-            </tr>
-        </table>
-        <?php if ($cotizacion['notas'] !== '') { ?>
-            <div class="notes"><div class="condition-label">Notas</div><div class="condition-value"><?= nl2br(escaparCotizacionPdf($cotizacion['notas'])) ?></div></div>
-        <?php } ?>
-    </div>
-
-    <table class="acceptance">
+    <table class="summary-wrapper">
         <tr>
-            <td><span class="signature">Aceptación del cliente</span></td>
-            <td><span class="signature">Garesp Servicio Informático</span></td>
+            <td class="summary-notes">
+                <div class="note-box">
+                    <strong>Observaciones comerciales</strong>
+                    <?php if ($observaciones !== '') { ?>
+                        <?= nl2br(escaparCotizacionPdf($observaciones)) ?>
+                    <?php } else { ?>
+                        Precios expresados en <?= $moneda ?>. Cotización sujeta a disponibilidad de inventario al momento de confirmar el pedido.
+                    <?php } ?>
+                </div>
+            </td>
+            <td class="summary-box-cell">
+                <table class="totals-table">
+                    <tr><td class="t-lbl">Subtotal</td><td class="t-val"><?= $moneda ?> $<?= number_format((float) $cotizacion['subtotal'], 2) ?></td></tr>
+                    <tr><td class="t-lbl">Descuentos</td><td class="t-val">&minus; <?= $moneda ?> $<?= number_format((float) $cotizacion['descuento_total'], 2) ?></td></tr>
+                    <tr><td class="t-lbl">Impuestos</td><td class="t-val"><?= $moneda ?> $<?= number_format((float) $cotizacion['impuestos_total'], 2) ?></td></tr>
+                    <tr class="grand-row"><td>Total</td><td style="text-align:right"><?= $moneda ?> $<?= number_format((float) $cotizacion['total'], 2) ?></td></tr>
+                </table>
+            </td>
         </tr>
     </table>
-    <div class="footer">Garesp Servicio Informático · Cotización <?= escaparCotizacionPdf($cotizacion['folio']) ?> · Generada el <?= date('d/m/Y H:i') ?></div>
+
+    <div class="section-heading">Condiciones comerciales</div>
+    <table class="terms-table">
+        <tr>
+            <td class="term-card">
+                <div class="term-title">Condiciones de pago</div>
+                <div class="term-val"><?= escaparCotizacionPdf($condicionesPago !== '' ? $condicionesPago : 'Por definir') ?></div>
+            </td>
+            <td class="term-card">
+                <div class="term-title">Tiempo de entrega</div>
+                <div class="term-val"><?= escaparCotizacionPdf($tiempoEntrega !== '' ? $tiempoEntrega : 'Por definir') ?></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="term-card">
+                <div class="term-title">Garantía general</div>
+                <div class="term-val"><?= escaparCotizacionPdf($garantia !== '' ? $garantia : 'Según garantía indicada para cada concepto') ?></div>
+            </td>
+            <td class="term-card">
+                <div class="term-title">Vigencia de la oferta</div>
+                <div class="term-val">Hasta el <?= fechaCotizacionPdf($cotizacion['vigencia_hasta']) ?></div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="signatures-table">
+        <tr>
+            <td class="sig-cell">
+                <div class="sig-line">Aceptación del cliente</div>
+                <div class="sig-sub"><?= escaparCotizacionPdf($clienteNombre) ?></div>
+            </td>
+            <td class="sig-space"></td>
+            <td class="sig-cell">
+                <div class="sig-line">Garesp Servicio Informático</div>
+                <div class="sig-sub">Atendió: <?= escaparCotizacionPdf($atendio) ?></div>
+            </td>
+        </tr>
+    </table>
+    </div>
 </body>
 </html>
 <?php

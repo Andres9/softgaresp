@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
+require_once __DIR__ . '/notas_servicios.php';
+prepararResumenServiciosNota($conn);
 $notaMensaje = $_SESSION['nota_mensaje'] ?? '';
 unset($_SESSION['nota_mensaje']);
 $escaparNotaReporte = static function ($valor) {
@@ -92,10 +94,12 @@ $escaparNotaReporte = static function ($valor) {
 
       <tbody>
         <?php
-        $consulta = "select * from notas n 
+        $consulta = "select n.*, c.*, e.*, es.*, COALESCE(ds.nombres, s.tipoServicio) AS servicios_nombres, COALESCE(de.equipos, e.descripcionEquipo) AS equipos_nombres, COALESCE(de.marcas, n.marca) AS marcas_nombres, COALESCE(de.modelos, n.modelo) AS modelos_nombres from notas n
                             JOIN clientes c ON n.id_cliente  = c.id_CLIENTE 
                             JOIN equipo e ON n.equipo =  e.id_equipo 
                             JOIN servicio s ON n.servicio =  s.id_servicio
+                            LEFT JOIN (SELECT id_nota, GROUP_CONCAT(nombre ORDER BY id_detalle SEPARATOR ', ') AS nombres FROM nota_servicio GROUP BY id_nota) ds ON ds.id_nota = n.id_nota
+                            LEFT JOIN (SELECT id_nota, GROUP_CONCAT(descripcion ORDER BY id_detalle SEPARATOR ', ') AS equipos, GROUP_CONCAT(NULLIF(marca, '') ORDER BY id_detalle SEPARATOR ', ') AS marcas, GROUP_CONCAT(NULLIF(modelo, '') ORDER BY id_detalle SEPARATOR ', ') AS modelos FROM nota_equipo GROUP BY id_nota) de ON de.id_nota = n.id_nota
                             JOIN estadoservicio es ON n.estado =  es.id_estado 
                           ";
                          /*  WHERE YEAR(fecha_alta) = 2024 */
@@ -107,10 +111,10 @@ $escaparNotaReporte = static function ($valor) {
             <td><?= $escaparNotaReporte($mostrar['id_nota']) ?></td>
             <td><?= $escaparNotaReporte($mostrar['nombre'] . ' ' . $mostrar['apellidos']) ?></td>
             <td><?= $escaparNotaReporte($mostrar['fecha_alta']) ?></td>
-            <td><?= $escaparNotaReporte($mostrar['descripcionEquipo']) ?></td>
-            <td><?= $escaparNotaReporte($mostrar['marca']) ?></td>
-            <td><?= $escaparNotaReporte($mostrar['modelo']) ?></td>
-            <td><?= $escaparNotaReporte($mostrar['tipoServicio']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['equipos_nombres']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['marcas_nombres']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['modelos_nombres']) ?></td>
+            <td><?= $escaparNotaReporte($mostrar['servicios_nombres']) ?></td>
             <td><?= $escaparNotaReporte($mostrar['costoServicio']) ?></td>
             <td><?= $escaparNotaReporte($mostrar['descripcionServicio']) ?></td>
             <td><?= $escaparNotaReporte($mostrar['notas']) ?></td>

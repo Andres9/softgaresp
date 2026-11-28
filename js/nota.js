@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    const equipo = document.getElementById('nota-equipo');
+    const equipo = document.querySelector('.nota-equipos-lista');
     const form = document.querySelector('.nota-formulario');
     const seccion = document.getElementById('nota-patron-seccion');
     const valor = document.getElementById('nota-patron-valor');
@@ -48,14 +48,16 @@
     }
 
     function actualizarEquipo() {
-        const opcion = equipo.options[equipo.selectedIndex];
-        seccion.hidden = !opcion || opcion.dataset.patron !== '1';
+        seccion.hidden = !Array.from(equipo.querySelectorAll('.nota-equipo-selector')).some(function (selector) {
+            const opcion = selector.options[selector.selectedIndex];
+            return opcion && opcion.dataset.patron === '1';
+        });
         actualizar();
     }
 
     equipo.addEventListener('change', actualizarEquipo);
     if (window.jQuery) {
-        window.jQuery(equipo).on('select2:select select2:clear', actualizarEquipo);
+        window.jQuery(equipo).on('change', actualizarEquipo);
     }
     mostrarClave.addEventListener('click', function () {
         const visible = clave.type === 'password';

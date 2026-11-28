@@ -5,6 +5,9 @@
   <a href="notaCliente.php" class="<?= $pagina_actual === 'notaCliente.php' ? 'active' : '' ?>" <?= $pagina_actual === 'notaCliente.php' ? 'aria-current="page"' : '' ?>>
     <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i> Nota
   </a>
+  <a href="catalogo_servicios.php" class="<?= $pagina_actual === 'catalogo_servicios.php' ? 'active' : '' ?>" <?= $pagina_actual === 'catalogo_servicios.php' ? 'aria-current="page"' : '' ?>>
+    <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i> Catálogo de servicios
+  </a>
   <a href="reportesnotas.php" class="<?= $pagina_actual === 'reportesnotas.php' ? 'active' : '' ?>" <?= $pagina_actual === 'reportesnotas.php' ? 'aria-current="page"' : '' ?>>
     <i class="fa-solid fa-note-sticky" aria-hidden="true"></i> Reportes de notas
   </a>

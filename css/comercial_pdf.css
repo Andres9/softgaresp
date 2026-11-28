@@ -1,0 +1,57 @@
+        @page { size: letter; margin: 42px 43px 65px; }
+        * { box-sizing: border-box; }
+        body { background: #fff; color: #1e293b; font-family: DejaVu Sans, Arial, sans-serif; font-size: 10pt; line-height: 1.4; margin: 0; }
+        .top-stripe { background: #1e1b4b; height: 10px; left: -43px; position: fixed; right: -43px; top: -42px; }
+        .top-accent { background: #2563eb; height: 4px; left: -43px; position: fixed; right: -43px; top: -32px; }
+        .header-table { border-bottom: 2px solid #e2e8f0; border-collapse: collapse; margin-bottom: 18px; padding-bottom: 14px; width: 100%; }
+        .header-table td { vertical-align: middle; }
+        .brand-logo { height: auto; width: 180px; }
+        .brand-tagline { color: #64748b; font-size: 8pt; margin-top: 3px; }
+        .doc-box { text-align: right; }
+        .badge { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; display: inline-block; font-size: 8pt; font-weight: bold; letter-spacing: .6px; margin-bottom: 5px; padding: 3px 8px; text-transform: uppercase; }
+        .doc-title { color: #1e1b4b; font-size: 20pt; font-weight: bold; line-height: 1.1; }
+        .doc-folio { color: #2563eb; font-family: DejaVu Sans Mono, monospace; font-size: 10pt; font-weight: bold; margin-top: 4px; }
+        .cards-table { border-collapse: separate; border-spacing: 0; margin-bottom: 18px; width: 100%; }
+        .card-cell { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; vertical-align: top; }
+        .card-client { border-left: 4px solid #2563eb; width: 52%; }
+        .card-spacer { width: 3%; }
+        .card-meta { border-left: 4px solid #1e1b4b; width: 45%; }
+        .card-label { color: #2563eb; font-size: 9pt; font-weight: bold; letter-spacing: .6px; margin-bottom: 5px; text-transform: uppercase; }
+        .client-name { color: #0f172a; font-size: 13pt; font-weight: bold; margin-top: 3px; }
+        .client-detail { color: #475569; font-size: 9pt; margin-top: 2px; word-wrap: break-word; }
+        .meta-inner { border-collapse: collapse; font-size: 9pt; width: 100%; }
+        .meta-inner td { padding: 2px 0; }
+        .meta-inner .lbl { color: #64748b; font-weight: bold; }
+        .meta-inner .val { color: #0f172a; font-weight: bold; text-align: right; }
+        .section-heading { border-left: 3px solid #2563eb; color: #1e1b4b; font-size: 10pt; font-weight: bold; letter-spacing: .5px; margin-bottom: 8px; padding-left: 7px; text-transform: uppercase; }
+        .items-table { border-collapse: collapse; margin-bottom: 16px; table-layout: fixed; width: 100%; }
+        .items-table thead { display: table-header-group; }
+        .items-table tr { page-break-inside: avoid; }
+        .items-table th { background: #1e1b4b; color: #fff; font-size: 8pt; font-weight: bold; padding: 8px 3px; text-align: left; text-transform: uppercase; }
+        .items-table th.center, .items-table td.center { text-align: center; }
+        .items-table th.right, .items-table td.right { text-align: right; }
+        .items-table td { border-bottom: 1px solid #cbd5e1; color: #334155; font-size: 9pt; padding: 9px 3px; vertical-align: top; word-wrap: break-word; }
+        .product-image { display: block; height: auto; margin: 0 auto 5px; max-height: 65px; max-width: 100%; width: auto; }
+        .model-pill { background: #eff6ff; border: 1px solid #dbeafe; color: #1d4ed8; display: inline-block; font-size: 8pt; font-weight: bold; padding: 2px 3px; }
+        .item-title { color: #0f172a; display: block; font-weight: bold; margin-bottom: 2px; }
+        .item-sub { color: #475569; font-size: 9pt; }
+        .summary-wrapper { border-collapse: collapse; margin-bottom: 18px; width: 100%; }
+        .summary-notes { padding-right: 14px; vertical-align: top; width: 55%; }
+        .note-box { background: #f8fafc; border: 1px solid #e2e8f0; color: #475569; font-size: 9pt; padding: 9px 10px; word-wrap: break-word; }
+        .note-box strong { color: #1e1b4b; display: block; margin-bottom: 3px; }
+        .summary-box-cell { vertical-align: top; width: 45%; }
+        .totals-table { border: 1px solid #cbd5e1; border-collapse: collapse; width: 100%; }
+        .totals-table td { border-bottom: 1px solid #e2e8f0; font-size: 9pt; padding: 5px 8px; }
+        .totals-table .t-lbl { background: #f8fafc; color: #475569; font-weight: bold; }
+        .totals-table .t-val { background: #f8fafc; color: #0f172a; font-weight: bold; text-align: right; }
+        .totals-table .grand-row td { background: #2563eb; border-bottom: 0; color: #fff; font-size: 11pt; font-weight: bold; padding: 8px; }
+        .terms-table { border-collapse: separate; border-spacing: 6px; margin: 0 -6px 22px; width: 100%; }
+        .term-card { background: #f8fafc; border: 1px solid #e2e8f0; border-top: 3px solid #2563eb; padding: 8px 9px; vertical-align: top; width: 50%; }
+        .term-title { color: #2563eb; font-size: 8pt; font-weight: bold; letter-spacing: .3px; margin-bottom: 2px; text-transform: uppercase; }
+        .term-val { color: #1e293b; font-size: 9pt; font-weight: bold; word-wrap: break-word; }
+        .signatures-table { border-collapse: collapse; margin: 25px 0 18px; page-break-inside: avoid; width: 100%; }
+        .sig-cell { text-align: center; vertical-align: bottom; width: 44%; }
+        .sig-space { width: 12%; }
+        .sig-line { border-top: 1px solid #64748b; color: #334155; font-size: 9pt; font-weight: bold; padding-top: 6px; }
+        .sig-sub { color: #475569; font-size: 9pt; margin-top: 2px; }
+        .footer { border-top: 1px solid #cbd5e1; bottom: -40px; color: #64748b; font-size: 7pt; left: 0; padding-top: 6px; position: fixed; right: 0; text-align: right; }

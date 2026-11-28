@@ -114,6 +114,11 @@ include_once __DIR__ . '/encabezado.php';
       <strong><?= $dinero($ventas) ?></strong>
       <small>Separadas de los ingresos generales</small>
     </article>
+    <article class="movimiento-resumen-card movimiento-ganancia">
+      <span><i class="fa-solid fa-sack-dollar" aria-hidden="true"></i> Ganancia de recargas</span>
+      <strong><?= $dinero((float) $ventas * 0.06) ?></strong>
+      <small>6% de las recargas vendidas en el periodo</small>
+    </article>
     <article class="movimiento-resumen-card movimiento-egresos">
       <span><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> Compras y salidas</span>
       <strong><?= $dinero($compras) ?></strong>

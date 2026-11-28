@@ -448,7 +448,10 @@
 .cierre-panel {
   min-width: 0;
   margin: 0;
-  padding: 20px;
+  padding: 24px;
+  border: 1px solid #dfe8f3;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(23, 60, 102, .06);
 }
 
 .cierre-panel-cabecera,
@@ -502,6 +505,9 @@
 }
 
 .cierre-total {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #edf4fd;
   color: #173c66;
   font-size: 1.05rem;
   font-weight: 800;
@@ -511,6 +517,28 @@
 .cierre-renglones {
   display: grid;
   gap: 8px;
+}
+
+.cierre-aviso-fondo {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff7e6;
+  color: #76520e;
+  font-size: .78rem;
+}
+
+.cierre-renglon-fondo {
+  padding: 12px;
+  border: 1px solid #cfe0f2;
+  border-radius: 10px;
+  background: #f3f8fe;
+}
+
+.cierre-renglon-fondo .form-control[readonly] {
+  background: #fff;
+  color: #173c66;
+  font-weight: 700;
 }
 
 .cierre-renglon {

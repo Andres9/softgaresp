@@ -38,33 +38,92 @@ function entradaNota($nombre, $maximo, $conservarEspacios = false)
 function enteroNota($nombre, $obligatorio = false)
 {
     $valor = $_POST[$nombre] ?? '';
+    $etiquetas = array('id' => 'la nota', 'cliente' => 'el cliente', 'equipo' => 'el equipo', 'estado' => 'el estado del equipo', 'ganancia' => 'la ganancia', 'anticipo' => 'el anticipo', 'pagado' => 'el pago adicional');
+    $mensaje = 'Revisa ' . ($etiquetas[$nombre] ?? 'los datos numéricos') . ': ' . ($obligatorio ? 'selecciona una opción válida.' : 'debe ser un número entero.');
     if (!is_string($valor) && !is_int($valor)) {
         http_response_code(400);
-        exit('Los datos numéricos de la nota no son válidos.');
+        exit($mensaje);
     }
-    if ((string) $valor === '' && !$obligatorio) {
+    if (trim((string) $valor) === '' && !$obligatorio) {
         return 0;
     }
     $numero = filter_var($valor, FILTER_VALIDATE_INT, array('options' => array('min_range' => -2147483648, 'max_range' => 2147483647)));
     if ($numero === false || ($obligatorio && $numero < 1)) {
         http_response_code(400);
-        exit('Los datos numéricos de la nota no son válidos.');
+        exit($mensaje);
     }
     return $numero;
 }
 
 $idNota = $notaEditar ? enteroNota('id', true) : 0;
 $cliente = enteroNota('cliente', true);
-$equipo = enteroNota('equipo', true);
-$servicio = enteroNota('servicio', true);
 $estado = enteroNota('estado', true);
-$costo = enteroNota('costoServicio');
 $ganancia = enteroNota('ganancia');
 $anticipo = enteroNota('anticipo');
-$restante = enteroNota('restante');
 $pagado = enteroNota('pagado');
-$marca = entradaNota('marca', 25);
-$modelo = entradaNota('modelo', 25);
+$idsServicios = $_POST['servicios'] ?? null;
+$preciosServicios = $_POST['precios'] ?? null;
+if (!is_array($idsServicios) || !is_array($preciosServicios) || count($idsServicios) < 1 ||
+    count($idsServicios) > 200 || array_keys($idsServicios) !== array_keys($preciosServicios)) {
+    http_response_code(400);
+    exit('Selecciona entre uno y 200 servicios con sus precios.');
+}
+$lineasServicios = array();
+$costo = 0;
+foreach ($idsServicios as $indice => $idServicio) {
+    $precioEntrada = $preciosServicios[$indice];
+    $idValidado = is_string($idServicio) ? filter_var($idServicio, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1, 'max_range' => 2147483647))) : false;
+    $precioValidado = is_string($precioEntrada) ? filter_var($precioEntrada, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0, 'max_range' => 2147483647))) : false;
+    if ($idValidado === false || $precioValidado === false || $costo > 2147483647 - $precioValidado) {
+        http_response_code(400);
+        exit('Revisa los servicios y sus precios enteros; el total no puede superar 2147483647.');
+    }
+    $lineasServicios[] = array('id' => $idValidado, 'precio' => $precioValidado);
+    $costo += $precioValidado;
+}
+if ($anticipo < 0 || $pagado < 0 || $anticipo > $costo || $pagado > $costo - $anticipo) {
+    http_response_code(400);
+    exit('El anticipo y el pago adicional deben ser positivos y no superar el total.');
+}
+$idsEquipos = $_POST['equipos'] ?? null;
+$marcasEquipos = $_POST['marcas'] ?? null;
+$modelosEquipos = $_POST['modelos'] ?? null;
+$seriesEquipos = $_POST['series'] ?? null;
+if (!is_array($idsEquipos) || !is_array($marcasEquipos) || !is_array($modelosEquipos) || !is_array($seriesEquipos) ||
+    count($idsEquipos) < 1 || count($idsEquipos) > 20 || array_keys($idsEquipos) !== array_keys($marcasEquipos) ||
+    array_keys($idsEquipos) !== array_keys($modelosEquipos) || array_keys($idsEquipos) !== array_keys($seriesEquipos)) {
+    http_response_code(400);
+    exit('Registra entre uno y 20 equipos.');
+}
+$lineasEquipos = array();
+foreach ($idsEquipos as $indice => $idEquipo) {
+    $marcaEquipo = $marcasEquipos[$indice];
+    $modeloEquipo = $modelosEquipos[$indice];
+    $serieEquipo = $seriesEquipos[$indice];
+    $idEquipoValidado = is_string($idEquipo) ? filter_var($idEquipo, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1, 'max_range' => 2147483647))) : false;
+    if ($idEquipoValidado === false) {
+        http_response_code(400);
+        exit('Revisa el equipo ' . ((int) $indice + 1) . ': selecciona una opción válida.');
+    }
+    if (!is_string($marcaEquipo) || !is_string($modeloEquipo) || !is_string($serieEquipo)) {
+        http_response_code(400);
+        exit('Los datos de los equipos no son válidos.');
+    }
+    $marcaEquipo = trim($marcaEquipo);
+    $modeloEquipo = trim($modeloEquipo);
+    $serieEquipo = trim($serieEquipo);
+    if (mb_strlen($marcaEquipo, 'UTF-8') > 25 || mb_strlen($modeloEquipo, 'UTF-8') > 25 || mb_strlen($serieEquipo, 'UTF-8') > 100) {
+        http_response_code(400);
+        exit('Revisa la longitud de marca, modelo o número de serie del equipo ' . ((int) $indice + 1) . '.');
+    }
+    $lineasEquipos[] = array('id' => $idEquipoValidado, 'marca' => $marcaEquipo, 'modelo' => $modeloEquipo, 'serie' => $serieEquipo);
+}
+$equipo = $lineasEquipos[0]['id'];
+$marca = $lineasEquipos[0]['marca'];
+$modelo = $lineasEquipos[0]['modelo'];
+$serie = $lineasEquipos[0]['serie'];
+$servicio = $lineasServicios[0]['id'];
+$restante = $costo - $anticipo - $pagado;
 $descripcion = entradaNota($notaEditar ? 'descripcionServicio' : 'descripcion', 150);
 $nota = entradaNota('nota', 150);
 $fecha = entradaNota('fechaEntrada', 19);
@@ -80,7 +139,6 @@ if (!in_array($cargadorEntrada, array('', '0', '1'), true)) {
 }
 $cargador = $cargadorEntrada === '' ? null : (int) $cargadorEntrada;
 $accesorios = entradaNota('accesorios', 255);
-$serie = entradaNota('numero_serie', 100);
 $estadoFisico = entradaNota('estado_fisico', 255);
 $claveDispositivo = entradaNota('clave_dispositivo', 256, true);
 $patron = entradaNota('patron_dispositivo', 9);
@@ -98,20 +156,41 @@ if ($patron !== '' && !patronNotaValido($patron)) {
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 require_once __DIR__ . '/conexion.php';
 prepararRecepcionNotas($conn);
+require_once __DIR__ . '/notas_servicios.php';
+prepararServiciosNota($conn);
 
 try {
     $conn->begin_transaction();
-    $consultaEquipo = $conn->prepare('SELECT descripcionEquipo FROM equipo WHERE id_equipo = ?');
-    $consultaEquipo->bind_param('i', $equipo);
-    $consultaEquipo->execute();
-    $equipoSeleccionado = $consultaEquipo->get_result()->fetch_assoc();
-    $consultaEquipo->close();
-    if (!$equipoSeleccionado) {
-        $conn->rollback();
-        http_response_code(400);
-        exit('Selecciona un equipo válido.');
+    $consultaServicio = $conn->prepare('SELECT tipoServicio FROM servicio WHERE id_servicio = ? FOR UPDATE');
+    foreach ($lineasServicios as &$lineaServicio) {
+        $consultaServicio->bind_param('i', $lineaServicio['id']);
+        $consultaServicio->execute();
+        $servicioSeleccionado = $consultaServicio->get_result()->fetch_assoc();
+        if (!$servicioSeleccionado || trim((string) $servicioSeleccionado['tipoServicio']) === '') {
+            $conn->rollback();
+            http_response_code(400);
+            exit('Selecciona servicios válidos del catálogo.');
+        }
+        $lineaServicio['nombre'] = $servicioSeleccionado['tipoServicio'];
     }
-    $admitePatron = equipoAdmitePatron($equipoSeleccionado['descripcionEquipo']);
+    unset($lineaServicio);
+    $consultaServicio->close();
+    $consultaEquipo = $conn->prepare('SELECT descripcionEquipo FROM equipo WHERE id_equipo = ?');
+    $admitePatron = false;
+    foreach ($lineasEquipos as &$lineaEquipo) {
+        $consultaEquipo->bind_param('i', $lineaEquipo['id']);
+        $consultaEquipo->execute();
+        $equipoSeleccionado = $consultaEquipo->get_result()->fetch_assoc();
+        if (!$equipoSeleccionado) {
+            $conn->rollback();
+            http_response_code(400);
+            exit('Selecciona equipos válidos.');
+        }
+        $lineaEquipo['descripcion'] = $equipoSeleccionado['descripcionEquipo'];
+        $admitePatron = $admitePatron || equipoAdmitePatron($equipoSeleccionado['descripcionEquipo']);
+    }
+    unset($lineaEquipo);
+    $consultaEquipo->close();
     if ($patron !== '' && !$admitePatron) {
         $conn->rollback();
         http_response_code(400);
@@ -133,6 +212,20 @@ try {
         }
         $claveAnterior = $anterior['contrasena_cifrada'];
         $patronAnterior = $anterior['patron_cifrado'];
+        $consultaDetalles = $conn->prepare('SELECT id_servicio, nombre FROM nota_servicio WHERE id_nota = ? ORDER BY id_detalle');
+        $consultaDetalles->bind_param('i', $idNota);
+        $consultaDetalles->execute();
+        $nombresAnteriores = array();
+        foreach ($consultaDetalles->get_result()->fetch_all(MYSQLI_ASSOC) as $detalleAnterior) {
+            $nombresAnteriores[$detalleAnterior['id_servicio']] = $detalleAnterior['nombre'];
+        }
+        $consultaDetalles->close();
+        foreach ($lineasServicios as &$lineaServicio) {
+            if (isset($nombresAnteriores[$lineaServicio['id']])) {
+                $lineaServicio['nombre'] = $nombresAnteriores[$lineaServicio['id']];
+            }
+        }
+        unset($lineaServicio);
     }
 
     if (canalSeguroNota()) {
@@ -159,6 +252,29 @@ try {
         $actualizarCliente->execute();
         $actualizarCliente->close();
     }
+
+    if ($notaEditar) {
+        $eliminarEquipos = $conn->prepare('DELETE FROM nota_equipo WHERE id_nota = ?');
+        $eliminarEquipos->bind_param('i', $idNota);
+        $eliminarEquipos->execute();
+        $eliminarEquipos->close();
+        $eliminarDetalles = $conn->prepare('DELETE FROM nota_servicio WHERE id_nota = ?');
+        $eliminarDetalles->bind_param('i', $idNota);
+        $eliminarDetalles->execute();
+        $eliminarDetalles->close();
+    }
+    $insertarEquipo = $conn->prepare('INSERT INTO nota_equipo (id_nota, id_equipo, descripcion, marca, modelo, numero_serie) VALUES (?, ?, ?, ?, ?, ?)');
+    foreach ($lineasEquipos as $lineaEquipo) {
+        $insertarEquipo->bind_param('iissss', $idNota, $lineaEquipo['id'], $lineaEquipo['descripcion'], $lineaEquipo['marca'], $lineaEquipo['modelo'], $lineaEquipo['serie']);
+        $insertarEquipo->execute();
+    }
+    $insertarEquipo->close();
+    $insertarDetalle = $conn->prepare('INSERT INTO nota_servicio (id_nota, id_servicio, nombre, precio) VALUES (?, ?, ?, ?)');
+    foreach ($lineasServicios as $lineaServicio) {
+        $insertarDetalle->bind_param('iisi', $idNota, $lineaServicio['id'], $lineaServicio['nombre'], $lineaServicio['precio']);
+        $insertarDetalle->execute();
+    }
+    $insertarDetalle->close();
 
     $recepcion = $conn->prepare('INSERT INTO nota_recepcion (id_nota, cargador, accesorios, numero_serie, estado_fisico, contrasena_cifrada, patron_cifrado) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE cargador=VALUES(cargador), accesorios=VALUES(accesorios), numero_serie=VALUES(numero_serie), estado_fisico=VALUES(estado_fisico), contrasena_cifrada=VALUES(contrasena_cifrada), patron_cifrado=VALUES(patron_cifrado)');
     $recepcion->bind_param('iisssss', $idNota, $cargador, $accesorios, $serie, $estadoFisico, $claveCifrada, $patronCifrado);

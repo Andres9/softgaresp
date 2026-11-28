@@ -40,6 +40,9 @@
 <script src="js/selectores.js"></script>
 
 <script src="js/index.js"></script>
+<?php if ($pagina_actual === 'catalogo_servicios.php') { ?>
+<script src="js/catalogo-servicios.js"></script>
+<?php } ?>
 <?php if ($pagina_actual === 'ventas.php') { ?>
 <script src="js/ventas.js"></script>
 <?php } ?>

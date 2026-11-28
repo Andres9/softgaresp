@@ -1,0 +1,121 @@
+.catalogo-servicios .catalogo-hero {
+  gap: 20px;
+}
+
+.catalogo-hero-total {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 2px 12px;
+  padding: 14px 18px;
+  border: 1px solid rgba(123, 232, 232, .3);
+  border-radius: 12px;
+  background: rgba(15, 51, 72, .6);
+}
+
+.catalogo-hero-total i {
+  grid-row: span 2;
+  color: #78e1e1;
+  font-size: 1.4rem;
+}
+
+.catalogo-hero-total strong {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.catalogo-hero-total span {
+  color: #d7e7f5;
+  font-size: .75rem;
+}
+
+.catalogo-servicios .pedido-data-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.catalogo-servicios .pedido-panel-heading p {
+  max-width: 400px;
+  text-align: right;
+}
+
+.catalogo-tabla {
+  width: 100%;
+}
+
+.catalogo-tabla table {
+  width: 100% !important;
+}
+
+.catalogo-tabla thead th {
+  color: #173c59;
+  font-size: .8rem;
+  white-space: nowrap;
+}
+
+.catalogo-tabla tbody td {
+  color: #41536a;
+  font-size: .86rem;
+  vertical-align: middle;
+}
+
+.catalogo-tabla .catalogo-descripcion {
+  min-width: 180px;
+  max-width: 360px;
+  overflow-wrap: anywhere;
+}
+
+.catalogo-acciones {
+  white-space: nowrap;
+}
+
+.catalogo-acciones .btn {
+  margin: 2px;
+}
+
+.catalogo-aviso {
+  color: #53647b;
+  font-size: .85rem;
+}
+
+.catalogo-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.catalogo-modal-wide {
+  grid-column: 1 / -1;
+}
+
+.catalogo-tabla .dataTables_filter,
+.catalogo-tabla .dataTables_length {
+  margin-bottom: 16px;
+}
+
+.catalogo-tabla .dataTables_filter input,
+.catalogo-tabla .dataTables_length select {
+  border: 1px solid #d3dee7;
+  border-radius: 7px;
+  padding: 6px 9px;
+  background: #fbfdff;
+}
+
+@media (max-width: 720px) {
+  .catalogo-servicios .catalogo-hero,
+  .catalogo-servicios .pedido-panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .catalogo-servicios .pedido-panel-heading p {
+    text-align: left;
+  }
+
+  .catalogo-servicios .pedido-data-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalogo-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}

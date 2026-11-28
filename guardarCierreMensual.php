@@ -71,7 +71,8 @@ foreach ($secciones as $seccion => $nombreSeccion) {
     $importes = isset($datosSeccion['importe']) && is_array($datosSeccion['importe'])
         ? $datosSeccion['importe']
         : array();
-    if (count($conceptos) > 30 || count($conceptos) !== count($importes)) {
+    $limiteConceptos = $seccion === 'fondo' ? 31 : 30;
+    if (count($conceptos) > $limiteConceptos || count($conceptos) !== count($importes)) {
         rechazarCierreMensual('Revisa los conceptos de la sección "' . $nombreSeccion . '".');
     }
 
@@ -120,6 +121,30 @@ foreach (cuentasCierreMensual() as $clave => $nombre) {
         rechazarCierreMensual('Captura un saldo y una fecha válidos para la cuenta ' . $nombre . '.');
     }
     $cuentasValidadas[$clave] = array('saldo' => $saldoValidado, 'fecha' => $fecha);
+}
+
+$totalCuentasCentavos = 0;
+foreach ($cuentasValidadas as $cuenta) {
+    $totalCuentasCentavos += (int) str_replace('.', '', $cuenta['saldo']);
+}
+if (abs($totalCuentasCentavos) > 9999999999999) {
+    rechazarCierreMensual('El total de cuentas supera el límite permitido para el fondo.');
+}
+$fondoEncontrado = false;
+foreach ($itemsValidados['fondo'] as &$itemFondo) {
+    if (strcasecmp($itemFondo['concepto'], 'Fondo') === 0) {
+        if ($fondoEncontrado) {
+            rechazarCierreMensual('Solo puede haber un concepto llamado Fondo.');
+        }
+        $fondoEncontrado = true;
+        $itemFondo['importe'] = ($totalCuentasCentavos < 0 ? '-' : '') .
+            intdiv(abs($totalCuentasCentavos), 100) . '.' .
+            str_pad((string) (abs($totalCuentasCentavos) % 100), 2, '0', STR_PAD_LEFT);
+    }
+}
+unset($itemFondo);
+if (!$fondoEncontrado) {
+    rechazarCierreMensual('Falta el concepto Fondo. Recarga el formulario e inténtalo nuevamente.');
 }
 
 try {

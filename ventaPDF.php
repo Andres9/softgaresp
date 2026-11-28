@@ -3,8 +3,11 @@ require_once __DIR__ . '/auth.php';
 requerir_usuario_autenticado();
 require_once __DIR__ . '/cotizaciones_db.php';
 require_once __DIR__ . '/dompdf/autoload.inc.php';
+require_once __DIR__ . '/comercial_pdf.php';
 
 use Dompdf\Dompdf;
+
+date_default_timezone_set('America/Mexico_City');
 
 function escaparVentaPdf($valor)
 {
@@ -19,8 +22,8 @@ if ($idVenta === false || $idVenta < 1) {
 
 $consultaVenta = mysqli_prepare(
     $conn,
-    'SELECT v.id_venta, v.folio AS folio_venta, v.fecha_venta, v.total, v.total_abonado,
-            v.saldo, v.estado, c.*
+    'SELECT v.id_venta, v.folio AS folio_venta, v.fecha_venta, v.total AS total_venta,
+            v.total_abonado, v.saldo, v.estado AS estado_venta, v.creado_por AS vendido_por, c.*
      FROM cotizacion_ventas v
      INNER JOIN cotizaciones c ON c.id_cotizacion = v.id_cotizacion
      WHERE v.id_venta = ? LIMIT 1'
@@ -83,8 +86,19 @@ if (!$consultaAbonos->execute()) {
 $abonos = $consultaAbonos->get_result()->fetch_all(MYSQLI_ASSOC);
 $consultaAbonos->close();
 
-$logoContenido = is_file(__DIR__ . '/img/logos2.jpg') ? file_get_contents(__DIR__ . '/img/logos2.jpg') : false;
-$logoData = $logoContenido === false ? '' : 'data:image/jpeg;base64,' . base64_encode($logoContenido);
+if (!function_exists('imagecreatefrompng')) {
+    error_log('La extensión GD de PHP es necesaria para mostrar imágenes PNG en el PDF de venta.');
+    http_response_code(500);
+    exit('No se pudo generar el PDF de venta: falta la extensión GD de PHP.');
+}
+$logoContenido = @file_get_contents(__DIR__ . '/img/logosinfondo.png');
+$estilosPdf = @file_get_contents(__DIR__ . '/css/comercial_pdf.css');
+if ($logoContenido === false || $estilosPdf === false) {
+    error_log('No fue posible leer los recursos del PDF de venta.');
+    http_response_code(500);
+    exit('No se pudo generar el PDF de venta.');
+}
+$logoData = 'data:image/png;base64,' . base64_encode($logoContenido);
 $moneda = escaparVentaPdf($venta['moneda']);
 
 ob_start();
@@ -95,85 +109,117 @@ ob_start();
   <meta charset="UTF-8">
   <title>Venta <?= escaparVentaPdf($venta['folio_venta']) ?></title>
   <style>
-    @page { margin: 30px 34px 50px; }
-    body { color: #24384d; font-family: DejaVu Sans, Arial, sans-serif; font-size: 9px; line-height: 1.4; }
-    .header { margin-bottom: 12px; padding: 8px 0 12px; border-bottom: 2px solid #333; color: #222; }
-    .header table { width: 100%; }
-    .logo { width: 115px; padding: 4px; background: #fff; }
-    h1 { margin: 0; color: #222; font-size: 21px; }
-    .folio { margin-top: 4px; color: #555; }
-    .columns { width: 100%; margin-bottom: 12px; border-spacing: 8px 0; }
-    .card { padding: 9px 12px; border: 1px solid #ccc; vertical-align: top; }
-    .label { color: #087f8b; font-size: 8px; font-weight: bold; text-transform: uppercase; }
-    .metadata td { padding: 3px; border-bottom: 1px solid #dfe7ee; }
-    h2 { margin: 13px 0 6px; padding: 6px 0; border-bottom: 1px solid #777; color: #222; font-size: 10px; }
-    .items { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    .items th { padding: 7px 5px; border-bottom: 1px solid #555; color: #222; text-align: left; }
-    .items td { padding: 7px 5px; border-bottom: 1px solid #dfe7ee; vertical-align: top; }
-    .items tr { page-break-inside: avoid; }
-    .items .right { text-align: right; }
-    .summary { width: 48%; margin: 10px 0 0 auto; border-collapse: collapse; }
-    .summary td { padding: 6px 8px; border-bottom: 1px solid #dfe7ee; }
-    .summary .amount { text-align: right; font-weight: bold; }
-    .summary .due td { border-top: 1px solid #555; color: #222; font-size: 11px; font-weight: bold; }
-    .payments { width: 100%; border-collapse: collapse; }
-    .payments td, .payments th { padding: 6px; border: 1px solid #dfe7ee; text-align: left; }
-    .payments th { color: #222; border-bottom: 1px solid #777; }
-    .footer { position: fixed; right: 0; bottom: -30px; left: 0; padding-top: 6px; border-top: 1px solid #cbd7e1; color: #53677c; font-size: 8px; text-align: right; }
+<?= $estilosPdf ?>
   </style>
 </head>
 <body>
-  <div class="header">
-    <table><tr>
-      <td style="width:28%"><?php if ($logoData !== '') { ?><img class="logo" src="<?= $logoData ?>" alt="Garesp"><?php } else { ?><strong>GARESP</strong><?php } ?></td>
-      <td><h1>Venta</h1><div class="folio"><?= escaparVentaPdf($venta['folio_venta']) ?> · Cotización <?= escaparVentaPdf($venta['folio']) ?></div></td>
-    </tr></table>
-  </div>
-
-  <table class="columns">
+  <div class="top-stripe"></div>
+  <div class="top-accent"></div>
+  <div class="footer">Garesp Servicio Informático &middot; Venta <?= escaparVentaPdf($venta['folio_venta']) ?> &middot; Generada el <?= date('d/m/Y H:i') ?></div>
+  <table class="header-table">
     <tr>
-      <td class="card" style="width:50%">
-        <div class="label">Cliente</div>
-        <strong><?= escaparVentaPdf($venta['cliente_nombre']) ?></strong><br>
-        <?= escaparVentaPdf($venta['cliente_empresa']) ?><br>
-        <?= escaparVentaPdf($venta['cliente_email']) ?><br>
-        <?= escaparVentaPdf($venta['cliente_telefono']) ?>
+      <td>
+        <img class="brand-logo" src="<?= $logoData ?>" alt="GARESP Servicio Informático">
+        <div class="brand-tagline">Soluciones tecnológicas, equipamiento y soporte especializado</div>
       </td>
-      <td class="card" style="width:50%">
-        <table class="metadata" style="width:100%">
-          <tr><td class="label">Fecha</td><td><?= escaparVentaPdf(date('d/m/Y', strtotime($venta['fecha_venta']))) ?></td></tr>
-          <tr><td class="label">Estado</td><td><?= escaparVentaPdf($venta['estado']) ?></td></tr>
-          <tr><td class="label">Atendió</td><td><?= escaparVentaPdf($venta['creado_por']) ?></td></tr>
+      <td class="doc-box">
+        <div class="badge">Comprobante de venta</div>
+        <div class="doc-title">Venta</div>
+        <div class="doc-folio">Folio: <?= escaparVentaPdf($venta['folio_venta']) ?></div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="cards-table">
+    <tr>
+      <td class="card-cell card-client">
+        <div class="card-label">Cliente</div>
+        <div class="client-name"><?= escaparVentaPdf($venta['cliente_nombre']) ?></div>
+        <?php if (trim((string) $venta['cliente_empresa']) !== '') { ?><div class="client-detail"><?= escaparVentaPdf($venta['cliente_empresa']) ?></div><?php } ?>
+        <?php if (trim((string) $venta['cliente_email']) !== '') { ?><div class="client-detail"><?= escaparVentaPdf($venta['cliente_email']) ?></div><?php } ?>
+        <?php if (trim((string) $venta['cliente_telefono']) !== '') { ?><div class="client-detail"><?= escaparVentaPdf($venta['cliente_telefono']) ?></div><?php } ?>
+        <?php if (trim((string) $venta['cliente_rfc']) !== '') { ?><div class="client-detail">RFC: <?= escaparVentaPdf($venta['cliente_rfc']) ?></div><?php } ?>
+        <?php if (trim((string) $venta['cliente_direccion']) !== '') { ?><div class="client-detail"><?= nl2br(escaparVentaPdf($venta['cliente_direccion'])) ?></div><?php } ?>
+      </td>
+      <td class="card-spacer"></td>
+      <td class="card-cell card-meta">
+        <div class="card-label">Datos de la venta</div>
+        <table class="meta-inner">
+          <tr><td class="lbl">Cotización:</td><td class="val"><?= escaparVentaPdf($venta['folio']) ?></td></tr>
+          <tr><td class="lbl">Fecha:</td><td class="val"><?= escaparVentaPdf(date('d/m/Y', strtotime($venta['fecha_venta']))) ?></td></tr>
+          <tr><td class="lbl">Estado:</td><td class="val"><?= escaparVentaPdf($venta['estado_venta']) ?></td></tr>
+          <tr><td class="lbl">Moneda:</td><td class="val"><?= $moneda ?></td></tr>
+          <tr><td class="lbl">Atendió:</td><td class="val"><?= escaparVentaPdf($venta['vendido_por']) ?></td></tr>
         </table>
       </td>
     </tr>
   </table>
 
-  <h2>Productos y servicios</h2>
-  <table class="items">
-    <thead><tr><th style="width:8%">Cantidad</th><th style="width:42%">Concepto</th><th style="width:20%">Precio unitario</th><th style="width:12%">Descuento</th><th style="width:18%">Importe</th></tr></thead>
-    <tbody>
-      <?php foreach ($detalles as $detalle) { ?>
+  <div class="section-heading">Detalle de productos y servicios</div>
+  <table class="items-table">
+    <thead>
       <tr>
-        <td><?= number_format((float) $detalle['cantidad'], 2) ?></td>
-        <td><strong><?= escaparVentaPdf($detalle['descripcion']) ?></strong><br><?= escaparVentaPdf(trim($detalle['marca'] . ' ' . $detalle['modelo'] . ' ' . $detalle['sku'])) ?></td>
+        <th class="center" style="width:7%">Cant.</th>
+        <th class="center" style="width:13%">Modelo</th>
+        <th style="width:32%">Concepto</th>
+        <th class="right" style="width:16%">P. Unitario</th>
+        <th class="right" style="width:8%">Desc.</th>
+        <th class="right" style="width:8%">Imp.</th>
+        <th class="right" style="width:16%">Importe</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($detalles as $detalle) {
+          $imagenProducto = imagenComercialPdf($detalle['imagen']);
+          $identificadores = array_filter(
+              array($detalle['tipo_producto'], $detalle['marca'], $detalle['modelo'], $detalle['sku']),
+              function ($valor) {
+                  return trim((string) $valor) !== '';
+              }
+          );
+          ?>
+      <tr>
+        <td class="center"><strong><?= number_format((float) $detalle['cantidad'], 2) ?></strong></td>
+        <td class="center">
+          <?php if ($imagenProducto !== '') { ?><img class="product-image" src="<?= $imagenProducto ?>" alt="Producto"><?php } ?>
+          <?php if ($imagenProducto === '' && $detalle['imagen'] !== '') { ?><div class="item-sub">Imagen no disponible</div><?php } ?>
+          <span class="model-pill"><?= escaparVentaPdf(trim((string) $detalle['modelo']) !== '' ? $detalle['modelo'] : '—') ?></span>
+        </td>
+        <td>
+          <span class="item-title"><?= escaparVentaPdf($detalle['descripcion']) ?></span>
+          <?php if (count($identificadores) > 0) { ?><span class="item-sub"><?= escaparVentaPdf(implode(' · ', $identificadores)) ?></span><?php } ?>
+          <?php if (trim((string) $detalle['especificaciones']) !== '') { ?><div class="item-sub"><?= nl2br(escaparVentaPdf($detalle['especificaciones'])) ?></div><?php } ?>
+          <?php if (trim((string) $detalle['garantia']) !== '') { ?><div class="item-sub">Garantía: <?= escaparVentaPdf($detalle['garantia']) ?></div><?php } ?>
+        </td>
         <td class="right"><?= $moneda ?> $<?= number_format((float) $detalle['precio_unitario'], 2) ?></td>
         <td class="right"><?= number_format((float) $detalle['descuento_porcentaje'], 2) ?>%</td>
-        <td class="right"><?= $moneda ?> $<?= number_format((float) $detalle['total'], 2) ?></td>
+        <td class="right"><?= number_format((float) $detalle['impuesto_porcentaje'], 2) ?>%</td>
+        <td class="right"><strong><?= $moneda ?> $<?= number_format((float) $detalle['total'], 2) ?></strong></td>
       </tr>
       <?php } ?>
     </tbody>
   </table>
 
-  <table class="summary">
-    <tr><td>Total de venta</td><td class="amount"><?= $moneda ?> $<?= number_format((float) $venta['total'], 2) ?></td></tr>
-    <tr><td>Total abonado</td><td class="amount"><?= $moneda ?> $<?= number_format((float) $venta['total_abonado'], 2) ?></td></tr>
-    <tr class="due"><td>Saldo por cobrar</td><td class="amount"><?= $moneda ?> $<?= number_format((float) $venta['saldo'], 2) ?></td></tr>
+  <table class="summary-wrapper">
+    <tr>
+      <td class="summary-notes">
+        <?php if (trim((string) $venta['notas']) !== '') { ?>
+          <div class="note-box"><strong>Observaciones comerciales</strong><?= nl2br(escaparVentaPdf($venta['notas'])) ?></div>
+        <?php } ?>
+      </td>
+      <td class="summary-box-cell">
+        <table class="totals-table">
+          <tr><td class="t-lbl">Total de venta</td><td class="t-val"><?= $moneda ?> $<?= number_format((float) $venta['total_venta'], 2) ?></td></tr>
+          <tr><td class="t-lbl">Total abonado</td><td class="t-val"><?= $moneda ?> $<?= number_format((float) $venta['total_abonado'], 2) ?></td></tr>
+          <tr class="grand-row"><td>Saldo por cobrar</td><td style="text-align:right"><?= $moneda ?> $<?= number_format((float) $venta['saldo'], 2) ?></td></tr>
+        </table>
+      </td>
+    </tr>
   </table>
 
-  <h2>Abonos registrados</h2>
-  <table class="payments">
-    <thead><tr><th>Fecha</th><th>Recibió</th><th>Concepto</th><th style="text-align:right">Monto</th></tr></thead>
+  <div class="section-heading">Abonos registrados</div>
+  <table class="items-table">
+    <thead><tr><th style="width:23%">Fecha</th><th style="width:23%">Recibió</th><th style="width:34%">Concepto</th><th class="right" style="width:20%">Monto</th></tr></thead>
     <tbody>
       <?php if (count($abonos) === 0) { ?><tr><td colspan="4">Sin abonos registrados.</td></tr><?php } ?>
       <?php foreach ($abonos as $abono) { ?>
@@ -181,12 +227,11 @@ ob_start();
         <td><?= escaparVentaPdf(date('d/m/Y H:i', strtotime($abono['fecha_abono']))) ?></td>
         <td><?= escaparVentaPdf($abono['recibido_por']) ?></td>
         <td><?= escaparVentaPdf($abono['notas'] !== '' ? $abono['notas'] : 'Abono') ?></td>
-        <td style="text-align:right"><?= $moneda ?> $<?= number_format((float) $abono['monto'], 2) ?></td>
+        <td class="right"><?= $moneda ?> $<?= number_format((float) $abono['monto'], 2) ?></td>
       </tr>
       <?php } ?>
     </tbody>
   </table>
-  <div class="footer">Garesp Servicio Informático · <?= escaparVentaPdf($venta['folio_venta']) ?> · <?= date('d/m/Y H:i') ?></div>
 </body>
 </html>
 <?php
@@ -195,4 +240,6 @@ $dompdf = new Dompdf();
 $dompdf->loadHtml($html, 'UTF-8');
 $dompdf->setPaper('letter', 'portrait');
 $dompdf->render();
+$font = $dompdf->getFontMetrics()->getFont('DejaVu Sans', 'normal');
+$dompdf->getCanvas()->page_text(34, 770, 'Página {PAGE_NUM} de {PAGE_COUNT}', $font, 7, array(0.32, 0.40, 0.48));
 $dompdf->stream('venta-' . preg_replace('/[^A-Za-z0-9-]/', '-', $venta['folio_venta']) . '.pdf', array('Attachment' => false));
